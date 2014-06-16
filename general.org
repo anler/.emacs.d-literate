@@ -1,0 +1,246 @@
+* Table of contents							:TOC:
+ - [[#display-column-number-in-the-modeline][Display column number in the modeline]]
+ - [[#display-buffer-size-in-the-modeline][Display buffer size in the modeline]]
+ - [[#echo-keystrokes-earlier][Echo keystrokes earlier]]
+ - [[#put-backups-in-another-place][Put backups in another place]]
+ - [[#replace-selected-text-when-start-typing][Replace selected text when start typing]]
+ - [[#update-buffer-contents-if-they-are-externally-changed][Update buffer contents if they are externally changed]]
+ - [[#never-convert-spaces-to-tabs][Never convert spaces to tabs]]
+ - [[#enable-recent-files-mode-file--open-recent][Enable recent files mode (File > Open Recent)]]
+ - [[#increase-memory-threshold-for-garbage-collection][Increase memory threshold for garbage collection]]
+ - [[#name-buffers-with-same-filenames-other-than-buffern][Name buffers with same filenames other than buffer<N>]]
+ - [[#confirmation-when-closing-emacs][Confirmation when closing Emacs]]
+ - [[#start-an-emacs-server-on-startup][Start an Emacs server on startup]]
+ - [[#enable-ido-mode][Enable ido-mode]]
+     - [[#use-fuzzy-matching-by-default][Use fuzzy-matching by default]]
+     - [[#use-it-in-all-possible-places][Use it in all possible places]]
+     - [[#use-a-vertical-interface][Use a vertical interface]]
+     - [[#ido-interface-when-using-completion-at-point][Ido interface when using ~completion-at-point~.]]
+ - [[#better-help-with-discoverel][Better help with discover.el]]
+ - [[#disable-transient-mark-mode][Disable transient-mark-mode]]
+ - [[#keep-abbrev-expansion-predictable][Keep abbrev expansion predictable]]
+ - [[#spice-info-mode][Spice info mode]]
+ - [[#open-really-large-files-with-vlf][Open really large files with vlf]]
+ - [[#easily-copy-from-one-dired-split-to-another][Easily copy from one dired split to another]]
+ - [[#create-a-dired-file-with-][Create a dired file with =|=]]
+ - [[#use-mykie-for-extending-keybindings][Use mykie for extending keybindings]]
+ - [[#diminish-the-mode-line][Diminish the mode line]]
+ - [[#set-default-browser][Set default browser]]
+ - [[#remote-sudo-access-with-tramp][Remote sudo access with TRAMP]]
+
+* Display column number in the modeline
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (setq column-number-mode t)
+#+END_SRC
+
+* Display buffer size in the modeline
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (setq size-indication-mode t)
+#+END_SRC
+
+* Echo keystrokes earlier
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (setq echo-keystrokes 0.2)
+#+END_SRC
+
+* Put backups in another place
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (setq backup-directory-alist `(("." . "~/.emacs.d/saves")))
+#+END_SRC
+
+Also do the backup by copying the file (slower but safer):
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (setq backup-by-copying t)
+#+END_SRC
+
+delete all versions automatically:
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (setq delete-old-versions t)
+#+END_SRC
+
+and add version number to backup name:
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (setq version-control t)
+#+END_SRC
+
+* Replace selected text when start typing
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (delete-selection-mode)
+#+END_SRC
+
+* Update buffer contents if they are externally changed
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (global-auto-revert-mode)
+  (setq auto-revert-verbose nil)
+#+END_SRC
+
+* Never convert spaces to tabs
+Emacs likes to do this whenever it can.
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (set-default 'indent-tabs-mode nil)
+#+END_SRC
+
+* Enable recent files mode (File > Open Recent)
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (recentf-mode)
+#+END_SRC
+
+* Increase memory threshold for garbage collection
+As [[https://github.com/magnars/][Magnar Sveen]] said:
+
+#+BEGIN_QUOTE
+Don't be so stingy on the memory, we have lots now. It's the distant future.
+#+END_QUOTE
+
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (setq gc-cons-threshold 20000000)
+#+END_SRC
+
+* Name buffers with same filenames other than buffer<N>
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (require 'uniquify)
+  (setq uniquify-buffer-name-style 'post-forward)
+#+END_SRC
+
+* Confirmation when closing Emacs
+I do this very often, this is my insurance.
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (setq confirm-kill-emacs 'yes-or-no-p)
+#+END_SRC
+
+* Start an Emacs server on startup
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (require 'server)
+  (unless (server-running-p)
+      (server-mode))
+#+END_SRC
+
+* Enable ido-mode
+~ido-mode~ (Interactively DO things) is a mode that let's you work
+with files and buffer more effectively giving you auto-completion
+for buffer and file names.
+
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (ido-mode)
+#+END_SRC
+
+** Use fuzzy-matching by default
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (setq ido-enable-flex-matching t)
+#+END_SRC
+
+** Use it in all possible places
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (ido-everywhere)
+#+END_SRC
+[[file:img/ido.gif]]
+
+** Use a vertical interface
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (ido-vertical-mode)
+#+END_SRC
+[[file:img/ido-vertical-mode.gif]]
+
+** Ido interface when using ~completion-at-point~.
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (ido-at-point-mode)
+#+END_SRC
+[[file:img/ido-at-point.gif]]
+
+* Better help with discover.el
+See [[http://www.masteringemacs.org/articles/2013/12/21/discoverel-discover-emacs-context-menus/][discover.el]].
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (require 'discover)
+  (global-discover-mode)
+#+END_SRC
+
+* Disable transient-mark-mode
+Disable ~transient-mark-mode~ to use ~C-x C-x~ without activating the
+region:
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (transient-mark-mode -1)
+#+END_SRC
+
+* Keep abbrev expansion predictable
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (setq dabbrev-case-fold-search nil)
+#+END_SRC
+
+* Spice info mode
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (eval-after-load "info" '(require 'info+))
+#+END_SRC
+
+* Open really large files with vlf
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (require 'vlf-integrate)
+#+END_SRC
+
+* Easily copy from one dired split to another
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+(setq dired-dwim-target t)
+#+END_SRC
+
+* Create a dired file with =|=
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (require 'dired)
+  
+  (defun dired-create-file (filename)
+    "Create FILENAME from Dired in if not exists.
+  If FILENAME already exists do nothing."
+    (interactive "FCreate file: ")
+    (shell-command (format "touch %s" filename))
+    (when (file-exists-p filename)
+      (dired-add-file filename)
+      (dired-move-to-filename)))
+  (define-key dired-mode-map "|" 'dired-create-file)
+#+END_SRC
+
+* Use mykie for extending keybindings
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (require 'mykie)
+  (setq mykie:use-major-mode-key-override t)
+  (mykie:initialize)
+#+END_SRC
+
+* Diminish the mode line
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (when (require 'diminish nil 'noerror)
+    (eval-after-load "company"
+        '(diminish 'company-mode))
+    (eval-after-load "abbrev"
+      '(diminish 'abbrev-mode))
+    (eval-after-load "projectile"
+      '(diminish 'projectile-mode))
+    (eval-after-load "whitespace"
+      '(diminish 'global-whitespace-mode))
+    (eval-after-load "smartparens"
+      '(diminish 'smartparens-mode))
+    (eval-after-load "paredit"
+      '(diminish 'paredit-mode))
+    (eval-after-load "eldoc"
+      '(diminish 'eldoc-mode))
+    (eval-after-load "rainbow-mode"
+      '(diminish 'rainbow-mode))
+    (eval-after-load "magit"
+      '(diminish 'magit-auto-revert-mode " ±")))
+#+END_SRC
+
+* Set default browser
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (setq browse-url-browser-function 'browse-url-generic
+        browse-url-generic-program "conkeror")
+#+END_SRC
+
+* Remote sudo access with TRAMP
+With the following you can edit remote root files with:
+=C-x C-f /sudo:root@localhost:<path>=.
+
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (set-default 'tramp-default-proxies-alist (quote ((".*" "\\`root\\'" "/ssh:%h:"))))
+#+END_SRC
+
+* Pretty symbols
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (pretty-symbols-mode)
+#+END_SRC

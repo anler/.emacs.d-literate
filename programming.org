@@ -1,0 +1,279 @@
+* Jump to definition using tags
+Code navigation using GNU Global and Exuberant Ctags.
+See [[https://github.com/leoliu/ggtags][leoliu/ggtags]] for a complete reference and installation guide.
+
+I already have ggtags-mode listed as a dependency in my Cask file, the
+only thing left is installing GnuGlobal in the system.
+
+** Key bindings
+See [[https://github.com/leoliu/ggtags#usage][ggtags usage]] for a complete list of keybindings.
+
+| Keybinding | Command | What                           |
+|------------+---------+--------------------------------|
+| M-.        |         | Find tag.                      |
+| M-,        |         | Continue find tag.             |
+| C-c M-?    |         | Show definition in minibuffer. |
+| C-M-.      |         | Find tag matching regexp.      |
+| M-n        |         | Next match.                    |
+| M-p        |         | Previous match.                |
+| C-c M-p    |         | Previous mark.                 |
+| C-c M-n    |         | Next mark.                     |
+| M-*        |         | Pop mark.                      |
+| C-c M-DEL  |         | Delete tag files.              |
+| C-c M-b    |         | Browse as hypertext.           |
+| C-c M-j    |         | Visit project root.            | 
+
+** Installation instructions for Archlinux
+1. Install exuberant ctags:
+#+BEGIN_SRC sh
+  pacman -S ctags
+#+END_SRC
+
+2. Install GnuGlobal
+Download here: https://www.gnu.org/software/global/download.html
+Un-tar.
+cd into it.
+And install:
+#+BEGIN_SRC sh
+  ./configure --prefix=/usr/local --with-exuberant-ctags=`which ctags`
+  make
+  make installp
+#+END_SRC
+
+3. Pygments plugin for GnuGlobal
+Install Python Pip if necessary:
+#+BEGIN_SRC sh
+  pacman -S python-pip
+#+END_SRC
+
+Install Pygments if necessary:
+#+BEGIN_SRC sh
+  pip install pygments
+#+END_SRC
+
+Download Pygments plugin here: https://github.com/yoshizow/global-pygments-plugin
+cd into it and install:
+#+BEGIN_SRC sh
+  sh reconf.sh
+  ./configure --prefix=/usr/local --with-exuberant-ctags=`which ctags`
+  make
+  make install
+#+END_SRC
+
+Use the sample configuration file:
+#+BEGIN_SRC sh
+  cp sample.globalrc $HOME/.globalrc
+#+END_SRC
+
+* Treat camel case word as subwords
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (global-subword-mode)
+#+END_SRC
+
+* Auto-closing and highlighting parens
+** Highlight corresponding paren.
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (show-paren-mode)
+#+END_SRC
+
+** Auto-close paren
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (require 'smartparens-config)
+  (smartparens-global-mode)
+#+END_SRC
+
+** Special case for curly braces
+When inserting curly braces and hiting enter put the cursor in a new
+line between the braces:
+#+BEGIN_SRC text
+  {
+   |
+  }
+#+END_SRC
+
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (defun create-newline-and-enter-sexp (&rest _ignored)
+    "Open a new brace or bracket expression, with relevant newlines and indent. "
+    (newline)
+    (indent-according-to-mode)
+    (forward-line -1)
+    (indent-according-to-mode))
+
+  (sp-pair "{" nil :post-handlers '((create-newline-and-enter-sexp "RET")))
+#+END_SRC
+
+** Don't highlight text between parens.
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (setq sp-highlight-pair-overlay nil
+        sp-highlight-wrap-overlay nil
+        sp-highlight-wrap-tag-overlay nil)
+#+END_SRC
+
+* Expand region
+[[https://github.com/magnars/expand-region.el][expand-region]] - [[http://emacsrocks.com/e09.html][-demo-]]
+
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (autoload 'er/expand-region "expand-region")
+#+END_SRC
+
+* Wrap region
+[[https://github.com/rejeep/wrap-region.el][wrap-region]] for something like [[https://github.com/tpope/vim-surround][surround]] in vim:
+
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (require 'wrap-region)
+  (wrap-region-mode)
+#+END_SRC
+
+* Display trailing whitespace
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (global-whitespace-mode)
+  (setq whitespace-style '(face trailing tabs))
+#+END_SRC
+
+For removing the wrong spaces just call the command
+=whitespace-cleanup=. Here I just set it auto for all programming
+modes:
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (defun setup-programming-modes ()
+    (interactive)
+    (setq whitespace-style '(lines-tail tabs tab-mark trailing empty))
+    (add-hook 'before-save-hook 'whitespace-cleanup nil t))
+  (add-hook 'prog-mode-hook 'setup-programming-modes)
+#+END_SRC
+
+* Snippets
+[[https://github.com/capitaomorte/yasnippet][Yasnippet]] is the best snippets expansion tool for Emacs. It uses the
+same syntax as TextMate and can even import most TextMate snippets.
+
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (require 'yasnippet)
+
+  (setq yas-snippet-dirs '("~/.emacs.d/snippets")
+        yas-prompt-functions '(yas/ido-prompt yas/completing-prompt)
+        yas/triggers-in-field t
+        yas-wrap-around-region t
+        yas-verbosity 1)
+
+  (yas-global-mode 1)
+
+  (define-key yas-keymap (kbd "<return>") 'yas/exit-all-snippets)
+  (define-key yas-keymap (kbd "C-e") 'yas/goto-end-of-active-field)
+  (define-key yas-keymap (kbd "C-a") 'yas/goto-start-of-active-field)
+
+  (defun yas/goto-end-of-active-field ()
+    (interactive)
+    (let* ((snippet (car (yas--snippets-at-point)))
+           (position (yas--field-end (yas--snippet-active-field snippet))))
+      (if (= (point) position)
+          (move-end-of-line 1)
+        (goto-char position))))
+
+  (defun yas/goto-start-of-active-field ()
+    (interactive)
+    (let* ((snippet (car (yas--snippets-at-point)))
+           (position (yas--field-start (yas--snippet-active-field snippet))))
+      (if (= (point) position)
+          (move-beginning-of-line 1)
+        (goto-char position))))
+#+END_SRC
+
+* Projects
+[[https://github.com/bbatsov/projectile][Projectile]] is my tool of preference when working on a project and even
+integrates with ggtags.
+
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (require 'projectile)
+  (setq projectile-enable-caching t)
+  (projectile-global-mode)
+#+END_SRC
+
+* Git
+[[https://github.com/magit/magit][Magit]] is an excellent tool for managing git repositories from Emacs.
+
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (require 'magit)
+#+END_SRC
+
+* Searching in files with Ag
+[[https://github.com/Wilfred/ag.el][ag.el]] is an Emacs frontend for Ag, aka: the silver searcher.
+
+You need to have ag installed in your system, in archlinux you can do
+so with:
+#+BEGIN_SRC sh :tangle no
+  pacman -S the_silver_searcher
+#+END_SRC
+
+Require it:
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (require 'ag)
+#+END_SRC
+
+By default everytime you execute ag it creates a new buffer and I prefer
+to have just one ag buffer openend:
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (setq ag-reuse-buffers t
+        ag-reuse-window t)
+#+END_SRC
+
+* Diffs with ediff
+** Ignore whitespace
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (setq ediff-diff-options "-w")
+#+END_SRC
+
+** Display options as a buffer not a frame
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+#+END_SRC
+
+* Common Lisp
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (load (expand-file-name "~/quicklisp/slime-helper.el"))
+  (setq inferior-lisp-program "sbcl")
+
+  (defun setup-lisp-mode ()
+    "Configure lisp mode"
+    (interactive)
+    (paredit-mode)
+    (turn-on-eldoc-mode))
+
+  (add-hook 'lisp-mode-hook 'setup-lisp-mode)
+#+END_SRC
+
+* Emacs Lisp
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (autoload 'elisp-slime-nav-mode "elisp-slime-nav")
+
+  (defun setup-emacs-lisp-mode ()
+    "Configure emacs-lisp mode"
+    (interactive)
+    (paredit-mode)
+    (turn-on-eldoc-mode))
+
+  (add-hook 'emacs-lisp-mode-hook 'setup-emacs-lisp-mode)
+#+END_SRC
+
+* Python
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (defun setup-python-mode ()
+    "Custom command to setup python-mode"
+    (interactive)
+    (let ((max-column 99))
+      (setq python-shell-interpreter "ipython"
+            python-shell-interpreter-args ""
+            whitespace-line-column max-column
+            fill-column max-column
+            flycheck-flake8-maximum-line-length max-column
+            imenu-create-index-function #'ggtags-build-imenu-index))
+    (highlight-lines-matching-regexp "i?pdb.set_trace()")
+    (flycheck-mode)
+    (fci-mode)
+    (ggtags-mode))
+  
+  (add-hook 'python-mode-hook 'setup-python-mode)
+#+END_SRC
+
+Treat ~.jinja~ as html.
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (add-to-list 'auto-mode-alist '("\\.jinja\\'" . html-mode))
+#+END_SRC

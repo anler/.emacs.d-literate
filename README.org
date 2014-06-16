@@ -1,0 +1,77 @@
+#+STARTUP: showall
+* About
+[[file:img/emacs.png]]
+
+This mi personal Emacs configuration files written in a
+literate-programming style taught to me by my good friend [[https://github.com/mgdelacroix/][mgdelacroix]].
+
+* Init file
+:PROPERTIES:
+:tangle: ~/.emacs.d/init.el
+:END:
+=init.el= is the bootstrap file that loads the other config files.
+
+** Emacs dependency management
+I use [[https://github.com/cask/cask][Cask]] for dependency management and [[https://github.com/rdallasgray/pallet][Pallet]] as a package manager
+(everytime I install a package it adds it as a dependency to my Cask
+file).
+#+BEGIN_SRC elisp
+  (require 'cask "~/.cask/cask.el")
+  (cask-initialize)
+  (require 'pallet)
+#+END_SRC
+
+** load-org utility
+#+BEGIN_SRC elisp
+  (require 's)
+  (defun load-org (filename)
+    (let ((elisp-filename (s-replace ".org" ".el" filename))
+          (default-directory "~/.emacs.d/"))
+      (unless (file-exists-p elisp-filename)
+        (shell-command "tangle" nil nil))
+      (load-file elisp-filename)))
+#+END_SRC
+
+** Custom defined functions
+#+BEGIN_SRC elisp
+  (load-org "~/.emacs.d/defuns.org")
+#+END_SRC
+
+** General
+#+BEGIN_SRC elisp
+  (load-org "~/.emacs.d/general.org")
+#+END_SRC
+
+** Appearance
+#+BEGIN_SRC elisp
+  (load-org "~/.emacs.d/appearance.org")
+#+END_SRC
+
+** Shells
+#+BEGIN_SRC elisp
+  (load-org "~/.emacs.d/shells.org")
+#+END_SRC
+
+** Org mode
+#+BEGIN_SRC elisp
+  (load-org "~/.emacs.d/org.org")
+#+END_SRC
+
+** Programming
+#+BEGIN_SRC elisp
+  (load-org "~/.emacs.d/programming.org")
+#+END_SRC
+
+** Key bindings
+#+BEGIN_SRC elisp
+  (load-org "~/.emacs.d/keybindings.org")
+#+END_SRC
+
+** Custom file
+File used for storing customization information created through Emacs'
+customization interface (I don't keep this file under version
+control).
+#+BEGIN_SRC elisp
+  (setq custom-file "~/.emacs.d/custom.el")
+  (load custom-file 'noerror)
+#+END_SRC

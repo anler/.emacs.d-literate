@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: dunder
+# key: __
+# --
+__`(yas-choose-value '("new" "init" "del" "repr" "str" "unicode" "hash" "nonzero" "getattr" "setattr" "delattr" "getattribute" "get" "set" "delete" "slots" "dict" "weakref" "class" "metaclass" "instancecheck" "subclasscheck" "call" "len" "getitem" "setitem" "delitem" "iter" "reversed" "contains" "setslice" "delslice" "enter" "exit"))`__

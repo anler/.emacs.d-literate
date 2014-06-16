@@ -1,0 +1,56 @@
+* Table of contents							:TOC:
+ - [[#hide-scroll-bars][Hide scroll bars]]
+ - [[#hide-tool-bar][Hide tool bar]]
+ - [[#hide-menu-bar][Hide menu bar]]
+ - [[#mark-empty-lines][Mark empty lines]]
+ - [[#cycle-through-color-themes][Cycle through color themes]]
+
+* Hide scroll bars
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/appearance.el
+  (if (boundp 'scroll-bar-mode)
+      (scroll-bar-mode -1))
+#+END_SRC
+
+* Hide tool bar
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/appearance.el
+  (if (boundp 'tool-bar-mode)
+      (tool-bar-mode -1))
+#+END_SRC
+
+* Hide menu bar
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/appearance.el
+  (if (boundp 'menu-bar-mode)
+      (menu-bar-mode -1))
+#+END_SRC
+
+* Mark empty lines
+Indicate empty lines in the left fringe (exactly the same
+functionality VIM has to mark the empty lines with =~=).
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/appearance.el
+  (toggle-indicate-empty-lines)
+#+END_SRC
+
+* Cycle through color themes
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/appearance.el
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+  (defvar current-theme nil "Name of the theme being used.")
+  (defvar themes-list (make-circular-list '(default-white default-black)) "Cycle through these themes")
+  
+  (defun use-next-theme ()
+    "Use the next theme in themes-list."
+    (interactive)
+    (if current-theme
+        (my/disable-theme current-theme))
+    (my/enable-theme (pop themes-list)))
+  
+  (defun my/disable-theme (theme)
+    (unless (eq theme 'default)
+      (disable-theme theme)))
+  
+  (defun my/enable-theme (theme)
+    (unless (eq theme 'default)
+      (setq current-theme theme)
+      (load-theme current-theme t)))
+  
+  (use-next-theme)
+#+END_SRC

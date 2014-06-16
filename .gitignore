@@ -1,0 +1,11 @@
+*
+*~
+*.elc
+
+!.gitignore
+!*.org
+!img/
+!img/*.png
+!snippets/
+!snippets/**/*
+snippets/**/*.elc
