@@ -17,6 +17,9 @@ I use [[https://github.com/cask/cask][Cask]] for dependency management and [[htt
 file).
 #+BEGIN_SRC elisp
   (require 'cask "~/.cask/cask.el")
+  (add-to-list 'load-path (expand-file-name "~/elisp/org-mode/lisp"))
+  (add-to-list 'load-path (expand-file-name "~/elisp/org-mode/contrib/lisp"))
+
   (cask-initialize)
   (require 'pallet)
 #+END_SRC
