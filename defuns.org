@@ -138,16 +138,16 @@ Original command by Steve Yegge: [[[http://steve.yegge.googlepages.com/my-dot-em
 * Create scratch buffers
 Command for creating additional scratch buffers.
 #+BEGIN_SRC elisp :tangle ~/.emacs.d/defuns.el
-  (defun create-scratch-buffer ()
+  (defun create-scratch-buffer (mode)
     "Create a brand new scratch buffer."
-    (interactive)
+    (interactive "CMode: ")
     (cl-labels ((get-scratch-buffer-name (index)
                                 (let ((name (format "*scratch<%s>*" index)))
                                   (if (null (get-buffer name))
                                       name
                                     (get-scratch-buffer-name (1+ index))))))
       (switch-to-buffer (get-buffer-create (get-scratch-buffer-name 1)))
-      (lisp-interaction-mode)))
+      (call-interactively mode)))
 #+END_SRC
 
 * Duplicate line
@@ -185,4 +185,12 @@ Command for creating additional scratch buffers.
     (other-window (- (prefix-numeric-value count))))
   
   (global-set-key (kbd "C-x C-o") 'other-window-backward)
+#+END_SRC
+
+* Show which function
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/defuns.el
+(defun show-which-function ()
+  "Show the function definition the cursor is in the echo area"
+  (interactive)
+  (message (which-function)))
 #+END_SRC

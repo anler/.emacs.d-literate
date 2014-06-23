@@ -250,7 +250,20 @@ While searching
 #+END_SRC
 
 * idomenu
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/keybindings.el
   (autoload 'idomenu "idomenu")
   (global-set-key (kbd "C-.") 'idomenu)
+#+END_SRC
+
+* Which function
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/keybindings.el
+  (global-set-key (kbd "C-c C-q") 'show-which-function)
+#+END_SRC
+* Create scratch buffer
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "C-c s") 'create-scratch-buffer)
+#+END_SRC
+* Duplicate line
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "C-c P") 'duplicate-line)
 #+END_SRC

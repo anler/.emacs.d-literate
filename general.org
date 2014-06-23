@@ -244,3 +244,19 @@ With the following you can edit remote root files with:
 #+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
   (pretty-symbols-mode)
 #+END_SRC
+* Emacs Lisp Sources
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/general.el
+  (define-key 'help-command (kbd "C-l") 'find-library)
+  (define-key 'help-command (kbd "C-f") 'find-function)
+  (define-key 'help-command (kbd "C-k") 'find-function-on-key)
+  (define-key 'help-command (kbd "C-v") 'find-variable)
+
+  (require 'elisp-slime-nav)
+  (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook lisp-interaction-mode-hook))
+    (add-hook hook 'elisp-slime-nav-mode))
+#+END_SRC
+
+Once this is done you’ll be able to jump to the source of the Emacs
+Lisp object at point (function or variable) with =M-.= jump back with
+=M-,=. You can also see the description of the object at point using 
+=C-c C-d= or =C-c C-d d=.
