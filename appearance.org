@@ -1,9 +1,18 @@
 * Table of contents							:TOC:
+ - [[#inhibit-startup-screen][Inhibit startup screen]]
  - [[#hide-scroll-bars][Hide scroll bars]]
  - [[#hide-tool-bar][Hide tool bar]]
  - [[#hide-menu-bar][Hide menu bar]]
+ - [[#disable-cursor-blink][Disable cursor blink]]
+ - [[#highlight-current-line][Highlight current line]]
  - [[#mark-empty-lines][Mark empty lines]]
  - [[#cycle-through-color-themes][Cycle through color themes]]
+ - [[#default-face][Default face]]
+
+* Inhibit startup screen
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/appearance.el
+  (setq inhibit-startup-message t)
+#+END_SRC
 
 * Hide scroll bars
 #+BEGIN_SRC elisp :tangle ~/.emacs.d/appearance.el
@@ -23,6 +32,15 @@
       (menu-bar-mode -1))
 #+END_SRC
 
+* Disable cursor blink
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/appearance.el
+  (blink-cursor-mode -1)
+#+END_SRC
+
+* Highlight current line
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/appearance.el
+  (global-hl-line-mode)
+#+END_SRC
 * Mark empty lines
 Indicate empty lines in the left fringe (exactly the same
 functionality VIM has to mark the empty lines with =~=).
@@ -34,7 +52,7 @@ functionality VIM has to mark the empty lines with =~=).
 #+BEGIN_SRC elisp :tangle ~/.emacs.d/appearance.el
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
   (defvar current-theme nil "Name of the theme being used.")
-  (defvar themes-list (make-circular-list '(default-white default-black)) "Cycle through these themes")
+  (defvar themes-list (make-circular-list '(default-black default-white)) "Cycle through these themes")
   
   (defun use-next-theme ()
     "Use the next theme in themes-list."
@@ -53,4 +71,8 @@ functionality VIM has to mark the empty lines with =~=).
       (load-theme current-theme t)))
   
   (use-next-theme)
+#+END_SRC
+* Default face
+#+BEGIN_SRC elisp
+  (set-face-attribute 'default nil :height 112)
 #+END_SRC
