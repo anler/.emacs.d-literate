@@ -24,12 +24,12 @@ file).
 ** load-org utility
 #+BEGIN_SRC elisp
   (require 's)
-  (defun load-org (filename)
+  (defun load-org (filename &optional noerror)
     (let ((elisp-filename (s-replace ".org" ".el" filename))
           (default-directory "~/.emacs.d/"))
       (unless (file-exists-p elisp-filename)
         (shell-command "tangle" nil nil))
-      (load-file elisp-filename)))
+      (load elisp-filename noerror)))
 #+END_SRC
 
 ** Custom defined functions
@@ -65,6 +65,11 @@ file).
 ** Key bindings
 #+BEGIN_SRC elisp
   (load-org "~/.emacs.d/keybindings.org")
+#+END_SRC
+
+** Misc
+#+BEGIN_SRC elisp
+  (load-org "~/.emacs.d/misc.org" 'noerror)
 #+END_SRC
 
 ** Custom file

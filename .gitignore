@@ -9,3 +9,4 @@
 !snippets/
 !snippets/**/*
 snippets/**/*.elc
+/misc.org
