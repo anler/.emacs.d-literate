@@ -262,18 +262,31 @@ to have just one ag buffer openend:
       (setq python-shell-interpreter "ipython"
             python-shell-interpreter-args ""
             whitespace-line-column max-column
+            whitespace-style (append whitespace-style '(face lines-tail))
             fill-column max-column
             flycheck-flake8-maximum-line-length max-column
             imenu-create-index-function #'ggtags-build-imenu-index))
     (highlight-lines-matching-regexp "i?pdb.set_trace()")
     (flycheck-mode)
-    (fci-mode)
     (ggtags-mode))
-  
+
   (add-hook 'python-mode-hook 'setup-python-mode)
 #+END_SRC
 
 Treat ~.jinja~ as html.
 #+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
   (add-to-list 'auto-mode-alist '("\\.jinja\\'" . html-mode))
+#+END_SRC
+* Pretty symbols
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (add-hook 'prog-mode-hook #'pretty-symbols-mode)
+#+END_SRC
+* Haskell
+#+BEGIN_SRC elisp
+  (defun setup-haskell-mode ()
+    (interactive)
+    (haskell-doc-mode)
+    (haskell-indentation-mode))
+
+  (add-hook 'haskell-mode-hook 'setup-haskell-mode)
 #+END_SRC
