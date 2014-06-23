@@ -290,3 +290,11 @@ Treat ~.jinja~ as html.
 
   (add-hook 'haskell-mode-hook 'setup-haskell-mode)
 #+END_SRC
+* Scheme
+Set the command used to run scheme. In my case I'm using [[https://aur.archlinux.org/packages/mit-scheme/][mit-scheme from aur]].
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/programming.el
+  (setq scheme-program-name "mit-scheme")
+#+END_SRC
+
+The execute =M-x run-scheme= to launch a scheme interpreter.
+Use =C-x C-e= from a scheme buffer to send the expression to the interpreter.
