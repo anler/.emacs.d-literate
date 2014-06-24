@@ -189,8 +189,10 @@ Command for creating additional scratch buffers.
 
 * Show which function
 #+BEGIN_SRC elisp :tangle ~/.emacs.d/defuns.el
-(defun show-which-function ()
-  "Show the function definition the cursor is in the echo area"
-  (interactive)
-  (message (which-function)))
+  (autoload 'which-function "which-func")
+
+  (defun show-which-function ()
+    "Show the function definition the cursor is in the echo area"
+    (interactive)
+    (message (which-function)))
 #+END_SRC
