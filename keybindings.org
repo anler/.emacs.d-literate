@@ -237,10 +237,10 @@ While searching
 * Git
 
 #+BEGIN_SRC elisp :tangle ~/.emacs.d/keybindings.el
-  (global-set-key (kbd "C-c g p") 'git-messenger:popup-message)
-  (global-set-key (kbd "C-c g s") 'magit-status)
-  (global-set-key (kbd "C-c g b") 'magit-blame-mode)
-  (global-set-key (kbd "C-c g d") 'magit-diff)
+  (global-set-key (kbd "C-c m m") 'git-messenger:popup-message)
+  (global-set-key (kbd "C-c m s") 'magit-status)
+  (global-set-key (kbd "C-c m b") 'magit-blame-mode)
+  (global-set-key (kbd "C-c m d") 'magit-diff)
 #+END_SRC
 
 * Org
@@ -260,10 +260,10 @@ While searching
   (global-set-key (kbd "C-c C-q") 'show-which-function)
 #+END_SRC
 * Create scratch buffer
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/keybindings.el
   (global-set-key (kbd "C-c s") 'create-scratch-buffer)
 #+END_SRC
 * Duplicate line
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/keybindings.el
   (global-set-key (kbd "C-c P") 'duplicate-line)
 #+END_SRC
