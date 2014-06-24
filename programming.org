@@ -1,3 +1,30 @@
+* Table of Contents                                                     :TOC:
+ - [[#jump-to-definition-using-tags][Jump to definition using tags]]
+     - [[#key-bindings][Key bindings]]
+     - [[#installation-instructions-for-archlinux][Installation instructions for Archlinux]]
+ - [[#treat-camel-case-word-as-subwords][Treat camel case word as subwords]]
+ - [[#auto-closing-and-highlighting-parens][Auto-closing and highlighting parens]]
+     - [[#highlight-corresponding-paren][Highlight corresponding paren.]]
+     - [[#auto-close-paren][Auto-close paren]]
+     - [[#special-case-for-curly-braces][Special case for curly braces]]
+     - [[#dont-highlight-text-between-parens][Don't highlight text between parens.]]
+ - [[#expand-region][Expand region]]
+ - [[#wrap-region][Wrap region]]
+ - [[#display-trailing-whitespace][Display trailing whitespace]]
+ - [[#snippets][Snippets]]
+ - [[#projects][Projects]]
+ - [[#git][Git]]
+ - [[#searching-in-files-with-ag][Searching in files with Ag]]
+ - [[#diffs-with-ediff][Diffs with ediff]]
+     - [[#ignore-whitespace][Ignore whitespace]]
+     - [[#display-options-as-a-buffer-not-a-frame][Display options as a buffer not a frame]]
+ - [[#common-lisp][Common Lisp]]
+ - [[#emacs-lisp][Emacs Lisp]]
+ - [[#python][Python]]
+ - [[#pretty-symbols][Pretty symbols]]
+ - [[#haskell][Haskell]]
+ - [[#scheme][Scheme]]
+
 * Jump to definition using tags
 Code navigation using GNU Global and Exuberant Ctags.
 See [[https://github.com/leoliu/ggtags][leoliu/ggtags]] for a complete reference and installation guide.
