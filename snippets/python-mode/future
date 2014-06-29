@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: future
-# key: future
-# --
-from __future__ import `(yas-choose-value '("print_function" "division" "absolute_import" "unicode_literals" "nested_scopes" "generatos" "with_statement"))`

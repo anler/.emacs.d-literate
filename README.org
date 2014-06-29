@@ -5,13 +5,139 @@
 This mi personal Emacs configuration files written in a
 literate-programming style taught to me by my good friend [[https://github.com/mgdelacroix/][mgdelacroix]].
 
-* Init file
-:PROPERTIES:
-:tangle: ~/.emacs.d/init.el
-:END:
-=init.el= is the bootstrap file that loads the other config files.
+* Table of Contents                                                     :TOC:
+ - [[#about][About]]
+ - [[#emacs-dependency-management][Emacs dependency management]]
+ - [[#custom-defined-functions][Custom defined functions]]
+     - [[#compose-functions][Compose functions]]
+     - [[#create-circular-lists][Create circular lists]]
+     - [[#comment-lines][Comment lines]]
+     - [[#scroll-the-buffer][Scroll the buffer]]
+     - [[#join-lines][Join lines]]
+     - [[#kill-buffer-and-delete-its-file][Kill buffer and delete its file]]
+     - [[#rename-buffer-and-its-file][Rename buffer and its file]]
+     - [[#extend-eval-last-sexp-extended][Extend eval-last-sexp extended]]
+     - [[#partial-functions][Partial functions]]
+     - [[#create-scratch-buffers][Create scratch buffers]]
+     - [[#duplicate-line][Duplicate line]]
+     - [[#quit-other-window][Quit other window]]
+     - [[#select-other-window-backward][Select other window backward]]
+     - [[#show-which-function][Show which function]]
+ - [[#general][General]]
+     - [[#display-column-number-in-the-modeline][Display column number in the modeline]]
+     - [[#display-buffer-size-in-the-modeline][Display buffer size in the modeline]]
+     - [[#echo-keystrokes-earlier][Echo keystrokes earlier]]
+     - [[#put-backups-in-another-place][Put backups in another place]]
+     - [[#replace-selected-text-when-start-typing][Replace selected text when start typing]]
+     - [[#update-buffer-contents-if-they-are-externally-changed][Update buffer contents if they are externally changed]]
+     - [[#never-convert-spaces-to-tabs][Never convert spaces to tabs]]
+     - [[#enable-recent-files-mode-file--open-recent][Enable recent files mode (File > Open Recent)]]
+     - [[#increase-memory-threshold-for-garbage-collection][Increase memory threshold for garbage collection]]
+     - [[#name-buffers-with-same-filenames-other-than-buffern][Name buffers with same filenames other than buffer<N>]]
+     - [[#confirmation-when-closing-emacs][Confirmation when closing Emacs]]
+     - [[#start-an-emacs-server-on-startup][Start an Emacs server on startup]]
+     - [[#enable-ido-mode][Enable ido-mode]]
+     - [[#use-fuzzy-matching-by-default][Use fuzzy-matching by default]]
+     - [[#use-it-in-all-possible-places][Use it in all possible places]]
+     - [[#use-a-vertical-interface][Use a vertical interface]]
+     - [[#ido-interface-when-using-completion-at-point][Ido interface when using ~completion-at-point~.]]
+     - [[#better-help-with-discoverel][Better help with discover.el]]
+     - [[#disable-transient-mark-mode][Disable transient-mark-mode]]
+     - [[#keep-abbrev-expansion-predictable][Keep abbrev expansion predictable]]
+     - [[#spice-info-mode][Spice info mode]]
+     - [[#open-really-large-files-with-vlf][Open really large files with vlf]]
+     - [[#easily-copy-from-one-dired-split-to-another][Easily copy from one dired split to another]]
+     - [[#create-a-dired-file-with-][Create a dired file with =|=]]
+     - [[#use-mykie-for-extending-keybindings][Use mykie for extending keybindings]]
+     - [[#diminish-the-mode-line][Diminish the mode line]]
+     - [[#set-default-browser][Set default browser]]
+     - [[#remote-sudo-access-with-tramp][Remote sudo access with TRAMP]]
+     - [[#pretty-symbols][Pretty symbols]]
+     - [[#emacs-lisp-sources][Emacs Lisp Sources]]
+     - [[#hunspell-causing-emacs-to-hang][Hunspell causing emacs to hang]]
+ - [[#appearance][Appearance]]
+     - [[#inhibit-startup-screen][Inhibit startup screen]]
+     - [[#hide-scroll-bars][Hide scroll bars]]
+     - [[#hide-tool-bar][Hide tool bar]]
+     - [[#hide-menu-bar][Hide menu bar]]
+     - [[#disable-cursor-blink][Disable cursor blink]]
+     - [[#mark-empty-lines][Mark empty lines]]
+     - [[#cycle-through-color-themes][Cycle through color themes]]
+     - [[#default-face][Default face]]
+ - [[#shells][Shells]]
+     - [[#eshell-elisp-shell][Eshell (Elisp Shell)]]
+     - [[#config-inside-emacs][Config inside Emacs]]
+     - [[#config-outside-emacs][Config outside Emacs]]
+     - [[#shell][Shell]]
+     - [[#config-inside-emacs][Config inside Emacs]]
+     - [[#config-outside-emacs][Config outside Emacs]]
+     - [[#terminal][Terminal]]
+     - [[#executing-shell-commands][Executing shell commands]]
+ - [[#org-mode][Org mode]]
+     - [[#colorize-code-blocks][Colorize code blocks]]
+     - [[#display-inline-images][Display inline images]]
+     - [[#export-latex-fragments][Export LaTeX fragments]]
+     - [[#more-headlines-to-export][More headlines to export]]
+     - [[#set-org-files-directory][Set org files directory]]
+     - [[#set-notes-file][Set notes file]]
+     - [[#activate-babel-languages][Activate babel languages]]
+     - [[#export-code-blocks-with-colors][Export code blocks with colors]]
+     - [[#ditaa-executable-path][Ditaa executable path]]
+     - [[#encrypting][Encrypting]]
+     - [[#personal-blog][Personal blog]]
+ - [[#programming][Programming]]
+     - [[#jump-to-definition-using-tags][Jump to definition using tags]]
+     - [[#key-bindings][Key bindings]]
+     - [[#installation-instructions-for-archlinux][Installation instructions for Archlinux]]
+     - [[#treat-camel-case-word-as-subwords][Treat camel case word as subwords]]
+     - [[#auto-closing-and-highlighting-parens][Auto-closing and highlighting parens]]
+     - [[#highlight-corresponding-paren][Highlight corresponding paren.]]
+     - [[#auto-close-paren][Auto-close paren]]
+     - [[#special-case-for-curly-braces][Special case for curly braces]]
+     - [[#dont-highlight-text-between-parens][Don't highlight text between parens.]]
+     - [[#expand-region][Expand region]]
+     - [[#wrap-region][Wrap region]]
+     - [[#display-trailing-whitespace][Display trailing whitespace]]
+     - [[#snippets][Snippets]]
+     - [[#projects][Projects]]
+     - [[#git][Git]]
+     - [[#searching-in-files-with-ag][Searching in files with Ag]]
+     - [[#diffs-with-ediff][Diffs with ediff]]
+     - [[#ignore-whitespace][Ignore whitespace]]
+     - [[#display-options-as-a-buffer-not-a-frame][Display options as a buffer not a frame]]
+     - [[#common-lisp][Common Lisp]]
+     - [[#emacs-lisp][Emacs Lisp]]
+     - [[#python][Python]]
+     - [[#pretty-symbols][Pretty symbols]]
+     - [[#haskell][Haskell]]
+     - [[#scheme][Scheme]]
+     - [[#html][HTML]]
+ - [[#key-bindings][Key bindings]]
+     - [[#windows][Windows]]
+     - [[#transpose-chars-or-region][Transpose chars or region]]
+     - [[#change-theme][Change theme]]
+     - [[#evaluating-sexps][Evaluating Sexps]]
+     - [[#expand-region][Expand region]]
+     - [[#commentuncomment-lineregion][Comment/Uncomment line/region]]
+     - [[#search][Search]]
+     - [[#search-in-other][Search in other]]
+     - [[#better-m-x-using-smex][Better ~M-x~ using smex]]
+     - [[#multiple-cursors][Multiple cursors]]
+     - [[#jump-to-characters][Jump to characters]]
+     - [[#query-replace-using-regexps][Query replace using regexps]]
+     - [[#dired][Dired]]
+     - [[#scroll-with-arrows][Scroll with arrows]]
+     - [[#join-lines-a-la-vim][Join lines a la vim]]
+     - [[#kill-buffer-and-file][Kill buffer and file]]
+     - [[#git][Git]]
+     - [[#org][Org]]
+     - [[#idomenu][idomenu]]
+     - [[#which-function][Which function]]
+     - [[#create-scratch-buffer][Create scratch buffer]]
+     - [[#duplicate-line][Duplicate line]]
+ - [[#emacs-customize-custom-file][Emacs' customize custom file]]
 
-** Emacs dependency management
+* Emacs dependency management
 I use [[https://github.com/cask/cask][Cask]] for dependency management and [[https://github.com/rdallasgray/pallet][Pallet]] as a package manager
 (everytime I install a package it adds it as a dependency to my Cask
 file).
@@ -24,58 +150,1322 @@ file).
   (require 'pallet)
 #+END_SRC
 
-** load-org utility
+* Custom defined functions
+** Compose functions
+Taken from [[http://nullprogram.com/blog/2010/11/15/][nullprogram]].
 #+BEGIN_SRC elisp
-  (require 's)
-  (defun load-org (filename &optional noerror)
-    (let ((elisp-filename (s-replace ".org" ".el" filename))
-          (default-directory "~/.emacs.d/"))
-      (unless (file-exists-p elisp-filename)
-        (shell-command "tangle" nil nil))
-      (load elisp-filename noerror)))
+  (defun compose (&rest funs)
+    "Return function composed of FUNS."
+    (lexical-let ((lex-funs funs))
+      (lambda (&rest args)
+        (reduce 'funcall (butlast lex-funs)
+                :from-end t
+                :initial-value (apply (car (last lex-funs)) args)))))
 #+END_SRC
 
-** Custom defined functions
+** Create circular lists
 #+BEGIN_SRC elisp
-  (load-org "~/.emacs.d/defuns.org")
+  (defun make-circular-list (list)
+    "Create a circular version of list."
+    (setf (cdr (last list)) list)
+    list)
 #+END_SRC
 
-** General
+** Comment lines
 #+BEGIN_SRC elisp
-  (load-org "~/.emacs.d/general.org")
+  (defun comment-or-uncomment ()
+    "Comment or uncomment current line or region if there's a region active."
+    (interactive)
+    (let ((start (line-beginning-position))
+          (end (line-end-position)))
+      (when (region-active-p)
+        (setq start (save-excursion
+                      (goto-char (region-beginning))
+                      (beginning-of-line)
+                      (point))
+              end (save-excursion
+                    (goto-char (region-end))
+                    (end-of-line)
+                    (point))))
+      (comment-or-uncomment-region start end)))
 #+END_SRC
 
-** Appearance
+** Scroll the buffer
+The exact same functionality VIM has for ~C-e~ and ~C-y~ in normal mode:
 #+BEGIN_SRC elisp
-  (load-org "~/.emacs.d/appearance.org")
+  (defun scroll-up-one-line-command ()
+    "Scroll text of selected window upward 1 line."
+    (interactive)
+    (scroll-up-command 1)
+    (next-line))
+
+  (defun scroll-down-one-line-command ()
+    "Scroll text of selected window downward 1 line."
+    (interactive)
+    (scroll-down-command 1)
+    (previous-line))
 #+END_SRC
 
-** Shells
+** Join lines
 #+BEGIN_SRC elisp
-  (load-org "~/.emacs.d/shells.org")
+  (defun join-line-below ()
+    "Join line bellow current line."
+    (interactive)
+    (join-line -1))
 #+END_SRC
 
-** Org mode
+** Kill buffer and delete its file
+Modified version of one found in: [[http://tuxicity.se/emacs/elisp
 #+BEGIN_SRC elisp
-  (load-org "~/.emacs.d/org.org")
+  (defun kill-buffer-and-file (buffer-name)
+    "Removes file connected to current buffer and kills buffer."
+    (interactive "bKill buffer and its file:")
+    (let* ((buffer (get-buffer buffer-name))
+           (filename (buffer-file-name buffer)))
+      (if (not (and filename (file-exists-p filename)))
+          (error "Buffer '%s' is not visiting a file!" buffer-name)
+        (delete-file filename)
+        (kill-buffer buffer))))
 #+END_SRC
 
-** Programming
+** Rename buffer and its file
+Original command by Steve Yegge: [[[http://steve.yegge.googlepages.com/my-dot-emacs-file%0A][link]]].
 #+BEGIN_SRC elisp
-  (load-org "~/.emacs.d/programming.org")
+  (defun rename-buffer-and-file (new-name)
+    "Renames both current buffer and file it's visiting to NEW-NAME."
+    (interactive "sNew name for buffer and file: ")
+    (let ((name (buffer-name))
+          (filename (buffer-file-name)))
+      (if (not filename)
+          (message "Buffer '%s' is not visiting a file!" name)
+        (if (get-buffer new-name)
+            (message "A buffer named '%s' already exists!" new-name)
+          (rename-file filename new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil)))))
 #+END_SRC
+
+** Extend eval-last-sexp extended
+#+BEGIN_SRC elisp
+  (defun ext/eval-last-sexp (arg)
+    "Extension over eval-last-sexp that replaces the last sexp with the
+  result if called with the universal argument twice."
+    (interactive "P")
+    (if (= 16 (prefix-numeric-value arg))
+        (replace-last-sexp)
+      (eval-last-sexp arg)))
+#+END_SRC
+
+#+BEGIN_SRC elisp
+  (defun replace-last-sexp ()
+    "Eval last sexp and replaces it in the buffer with its result."
+    (interactive)
+    (let ((result (eval (preceding-sexp))))
+      (kill-sexp -1)
+      (insert (format "%s" result))))
+#+END_SRC
+
+** Partial functions
+#+BEGIN_SRC elisp
+  (defun partial (function &rest args)
+    (lambda (&rest more-args)
+      (apply function (append args more-args))))
+#+END_SRC
+
+** Create scratch buffers
+Command for creating additional scratch buffers.
+#+BEGIN_SRC elisp
+  (defun create-scratch-buffer (mode)
+    "Create a brand new scratch buffer."
+    (interactive "CMode: ")
+    (cl-labels ((get-scratch-buffer-name (index)
+                                (let ((name (format "*scratch<%s>*" index)))
+                                  (if (null (get-buffer name))
+                                      name
+                                    (get-scratch-buffer-name (1+ index))))))
+      (switch-to-buffer (get-buffer-create (get-scratch-buffer-name 1)))
+      (call-interactively mode)))
+#+END_SRC
+
+** Duplicate line
+#+BEGIN_SRC elisp
+  (defun duplicate-line ()
+    "Duplicate the line below the cursor and move the cursor 
+  to the duplicated line."
+    (interactive)
+    (kill-ring-save (line-beginning-position)
+                    (line-end-position))
+    (save-excursion
+      (end-of-line)
+      (open-line 1)
+      (next-line 1)
+      (yank))
+    (next-line 1))
+#+END_SRC
+
+** Quit other window
+#+BEGIN_SRC elisp
+  (defun quit-other-window ()
+    "Send `quit-window' in the window returned by `other-window'"
+    (interactive)
+    (other-window 1)
+    (quit-window))
+#+END_SRC
+
+** Select other window backward
+#+BEGIN_SRC elisp
+  (defun other-window-backward (count)
+    "Select another window in anti-cyclic ordering of windows.
+  COUNT specifies the number of windows to skip, starting with the
+  selected window, before making the selection."
+    (interactive "P")
+    (other-window (- (prefix-numeric-value count))))
+  
+  (global-set-key (kbd "C-x C-o") 'other-window-backward)
+#+END_SRC
+
+** Show which function
+#+BEGIN_SRC elisp
+  (autoload 'which-function "which-func")
+  (defun show-which-function ()
+    "Show the function definition the cursor is in the echo area"
+    (interactive)
+    (message (which-function)))
+#+END_SRC
+
+* General
+** Display column number in the modeline
+#+BEGIN_SRC elisp
+  (setq column-number-mode t)
+#+END_SRC
+
+** Display buffer size in the modeline
+#+BEGIN_SRC elisp
+  (setq size-indication-mode t)
+#+END_SRC
+
+** Echo keystrokes earlier
+#+BEGIN_SRC elisp
+  (setq echo-keystrokes 0.2)
+#+END_SRC
+
+** Put backups in another place
+#+BEGIN_SRC elisp
+  (setq backup-directory-alist `(("." . "~/.emacs.d/saves")))
+#+END_SRC
+
+Also do the backup by copying the file (slower but safer):
+#+BEGIN_SRC elisp
+  (setq backup-by-copying t)
+#+END_SRC
+
+delete all versions automatically:
+#+BEGIN_SRC elisp
+  (setq delete-old-versions t)
+#+END_SRC
+
+and add version number to backup name:
+#+BEGIN_SRC elisp
+  (setq version-control t)
+#+END_SRC
+
+** Replace selected text when start typing
+#+BEGIN_SRC elisp
+  (delete-selection-mode)
+#+END_SRC
+
+** Update buffer contents if they are externally changed
+#+BEGIN_SRC elisp
+  (global-auto-revert-mode)
+  (setq auto-revert-verbose nil)
+#+END_SRC
+
+** Never convert spaces to tabs
+Emacs likes to do this whenever it can.
+#+BEGIN_SRC elisp
+  (set-default 'indent-tabs-mode nil)
+#+END_SRC
+
+** Enable recent files mode (File > Open Recent)
+#+BEGIN_SRC elisp
+  (recentf-mode)
+#+END_SRC
+
+** Increase memory threshold for garbage collection
+As [[https://github.com/magnars/][Magnar Sveen]] said:
+
+#+BEGIN_QUOTE
+Don't be so stingy on the memory, we have lots now. It's the distant future.
+#+END_QUOTE
+
+#+BEGIN_SRC elisp
+  (setq gc-cons-threshold 20000000)
+#+END_SRC
+
+** Name buffers with same filenames other than buffer<N>
+#+BEGIN_SRC elisp
+  (require 'uniquify)
+  (setq uniquify-buffer-name-style 'post-forward)
+#+END_SRC
+
+** Confirmation when closing Emacs
+I do this very often, this is my insurance.
+#+BEGIN_SRC elisp
+  (setq confirm-kill-emacs 'yes-or-no-p)
+#+END_SRC
+
+** Start an Emacs server on startup
+#+BEGIN_SRC elisp
+  (require 'server)
+  (unless (server-running-p)
+      (server-mode))
+#+END_SRC
+
+** Enable ido-mode
+~ido-mode~ (Interactively DO things) is a mode that let's you work
+with files and buffer more effectively giving you auto-completion
+for buffer and file names.
+
+#+BEGIN_SRC elisp
+  (ido-mode)
+#+END_SRC
+
+** Use fuzzy-matching by default
+#+BEGIN_SRC elisp
+  (setq ido-enable-flex-matching t)
+#+END_SRC
+
+** Use it in all possible places
+#+BEGIN_SRC elisp
+  (ido-everywhere)
+#+END_SRC
+[[file:img/ido.gif]]
+
+** Use a vertical interface
+#+BEGIN_SRC elisp
+  (ido-vertical-mode)
+#+END_SRC
+[[file:img/ido-vertical-mode.gif]]
+
+** Ido interface when using ~completion-at-point~.
+#+BEGIN_SRC elisp
+  (ido-at-point-mode)
+#+END_SRC
+[[file:img/ido-at-point.gif]]
+
+** Better help with discover.el
+See [[http://www.masteringemacs.org/articles/2013/12/21/discoverel-discover-emacs-context-menus/][discover.el]].
+#+BEGIN_SRC elisp
+  (require 'discover)
+  (global-discover-mode)
+#+END_SRC
+
+** Disable transient-mark-mode
+Disable ~transient-mark-mode~ to use ~C-x C-x~ without activating the
+region:
+#+BEGIN_SRC elisp
+  (transient-mark-mode -1)
+#+END_SRC
+
+** Keep abbrev expansion predictable
+#+BEGIN_SRC elisp
+  (setq dabbrev-case-fold-search nil)
+#+END_SRC
+
+** Spice info mode
+#+BEGIN_SRC elisp
+  (eval-after-load "info" '(require 'info+))
+#+END_SRC
+
+** Open really large files with vlf
+#+BEGIN_SRC elisp
+  (require 'vlf-integrate)
+#+END_SRC
+
+** Easily copy from one dired split to another
+#+BEGIN_SRC elisp
+(setq dired-dwim-target t)
+#+END_SRC
+
+** Create a dired file with =|=
+#+BEGIN_SRC elisp
+  (require 'dired)
+  
+  (defun dired-create-file (filename)
+    "Create FILENAME from Dired in if not exists.
+  If FILENAME already exists do nothing."
+    (interactive "FCreate file: ")
+    (shell-command (format "touch %s" filename))
+    (when (file-exists-p filename)
+      (dired-add-file filename)
+      (dired-move-to-filename)))
+  (define-key dired-mode-map "|" 'dired-create-file)
+#+END_SRC
+
+** Use mykie for extending keybindings
+#+BEGIN_SRC elisp
+  (require 'mykie)
+  (setq mykie:use-major-mode-key-override t)
+  (mykie:initialize)
+#+END_SRC
+
+** Diminish the mode line
+#+BEGIN_SRC elisp
+  (when (require 'diminish nil 'noerror)
+    (eval-after-load "company"
+        '(diminish 'company-mode))
+    (eval-after-load "abbrev"
+      '(diminish 'abbrev-mode))
+    (eval-after-load "projectile"
+      '(diminish 'projectile-mode))
+    (eval-after-load "whitespace"
+      '(diminish 'global-whitespace-mode))
+    (eval-after-load "smartparens"
+      '(diminish 'smartparens-mode))
+    (eval-after-load "paredit"
+      '(diminish 'paredit-mode))
+    (eval-after-load "eldoc"
+      '(diminish 'eldoc-mode))
+    (eval-after-load "rainbow-mode"
+      '(diminish 'rainbow-mode))
+    (eval-after-load "magit"
+      '(diminish 'magit-auto-revert-mode " ±")))
+#+END_SRC
+
+** Set default browser
+#+BEGIN_SRC elisp
+  (setq browse-url-browser-function 'browse-url-generic
+        browse-url-generic-program "conkeror")
+#+END_SRC
+
+** Remote sudo access with TRAMP
+With the following you can edit remote root files with:
+=C-x C-f /sudo:root@localhost:<path>=.
+
+#+BEGIN_SRC elisp
+  (set-default 'tramp-default-proxies-alist (quote ((".*" "\\`root\\'" "/ssh:%h:"))))
+#+END_SRC
+
+** Pretty symbols
+#+BEGIN_SRC elisp
+  (pretty-symbols-mode)
+#+END_SRC
+** Emacs Lisp Sources
+#+BEGIN_SRC elisp
+  (define-key 'help-command (kbd "C-l") 'find-library)
+  (define-key 'help-command (kbd "C-f") 'find-function)
+  (define-key 'help-command (kbd "C-k") 'find-function-on-key)
+  (define-key 'help-command (kbd "C-v") 'find-variable)
+
+  (require 'elisp-slime-nav)
+  (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook lisp-interaction-mode-hook))
+    (add-hook hook 'elisp-slime-nav-mode))
+#+END_SRC
+
+Once this is done you’ll be able to jump to the source of the Emacs
+Lisp object at point (function or variable) with =M-.= jump back with
+=M-,=. You can also see the description of the object at point using 
+=C-c C-d= or =C-c C-d d=.
+** Hunspell causing emacs to hang
+#+BEGIN_SRC elisp
+  (setq-default ispell-program-name "aspell")
+#+END_SRC
+
+* Appearance
+** Inhibit startup screen
+#+BEGIN_SRC elisp
+  (setq inhibit-startup-message t)
+#+END_SRC
+
+** Hide scroll bars
+#+BEGIN_SRC elisp
+  (if (boundp 'scroll-bar-mode)
+      (scroll-bar-mode -1))
+#+END_SRC
+
+** Hide tool bar
+#+BEGIN_SRC elisp
+  (if (boundp 'tool-bar-mode)
+      (tool-bar-mode -1))
+#+END_SRC
+
+** Hide menu bar
+#+BEGIN_SRC elisp
+  (if (boundp 'menu-bar-mode)
+      (menu-bar-mode -1))
+#+END_SRC
+
+** Disable cursor blink
+#+BEGIN_SRC elisp
+  (blink-cursor-mode -1)
+#+END_SRC
+
+** Mark empty lines
+Indicate empty lines in the left fringe (exactly the same
+functionality VIM has to mark the empty lines with =~=).
+#+BEGIN_SRC elisp
+  (toggle-indicate-empty-lines)
+#+END_SRC
+
+** Cycle through color themes
+#+BEGIN_SRC elisp
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+  (defvar current-theme nil "Name of the theme being used.")
+  (defvar themes-list (make-circular-list '(bubbleberry default-black default-white)) "Cycle through these themes")
+  
+  (defun use-next-theme ()
+    "Use the next theme in themes-list."
+    (interactive)
+    (if current-theme
+        (my/disable-theme current-theme))
+    (my/enable-theme (pop themes-list)))
+  
+  (defun my/disable-theme (theme)
+    (unless (eq theme 'default)
+      (disable-theme theme)))
+  
+  (defun my/enable-theme (theme)
+    (unless (eq theme 'default)
+      (setq current-theme theme)
+      (load-theme current-theme t)))
+  
+  (use-next-theme)
+#+END_SRC
+** Default face
+#+BEGIN_SRC elisp
+  (set-face-attribute 'default nil :height 112)
+#+END_SRC
+
+* Shells
+** Eshell (Elisp Shell)
+
+| M-r     |         | Search backwards for a command by regexp.      |
+| M-s     |         | Search forwards for a command by regexp.       |
+| M-p     |         | Previous command in history.                   |
+| M-n     |         | Next command in history.                       |
+| C-c C-p |         | Jump to previous command.                      |
+| C-c C-n |         | Jump to next command.                          |
+| C-c M-r |         | Jump to previous instances of current command. |
+| C-c M-s |         | Jump to next instances of current command.     |
+| C-c M-b |         | Insert printed buffer name at point.           |
+| C-c M-i |         | Insert printed process name at point.          |
+| C-c M-v |         | Insert and environment variable at point.      |
+| C-c M-d |         | Toggle between direct/delayed input.           |
+History Interaction  
+| !!       |   | Repeat last command.                                |
+| !ls      |   | Repeat last command beginning with ls.              |
+| !?ls     |   | Repeat last command containing ls.                  |
+| !ls:n    |   | Extrat nth arg from last command beginning with ls. |
+| !ls      |   | Show completion results matches ls.                 |
+| ^old^new |   | Replace old with new in last command and run it.    |
+| $_       |   | Returns last parameter in last command.             |
+
+** Config inside Emacs
+:PROPERTIES:
+:tangle:   ~/.emacs.d/shells.el
+:END:
+#+BEGIN_SRC elisp
+  (require 'eshell)
+  (require 'em-smart)
+  (setq eshell-where-to-jump 'begin
+        eshell-review-quick-commands nil
+        eshell-smart-space-goes-to-end t)
+#+END_SRC
+** Config outside Emacs
+:PROPERTIES:
+:tangle: ~/.eshell/profile
+:mkdirp: t
+:END:
+#+BEGIN_SRC sh
+  ## -*- mode: eshell-script -*-
+  (setenv "PAGER" "cat")
+  (setenv "TERM" "xterm-256color")
+
+  (setq eshell-ask-to-save-history 'always)
+#+END_SRC
+
+** Shell
+/output group/ consists of a command and its output.
+
+| C-c C-c |                            | Terminate command.                       |
+| C-c C-z |                            | Stop a job.                              |
+| C-c C-o | comint-kill-output         | Get rid of the prev command output.      |
+| C-c C-r | comint-show-output         | Show the top of the prev command output. |
+| C-c C-e | comint-show-maximum-output | Same as above but show the end instead.  |
+| C-c C-p |                            | Previous output group.                   |
+| C-c C-n |                            | Next output group.                       |
+| M-p     | comint-previous-input      | Previous command.                        |
+| M-n     | comint-next-input          | Next command.                            |
+
+** Config inside Emacs
+:PROPERTIES:
+:tangle: ~/.emacs.d/shells.el.el
+:END:
+
+Set shell:
+#+BEGIN_SRC elisp
+  (setq shell-file-name "/bin/zsh")
+#+END_SRC
+
+Making passwords invisible:
+#+BEGIN_SRC elisp
+  (add-hook 'comint-output-filter-functions
+            'comint-watch-for-password-prompt)
+#+END_SRC
+
+#+BEGIN_SRC elisp
+  (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+#+END_SRC
+
+#+BEGIN_SRC elisp
+  (add-hook 'shell-mode-hook (lambda ()
+                               (yas-minor-mode -1)
+                               (whitespace-mode -1)
+                               (smartparens-mode -1)))
+#+END_SRC
+
+Bash Completion:
+#+BEGIN_SRC elisp
+  (autoload 'bash-completion-dynamic-complete 
+    "bash-completion"
+    "BASH completion hook")
+  (add-hook 'shell-dynamic-complete-functions
+    'bash-completion-dynamic-complete)
+  (add-hook 'shell-command-complete-functions
+    'bash-completion-dynamic-complete)
+#+END_SRC
+
+** Config outside Emacs
+#+BEGIN_SRC conf :tangle ~/.emacs_zsh
+  prompt walters
+  unsetopt zle
+  WITHIN_EMACS=true
+#+END_SRC
+
+** Terminal
+Terminal emulation inside Emacs.
+
+Disable some conflicting modes when running inside a Terminal buffer.
+#+BEGIN_SRC elisp
+  (defun custom-term-mode ()
+    (interactive)
+    (yas-minor-mode -1))
+  
+  (add-hook 'term-mode-hook 'custom-term-mode)
+#+END_SRC
+
+** Executing shell commands
+
+| M-!         | shell-command           | Run shell command in background.                             |
+| M-\vert     | shell-command-on-region | Run shell command on region in background.                   |
+| C-u M-\vert | shell-command-on-region | Same as above but puts command output in the current burrer. |
+
+* Org mode
+** Colorize code blocks
+#+BEGIN_SRC elisp
+  (setq org-src-fontify-natively t)
+#+END_SRC
+
+** Display inline images
+#+BEGIN_SRC elisp
+  (setq org-html-inline-images t)
+#+END_SRC
+
+** Export LaTeX fragments
+#+BEGIN_SRC elisp
+  (setq org-export-with-LaTeX-fragments t)
+#+END_SRC
+
+** More headlines to export
+#+BEGIN_SRC elisp
+  (setq org-export-headline-levels 6)
+#+END_SRC
+
+** Set org files directory
+#+BEGIN_SRC elisp
+  (setq org-directory "~/org"
+        org-agenda-files '("~/org"))
+#+END_SRC
+
+** Set notes file
+#+BEGIN_SRC elisp
+  (setq org-default-notes-file (concat org-directory "/notes.org")
+        org-capture-templates
+        '(("t" "Todo" entry (file+headline (concat org-directory "/gtd.org") "Tasks")
+           "* TODO %?\n %i\n %a")
+          ("d" "Literate" entry (file+headline (concat org-directory "/literate.org") "Literate")
+           "* %?\n %i\n %a")
+          ("n" "Note" entry (file+headline (concat org-directory "/notes.org") "Notes")
+           "* %?")
+          ("j" "Journal" entry (file+datetree (concat org-directory "/journal.org"))
+           "* %?" :clock-in t :clock-resume t)
+          ("l" "Read it later" checkitem (file+headline (concat org-directory "/readlater.org") "Read it later")
+           "[ ] %?")))
+#+END_SRC
+
+** Activate babel languages
+#+BEGIN_SRC elisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (lisp . t)
+     (gnuplot . t)
+     (dot . t)
+     (ditaa . t)
+     (R . t)
+     (python . t)
+     (ruby . t)
+     (js . t)
+     (clojure . t)
+     (sh . t)))
+#+END_SRC
+
+** Export code blocks with colors
+#+BEGIN_SRC elisp
+  (require 'ox-latex)
+  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  (setq org-latex-listings 'minted)
+
+  (setq org-latex-pdf-process
+        '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+END_SRC
+
+There are different color-themes you can use with minted, for example
+you could put this option into your org file to use "monokai":
+#+BEGIN_SRC org :tangle
+  ,#+LaTeX_HEADER: \usemintedstyle{monokai}
+#+END_SRC
+
+To get a list of the supported styles from pygmentize:
+#+BEGIN_SRC sh :tangle
+  pygmentize -L styles
+#+END_SRC
+
+** Ditaa executable path
+#+BEGIN_SRC elisp
+  (setq org-ditaa-jar-path ""
+        org-babel-ditaa-java-cmd "ditaa")
+#+END_SRC
+
+** Encrypting
+*** Options
+#+BEGIN_SRC elisp
+  (require 'epa-file)
+  (require 'org-crypt )
+
+  (setq org-tags-exclude-from-inheritance '("crypt"))
+#+END_SRC
+
+*** Private                                                           :crypt:
+-----BEGIN PGP MESSAGE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+hQEMAxWSuK3W+kssAQf/Xn/8ehLrOG+9/0N+jX+Ev+w2dRBgKAzTjheHsLhdsuIu
+iDiK+jSEvBkBtd+dx9Sa1R2DWvKuG6d8/IhSZ3Qf/dyRAnR3muJSyOZDPNIcKIym
+WyjrGaxycrYamRwu/t5pZar05tPzbyZ5t/X+PZaVdI5w2B0Qb5Pvp0mQvzXxiKC2
+LSKCmxpiL3G81lkrIZqvJrqbk8ikUBGyKG1dK31G2e0jqqSoouf5WIQfj7moC0ZA
+UPLILDpVxde6S8SqepW3hniO+672LqfUGI5RQQcS554hw3PgbF/0Al3jxQw+lzDx
+dBjPpcFs9Q9iMXlQ+i0gHe87UjOH7f5hLt8ROb4x/dKcARa4EfI7RNGkdKCcv21T
+gaqJ2QX8ABfIGeo2a7WHWubSLuiB7tSMMBadHDQH6caSXnPKcTXST159aeF15qNY
+IsLd8YScWuIfXvEQmqjcIKEZ82QHuIKMT6RV8iret7ySXzI/OqVNeJQbV4PZvpxw
+yziKVRL8P2PtotxNYkfyP3edSpr+ZiD8IVtUI0sqgvYmKcrBBuwsZ2RfD/RB
+=efPi
+-----END PGP MESSAGE-----
+
+** Personal blog
+#+BEGIN_SRC elisp
+  (let* ((base-directory "~/repos-public/ikame.github.io")
+         (publishing-directory (s-concat base-directory "/compiled")))
+    (setq org-html-doctype "html5"
+          org-publish-project-alist
+          `(("anler.me" :components ("anler.me:blog" "anler.me:static"))
+            ("anler.me:blog"
+             :base-directory ,base-directory
+             :base-extension "org"
+             :publishing-directory ,publishing-directory
+             :recursive t
+             :auto-preamble t
+             :auto-postamble nil
+             :auto-sitemap nil
+             :table-of-contents t
+             :publishing-function org-html-publish-to-html
+             :html-postamble "<p>Built with <a href=\"http://orgmode.org/\">org mode</a></p>"
+             :section-numbers nil
+             :author-info nil
+             :creator-info nil)
+            ("anler.me:static"
+             :base-directory ,base-directory
+             :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+             :publishing-directory ,publishing-directory
+             :recursive t
+             :publishing-function org-publish-attachment))))
+#+END_SRC
+* Programming
+** Jump to definition using tags
+Code navigation using GNU Global and Exuberant Ctags.
+See [[https://github.com/leoliu/ggtags][leoliu/ggtags]] for a complete reference and installation guide.
+
+I already have ggtags-mode listed as a dependency in my Cask file, the
+only thing left is installing GnuGlobal in the system.
 
 ** Key bindings
-#+BEGIN_SRC elisp
-  (load-org "~/.emacs.d/keybindings.org")
+See [[https://github.com/leoliu/ggtags#usage][ggtags usage]] for a complete list of keybindings.
+
+| Keybinding | Command | What                           |
+|------------+---------+--------------------------------|
+| M-.        |         | Find tag.                      |
+| M-,        |         | Continue find tag.             |
+| C-c M-?    |         | Show definition in minibuffer. |
+| C-M-.      |         | Find tag matching regexp.      |
+| M-n        |         | Next match.                    |
+| M-p        |         | Previous match.                |
+| C-c M-p    |         | Previous mark.                 |
+| C-c M-n    |         | Next mark.                     |
+| M-*        |         | Pop mark.                      |
+| C-c M-DEL  |         | Delete tag files.              |
+| C-c M-b    |         | Browse as hypertext.           |
+| C-c M-j    |         | Visit project root.            | 
+
+** Installation instructions for Archlinux
+1. Install exuberant ctags:
+#+BEGIN_SRC sh
+  pacman -S ctags
 #+END_SRC
 
-** Misc
-#+BEGIN_SRC elisp
-  (load-org "~/.emacs.d/misc.org" 'noerror)
+2. Install GnuGlobal
+Download here: https://www.gnu.org/software/global/download.html
+Un-tar.
+cd into it.
+And install:
+#+BEGIN_SRC sh
+  ./configure --prefix=/usr/local --with-exuberant-ctags=`which ctags`
+  make
+  make installp
 #+END_SRC
 
-** Custom file
+3. Pygments plugin for GnuGlobal
+Install Python Pip if necessary:
+#+BEGIN_SRC sh
+  pacman -S python-pip
+#+END_SRC
+
+Install Pygments if necessary:
+#+BEGIN_SRC sh
+  pip install pygments
+#+END_SRC
+
+Download Pygments plugin here: https://github.com/yoshizow/global-pygments-plugin
+cd into it and install:
+#+BEGIN_SRC sh
+  sh reconf.sh
+  ./configure --prefix=/usr/local --with-exuberant-ctags=`which ctags`
+  make
+  make install
+#+END_SRC
+
+Use the sample configuration file:
+#+BEGIN_SRC sh
+  cp sample.globalrc $HOME/.globalrc
+#+END_SRC
+
+** Treat camel case word as subwords
+#+BEGIN_SRC elisp
+  (global-subword-mode)
+#+END_SRC
+
+** Auto-closing and highlighting parens
+** Highlight corresponding paren.
+#+BEGIN_SRC elisp
+  (show-paren-mode)
+#+END_SRC
+
+** Auto-close paren
+#+BEGIN_SRC elisp
+  (require 'smartparens-config)
+  (smartparens-global-mode)
+#+END_SRC
+
+** Special case for curly braces
+When inserting curly braces and hiting enter put the cursor in a new
+line between the braces:
+#+BEGIN_SRC text
+  {
+   |
+  }
+#+END_SRC
+
+#+BEGIN_SRC elisp
+  (defun create-newline-and-enter-sexp (&rest _ignored)
+    "Open a new brace or bracket expression, with relevant newlines and indent. "
+    (newline)
+    (indent-according-to-mode)
+    (forward-line -1)
+    (indent-according-to-mode))
+
+  (sp-pair "{" nil :post-handlers '((create-newline-and-enter-sexp "RET")))
+#+END_SRC
+
+** Don't highlight text between parens.
+#+BEGIN_SRC elisp
+  (setq sp-highlight-pair-overlay nil
+        sp-highlight-wrap-overlay nil
+        sp-highlight-wrap-tag-overlay nil)
+#+END_SRC
+
+** Expand region
+[[https://github.com/magnars/expand-region.el][expand-region]] - [[http://emacsrocks.com/e09.html][-demo-]]
+
+#+BEGIN_SRC elisp
+  (autoload 'er/expand-region "expand-region")
+#+END_SRC
+
+** Wrap region
+[[https://github.com/rejeep/wrap-region.el][wrap-region]] for something like [[https://github.com/tpope/vim-surround][surround]] in vim:
+
+#+BEGIN_SRC elisp
+  (require 'wrap-region)
+  (wrap-region-mode)
+#+END_SRC
+
+** Display trailing whitespace
+#+BEGIN_SRC elisp
+  (global-whitespace-mode)
+  (setq whitespace-style '(face trailing tabs))
+#+END_SRC
+
+For removing the wrong spaces just call the command
+=whitespace-cleanup=. Here I just set it auto for all programming
+modes:
+#+BEGIN_SRC elisp
+  (defun setup-programming-modes ()
+    (interactive)
+    (setq whitespace-style '(lines-tail tabs tab-mark trailing empty))
+    (add-hook 'before-save-hook 'whitespace-cleanup nil t))
+  (add-hook 'prog-mode-hook 'setup-programming-modes)
+#+END_SRC
+
+** Snippets
+[[https://github.com/capitaomorte/yasnippet][Yasnippet]] is the best snippets expansion tool for Emacs. It uses the
+same syntax as TextMate and can even import most TextMate snippets.
+
+#+BEGIN_SRC elisp
+  (require 'yasnippet)
+
+  (setq yas-snippet-dirs '("~/.emacs.d/snippets")
+        yas-prompt-functions '(yas/ido-prompt yas/completing-prompt)
+        yas/triggers-in-field t
+        yas-wrap-around-region t
+        yas-verbosity 1)
+
+  (yas-global-mode 1)
+
+  (define-key yas-keymap (kbd "<return>") 'yas/exit-all-snippets)
+  (define-key yas-keymap (kbd "C-e") 'yas/goto-end-of-active-field)
+  (define-key yas-keymap (kbd "C-a") 'yas/goto-start-of-active-field)
+
+  (defun yas/goto-end-of-active-field ()
+    (interactive)
+    (let* ((snippet (car (yas--snippets-at-point)))
+           (position (yas--field-end (yas--snippet-active-field snippet))))
+      (if (= (point) position)
+          (move-end-of-line 1)
+        (goto-char position))))
+
+  (defun yas/goto-start-of-active-field ()
+    (interactive)
+    (let* ((snippet (car (yas--snippets-at-point)))
+           (position (yas--field-start (yas--snippet-active-field snippet))))
+      (if (= (point) position)
+          (move-beginning-of-line 1)
+        (goto-char position))))
+#+END_SRC
+
+** Projects
+[[https://github.com/bbatsov/projectile][Projectile]] is my tool of preference when working on a project and even
+integrates with ggtags.
+
+#+BEGIN_SRC elisp
+  (require 'projectile)
+  (setq projectile-enable-caching t)
+  (projectile-global-mode)
+#+END_SRC
+
+** Git
+[[https://github.com/magit/magit][Magit]] is an excellent tool for managing git repositories from Emacs.
+
+#+BEGIN_SRC elisp
+  (require 'magit)
+#+END_SRC
+
+** Searching in files with Ag
+[[https://github.com/Wilfred/ag.el][ag.el]] is an Emacs frontend for Ag, aka: the silver searcher.
+
+You need to have ag installed in your system, in archlinux you can do
+so with:
+#+BEGIN_SRC sh :tangle no
+  pacman -S the_silver_searcher
+#+END_SRC
+
+Require it:
+#+BEGIN_SRC elisp
+  (require 'ag)
+#+END_SRC
+
+By default everytime you execute ag it creates a new buffer and I prefer
+to have just one ag buffer openend:
+#+BEGIN_SRC elisp
+  (setq ag-reuse-buffers t
+        ag-reuse-window t)
+#+END_SRC
+
+** Diffs with ediff
+** Ignore whitespace
+#+BEGIN_SRC elisp
+  (setq ediff-diff-options "-w")
+#+END_SRC
+
+** Display options as a buffer not a frame
+#+BEGIN_SRC elisp
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+#+END_SRC
+
+** Common Lisp
+#+BEGIN_SRC elisp
+  (load (expand-file-name "~/quicklisp/slime-helper.el"))
+  (setq inferior-lisp-program "sbcl")
+
+  (defun setup-lisp-mode ()
+    "Configure lisp mode"
+    (interactive)
+    (paredit-mode)
+    (turn-on-eldoc-mode))
+
+  (add-hook 'lisp-mode-hook 'setup-lisp-mode)
+#+END_SRC
+
+** Emacs Lisp
+#+BEGIN_SRC elisp
+  (autoload 'elisp-slime-nav-mode "elisp-slime-nav")
+
+  (defun setup-emacs-lisp-mode ()
+    "Configure emacs-lisp mode"
+    (interactive)
+    (paredit-mode)
+    (turn-on-eldoc-mode))
+
+  (add-hook 'emacs-lisp-mode-hook 'setup-emacs-lisp-mode)
+#+END_SRC
+
+** Python
+#+BEGIN_SRC elisp
+  (defun setup-python-mode ()
+    "Custom command to setup python-mode"
+    (interactive)
+    (let ((max-column 99))
+      (setq python-shell-interpreter "ipython"
+            python-shell-interpreter-args ""
+            whitespace-line-column max-column
+            whitespace-style (append whitespace-style '(face lines-tail))
+            fill-column max-column
+            flycheck-flake8-maximum-line-length max-column
+            imenu-create-index-function #'ggtags-build-imenu-index))
+    (highlight-lines-matching-regexp "i?pdb.set_trace()")
+    (flycheck-mode)
+    (ggtags-mode))
+
+  (add-hook 'python-mode-hook 'setup-python-mode)
+#+END_SRC
+
+Treat ~.jinja~ as html.
+#+BEGIN_SRC elisp
+  (add-to-list 'auto-mode-alist '("\\.jinja\\'" . html-mode))
+#+END_SRC
+** Pretty symbols
+#+BEGIN_SRC elisp
+  (add-hook 'prog-mode-hook #'pretty-symbols-mode)
+#+END_SRC
+** Haskell
+#+BEGIN_SRC elisp
+  (defun setup-haskell-mode ()
+    (interactive)
+    (haskell-doc-mode)
+    (haskell-indentation-mode))
+
+  (add-hook 'haskell-mode-hook 'setup-haskell-mode)
+#+END_SRC
+** Scheme
+Set the command used to run scheme. In my case I'm using [[https://aur.archlinux.org/packages/mit-scheme/][mit-scheme from aur]].
+#+BEGIN_SRC elisp
+  (setq scheme-program-name "mit-scheme")
+#+END_SRC
+
+The execute =M-x run-scheme= to launch a scheme interpreter.
+Use =C-x C-e= from a scheme buffer to send the expression to the interpreter.
+** HTML
+#+BEGIN_SRC elisp
+  (defun setup-html-mode ()
+    (interactive)
+    (local-set-key (kbd "C-<return>") 'html-line))
+
+  (add-hook 'html-mode-hook 'setup-html-mode)
+#+END_SRC
+
+* Key bindings
+** Windows
+
+| C-x 9      | Close the other window.                       |
+| C-M-1      | Delete other window.                          |
+| C-M-2      | Split window horizontally selecting a buffer. |
+| C-M-3      | Split window vertically selecting a buffer.   |
+| C-M-0      | Delete split.                                 |
+| C-M-o      | Switch other window.                          |
+| s-<up>     | Enlarge window.                               |
+| s-<down>   | Shrink window.                                |
+| s-M-<up>   | Enlarge window horizontally.                  |
+| s-M-<down> | Shrink window horizontally.                   |
+
+#+BEGIN_SRC elisp
+  (defun split-window-other-buffer-below (buffer)
+    (interactive "b")
+    (split-window-other-buffer 'split-window-below buffer))
+
+  (defun split-window-other-buffer-right (buffer)
+    (interactive "b")
+    (split-window-other-buffer 'split-window-right buffer))
+
+  (defun split-window-other-buffer (strategy buffer)
+    (select-window (funcall strategy))
+    (switch-to-buffer buffer))
+
+  (global-set-key (kbd "C-M-1") 'delete-other-windows)
+  (global-set-key (kbd "C-M-2") 'split-window-other-buffer-below)
+  (global-set-key (kbd "C-M-3") 'split-window-other-buffer-right)
+  (global-set-key (kbd "C-M-0") 'delete-window)
+  (global-set-key (kbd "C-M-o") 'other-window)
+  (global-set-key (kbd "C-x 9") 'quit-other-window)
+  (global-set-key (kbd "s-<up>") 'enlarge-window)
+  (global-set-key (kbd "s-<down>") 'shrink-window)
+  (global-set-key (kbd "s-M-<up>") 'enlarge-window-horizontally)
+  (global-set-key (kbd "s-M-<down>") 'shrink-window-horizontally)
+  (window-numbering-mode)
+#+END_SRC
+
+** Transpose chars or region
+
+| C-t | Transpose chars or region if active region |
+
+#+BEGIN_SRC elisp
+  (defun transpose-chars1 (arg)
+      "Same as `transpose-chars' but if region is active transpose 
+  all characters in the region."
+    (interactive "*P")
+    (if (region-active-p)
+        (insert
+         (apply #'string
+                (reverse
+                 (string-to-list
+                  (delete-and-extract-region (region-beginning)
+                                             (region-end))))))
+      (call-interactively #'transpose-chars)))
+  (global-set-key (kbd "C-t") 'transpose-chars1)
+#+END_SRC
+
+** Change theme
+
+| F8 | Change theme. |
+
+#+BEGIN_SRC elisp
+  (global-set-key [f8] 'use-next-theme)
+#+END_SRC
+
+** Evaluating Sexps
+
+| C-x C-e         | Show the result in the minibuffer.             |
+| C-u C-x C-e     | Write the result after the sexp in the buffer. |
+| C-u C-u C-x C-e | Replace sexp with the actual result.           |
+
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "C-x C-e") 'ext/eval-last-sexp)
+#+END_SRC
+
+** Expand region
+
+| C-c e e | Expand region. |
+
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "C-c e e") 'er/expand-region)
+#+END_SRC
+
+** Comment/Uncomment line/region
+
+| C-; | comment/uncomment line. |
+| C-M-; | comment/uncomment region. |
+
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "C-;") 'comment-or-uncomment)
+  (global-set-key (kbd "C-M-;") 'comment-or-uncomment-region)
+#+END_SRC
+
+** Search
+
+| C-s | Search forward using regexp.  |
+| C-r | Search backward using regexp. |
+While searching
+| C-return | Put cursor at the beginning of the match |
+
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "C-s") 'isearch-forward-regexp)
+  (global-set-key (kbd "C-r") 'isearch-backward-regexp)
+
+  (defvar isearch-done-opposite nil "Wether or not isearch must end at the opposite end.")
+
+  (defun isearch-done-opposite (&optional nopush edit)
+    (interactive)
+    (let ((isearch-done-opposite t))
+      (funcall #'isearch-done nopush edit)))
+
+  (defadvice isearch-done (after isearch-goto-beginning-of-match activate)
+    "After finding a match position put the cursor at the beginning of
+  the match only if searching forward."
+    (when isearch-done-opposite
+        (goto-char isearch-other-end)))
+
+  (define-key isearch-mode-map (kbd "C-<return>") 'isearch-done-opposite)
+
+  (define-key isearch-mode-map (kbd "M-o") 'isearch-occur)
+
+  (defadvice isearch-occur (after isearch-occur-switch-to-occur-buffer activate)
+    (switch-to-buffer-other-window "*Occur*"))
+
+#+END_SRC
+
+** Search in other
+
+| C-M-s | Search forward in other window.  |
+| C-M-r | Search backward in other window. |
+
+#+BEGIN_SRC elisp
+  (defun isearch-forward-regexp-other-window ()
+    (interactive)
+    (save-selected-window
+      (other-window 1)
+      (isearch-forward-regexp)))
+
+  (defun isearch-backward-regexp-other-window ()
+    (interactive)
+    (save-selected-window
+      (other-window 1)
+      (isearch-backward-regexp)))
+
+  (global-set-key (kbd "C-M-s") 'isearch-forward-regexp-other-window)
+  (global-set-key (kbd "C-M-r") 'isearch-backward-regexp-other-window)
+#+END_SRC
+
+** Better ~M-x~ using smex
+
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "M-x") 'smex)
+  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+#+END_SRC
+
+** Multiple cursors
+
+| C->         | Put a cursor in next line.           |
+| C-<         | Put a cursor in previous line.       |
+| C-S-c C-S-c | Put a cursor in each region line.    |
+| C-c C-0     | Mark all like the current selection. |
+
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C-M->") 'mc/skip-to-next-like-this)
+  (global-set-key (kbd "C-M-<") 'mc/skip-to-previous-like-this)
+  (global-set-key (kbd "C-c C-0") 'mc/mark-all-like-this)
+#+END_SRC
+
+** Jump to characters
+
+| C-c j j | Jump to starting word character. |
+| C-c j l | Jump to line.                    |
+| C-c j j | Jump to word character.          |
+
+#+BEGIN_SRC elisp
+  (autoload 'ace-jump-mode "ace-jump-mode")
+  (global-set-key (kbd "C-c j j") 'ace-jump-mode)
+  (global-set-key (kbd "C-c j l") 'ace-jump-line-mode)
+  (global-set-key (kbd "C-c j c") 'ace-jump-char-mode)
+#+END_SRC
+
+** Query replace using regexps
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "M-%") 'query-replace-regexp)
+#+END_SRC
+
+** Dired
+#+BEGIN_SRC elisp
+  (require 'dired-imenu)
+  (require 'dired-x)
+  (put 'dired-find-alternate-file 'disabled nil)
+  (mykie:set-keys dired-mode-map
+    "^" :default (find-alternate-file "..") :C-u dired-up-directory)
+#+END_SRC
+
+** Scroll with arrows
+#+BEGIN_SRC elisp
+  (global-set-key [down] 'scroll-up-one-line-command)
+  (global-set-key [up] 'scroll-down-one-line-command)
+#+END_SRC
+
+** Join lines a la vim
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "M-j") 'join-line-below)
+#+END_SRC
+
+** Kill buffer and file
+#+BEGIN_SRC elisp
+  (mykie:set-keys nil
+    "C-x k" :default kill-buffer :C-u kill-buffer-and-file)
+#+END_SRC
+
+** Git
+
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "C-c m m") 'git-messenger:popup-message)
+  (global-set-key (kbd "C-c m s") 'magit-status)
+  (global-set-key (kbd "C-c m b") 'magit-blame-mode)
+  (global-set-key (kbd "C-c m d") 'magit-diff)
+#+END_SRC
+
+** Org
+#+BEGIN_SRC elisp
+  (autoload 'org-toc-insert-toc "org-toc")
+  (global-set-key (kbd "C-c o t") 'org-toc-insert-toc)
+#+END_SRC
+
+** idomenu
+#+BEGIN_SRC elisp
+  (autoload 'idomenu "idomenu")
+  (global-set-key (kbd "C-.") 'idomenu)
+#+END_SRC
+
+** Which function
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "C-c C-q") 'show-which-function)
+#+END_SRC
+** Create scratch buffer
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "C-c s") 'create-scratch-buffer)
+#+END_SRC
+** Duplicate line
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "C-c P") 'duplicate-line)
+#+END_SRC
+
+* Emacs' customize custom file
 File used for storing customization information created through Emacs'
 customization interface (I don't keep this file under version
 control).

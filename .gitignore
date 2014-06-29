@@ -3,10 +3,11 @@
 *.elc
 
 !.gitignore
-!*.org
+!Cask
+!README.org
+!init.el
 !img/
 !img/*.png
 !snippets/
 !snippets/**/*
 snippets/**/*.elc
-/misc.org
