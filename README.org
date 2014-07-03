@@ -135,13 +135,14 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#which-function][Which function]]
      - [[#create-scratch-buffer][Create scratch buffer]]
      - [[#duplicate-line][Duplicate line]]
+     - [[#go-to-beginningend-of-buffer][Go to beginning/end of buffer]]
  - [[#emacs-customize-custom-file][Emacs' customize custom file]]
 
 * Emacs dependency management
 I use [[https://github.com/cask/cask][Cask]] for dependency management and [[https://github.com/rdallasgray/pallet][Pallet]] as a package manager
 (everytime I install a package it adds it as a dependency to my Cask
 file).
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (require 'cask "~/.cask/cask.el")
   (add-to-list 'load-path (expand-file-name "~/elisp/org-mode/lisp"))
   (add-to-list 'load-path (expand-file-name "~/elisp/org-mode/contrib/lisp"))
@@ -544,7 +545,11 @@ With the following you can edit remote root files with:
 =C-x C-f /sudo:root@localhost:<path>=.
 
 #+BEGIN_SRC elisp
-  (set-default 'tramp-default-proxies-alist (quote ((".*" "\\`root\\'" "/ssh:%h:"))))
+  (require 'tramp)
+  (add-to-list 'tramp-default-proxies-alist
+               '(nil "\\`root\\'" "/ssh:%h:"))
+  (add-to-list 'tramp-default-proxies-alist
+               '((regexp-quote (system-name)) nil nil))
 #+END_SRC
 
 ** Pretty symbols
@@ -662,9 +667,6 @@ History Interaction
 | $_       |   | Returns last parameter in last command.             |
 
 ** Config inside Emacs
-:PROPERTIES:
-:tangle:   ~/.emacs.d/shells.el
-:END:
 #+BEGIN_SRC elisp
   (require 'eshell)
   (require 'em-smart)
@@ -672,11 +674,8 @@ History Interaction
         eshell-review-quick-commands nil
         eshell-smart-space-goes-to-end t)
 #+END_SRC
+
 ** Config outside Emacs
-:PROPERTIES:
-:tangle: ~/.eshell/profile
-:mkdirp: t
-:END:
 #+BEGIN_SRC sh
   ## -*- mode: eshell-script -*-
   (setenv "PAGER" "cat")
@@ -699,10 +698,6 @@ History Interaction
 | M-n     | comint-next-input          | Next command.                            |
 
 ** Config inside Emacs
-:PROPERTIES:
-:tangle: ~/.emacs.d/shells.el.el
-:END:
-
 Set shell:
 #+BEGIN_SRC elisp
   (setq shell-file-name "/bin/zsh")
@@ -737,7 +732,7 @@ Bash Completion:
 #+END_SRC
 
 ** Config outside Emacs
-#+BEGIN_SRC conf :tangle ~/.emacs_zsh
+#+BEGIN_SRC conf
   prompt walters
   unsetopt zle
   WITHIN_EMACS=true
@@ -835,12 +830,12 @@ Disable some conflicting modes when running inside a Terminal buffer.
 
 There are different color-themes you can use with minted, for example
 you could put this option into your org file to use "monokai":
-#+BEGIN_SRC org :tangle
+#+BEGIN_SRC org
   ,#+LaTeX_HEADER: \usemintedstyle{monokai}
 #+END_SRC
 
 To get a list of the supported styles from pygmentize:
-#+BEGIN_SRC sh :tangle
+#+BEGIN_SRC sh
   pygmentize -L styles
 #+END_SRC
 
@@ -1105,7 +1100,7 @@ integrates with ggtags.
 
 You need to have ag installed in your system, in archlinux you can do
 so with:
-#+BEGIN_SRC sh :tangle no
+#+BEGIN_SRC sh
   pacman -S the_silver_searcher
 #+END_SRC
 
@@ -1197,9 +1192,30 @@ Treat ~.jinja~ as html.
   (add-hook 'haskell-mode-hook 'setup-haskell-mode)
 #+END_SRC
 ** Scheme
-Set the command used to run scheme. In my case I'm using [[https://aur.archlinux.org/packages/mit-scheme/][mit-scheme from aur]].
+Set the command used to run scheme.
 #+BEGIN_SRC elisp
-  (setq scheme-program-name "mit-scheme")
+  (setq scheme-program-name "guile")
+  (autoload 'scheme-smart-comple "scheme-complete" nil t)
+  (autoload 'scheme-smart-indent-function "scheme-complete" nil t)
+
+  (defun setup-scheme-mode ()
+      "Configure scheme mode"
+      (interactive)
+      (paredit-mode)
+      (define-key scheme-mode-map "\e\t" 'scheme-smart-complete)
+      (make-local-variable 'eldoc-documentation-function)
+      (setq lisp-indent-function 'scheme-smart-indent-function
+            eldoc-documentation-function 'scheme-get-current-symbol-info)
+      (eldoc-mode))
+
+  (add-hook 'scheme-mode-hook 'setup-scheme-mode)
+#+END_SRC
+
+Autocompletion
+#+BEGIN_SRC elisp
+  (autoload 'scheme-smart-comple "scheme-complete" nil t)
+  (eval-after-load 'scheme
+    ')
 #+END_SRC
 
 The execute =M-x run-scheme= to launch a scheme interpreter.
@@ -1395,9 +1411,8 @@ While searching
 
 #+BEGIN_SRC elisp
   (autoload 'ace-jump-mode "ace-jump-mode")
-  (global-set-key (kbd "C-c j j") 'ace-jump-mode)
-  (global-set-key (kbd "C-c j l") 'ace-jump-line-mode)
-  (global-set-key (kbd "C-c j c") 'ace-jump-char-mode)
+  (global-set-key (kbd "s-.") 'ace-jump-mode)
+  (global-set-key (kbd "s-,") 'ace-jump-char-mode)
 #+END_SRC
 
 ** Query replace using regexps
@@ -1465,6 +1480,13 @@ While searching
   (global-set-key (kbd "C-c P") 'duplicate-line)
 #+END_SRC
 
+** Go to beginning/end of buffer
+#+BEGIN_SRC elisp
+  (mykie:set-keys nil
+    "C-a" :default (beginning-of-line) :C-u (beginning-of-buffer)
+    "C-e" :default (end-of-line) :C-u (end-of-buffer)
+    )
+#+END_SRC
 * Emacs' customize custom file
 File used for storing customization information created through Emacs'
 customization interface (I don't keep this file under version
