@@ -1,0 +1,4 @@
+# -*- mode: snippet -*-
+#name : variable declaration and initialization
+# --
+var ${1:varName}${2: = $0};

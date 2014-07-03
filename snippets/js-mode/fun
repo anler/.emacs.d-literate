@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+#name : named function
+# --
+function ${1:functionName}($2) {
+  $0
+}

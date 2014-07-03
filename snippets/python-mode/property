@@ -1,0 +1,6 @@
+# name: property
+# key: pr
+# --
+@property
+def ${1:name}(${2:self}$3):
+   ${4:"""${5:Doc string}"""}$0

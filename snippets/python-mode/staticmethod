@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: staticmethod
+# key: st
+# --
+@staticmethod
+def ${1:func}($2):
+    $0

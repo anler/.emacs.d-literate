@@ -1,0 +1,4 @@
+# -*- mode: snippet -*-
+# name: local variable
+# --
+`(ca-with-comment "-*- ${1:var}: ${2:value} -*-")`

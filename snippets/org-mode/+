@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: +
+# --
+#+${1:PROPERTY$(upcase yas-text)}: $0
