@@ -8,6 +8,7 @@ literate-programming style taught to me by my good friend [[https://github.com/m
 * Table of Contents                                                     :TOC:
  - [[#about][About]]
  - [[#emacs-dependency-management][Emacs dependency management]]
+ - [[#set-paths][Set paths]]
  - [[#custom-defined-functions][Custom defined functions]]
      - [[#compose-functions][Compose functions]]
      - [[#create-circular-lists][Create circular lists]]
@@ -61,6 +62,8 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#hide-tool-bar][Hide tool bar]]
      - [[#hide-menu-bar][Hide menu bar]]
      - [[#disable-cursor-blink][Disable cursor blink]]
+     - [[#buffer-file-name-as-frame-title][Buffer file name as frame title]]
+     - [[#change-default-font][Change default font]]
      - [[#mark-empty-lines][Mark empty lines]]
      - [[#cycle-through-color-themes][Cycle through color themes]]
      - [[#default-face][Default face]]
@@ -88,7 +91,7 @@ literate-programming style taught to me by my good friend [[https://github.com/m
  - [[#programming][Programming]]
      - [[#jump-to-definition-using-tags][Jump to definition using tags]]
      - [[#key-bindings][Key bindings]]
-     - [[#installation-instructions-for-archlinux][Installation instructions for Archlinux]]
+     - [[#installation-instructions][Installation instructions]]
      - [[#treat-camel-case-word-as-subwords][Treat camel case word as subwords]]
      - [[#auto-closing-and-highlighting-parens][Auto-closing and highlighting parens]]
      - [[#highlight-corresponding-paren][Highlight corresponding paren.]]
@@ -149,6 +152,11 @@ file).
 
   (cask-initialize)
   (require 'pallet)
+#+END_SRC
+
+* Set paths
+#+BEGIN_SRC elisp
+  (add-to-list 'exec-path "~/.local/bin")
 #+END_SRC
 
 * Custom defined functions
@@ -606,6 +614,17 @@ Lisp object at point (function or variable) with =M-.= jump back with
   (blink-cursor-mode -1)
 #+END_SRC
 
+** Buffer file name as frame title
+#+BEGIN_SRC elisp
+  (when window-system
+    (setq frame-title-format '(buffer-file-name "%f" ("%b"))))
+#+END_SRC
+
+** Change default font
+#+BEGIN_SRC elisp
+  (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-11"))
+#+END_SRC
+
 ** Mark empty lines
 Indicate empty lines in the left fringe (exactly the same
 functionality VIM has to mark the empty lines with =~=).
@@ -617,7 +636,7 @@ functionality VIM has to mark the empty lines with =~=).
 #+BEGIN_SRC elisp
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
   (defvar current-theme nil "Name of the theme being used.")
-  (defvar themes-list (make-circular-list '(bubbleberry default-black default-white)) "Cycle through these themes")
+  (defvar themes-list (make-circular-list '(noctilux default-black default-white)) "Cycle through these themes")
   
   (defun use-next-theme ()
     "Use the next theme in themes-list."
@@ -924,10 +943,16 @@ See [[https://github.com/leoliu/ggtags#usage][ggtags usage]] for a complete list
 | C-c M-b    |         | Browse as hypertext.           |
 | C-c M-j    |         | Visit project root.            | 
 
-** Installation instructions for Archlinux
+** Installation instructions
 1. Install exuberant ctags:
+Archlinux:
 #+BEGIN_SRC sh
   pacman -S ctags
+#+END_SRC
+
+Ubuntu:
+#+BEGIN_SRC sh
+  apt-get install exuberant-ctags
 #+END_SRC
 
 2. Install GnuGlobal
@@ -942,9 +967,15 @@ And install:
 #+END_SRC
 
 3. Pygments plugin for GnuGlobal
-Install Python Pip if necessary:
+Install Python Pip if necessary.
+Archlinux
 #+BEGIN_SRC sh
   pacman -S python-pip
+#+END_SRC
+
+Ubuntu
+#+BEGIN_SRC sh
+  apt-get install python-pip
 #+END_SRC
 
 Install Pygments if necessary:
@@ -1191,6 +1222,7 @@ Treat ~.jinja~ as html.
 
   (add-hook 'haskell-mode-hook 'setup-haskell-mode)
 #+END_SRC
+
 ** Scheme
 Set the command used to run scheme.
 #+BEGIN_SRC elisp
@@ -1211,15 +1243,15 @@ Set the command used to run scheme.
   (add-hook 'scheme-mode-hook 'setup-scheme-mode)
 #+END_SRC
 
-Autocompletion
-#+BEGIN_SRC elisp
-  (autoload 'scheme-smart-comple "scheme-complete" nil t)
-  (eval-after-load 'scheme
-    ')
-#+END_SRC
+The execute =M-x geiser= to launch a scheme implementation.
 
-The execute =M-x run-scheme= to launch a scheme interpreter.
-Use =C-x C-e= from a scheme buffer to send the expression to the interpreter.
+| C-x C-e     | Eval sexp before point |
+| C-M-x       | Eval definition        |
+| C-c M-e     | Eval definition and go |
+| C-c C-r     | Eval region            |
+| C-c M-r     | Eval region and go     |
+| C-c C-d C-d | Symbol documentation   |
+
 ** HTML
 #+BEGIN_SRC elisp
   (defun setup-html-mode ()
