@@ -1519,6 +1519,13 @@ While searching
     "C-e" :default (end-of-line) :C-u (end-of-buffer)
     )
 #+END_SRC
+
+* Enable some "dangerous" commands
+** Upcase region
+#+BEGIN_SRC elisp
+  (put 'upcase-region 'disabled nil)
+#+END_SRC
+
 * Emacs' customize custom file
 File used for storing customization information created through Emacs'
 customization interface (I don't keep this file under version
