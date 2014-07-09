@@ -1534,3 +1534,8 @@ control).
   (setq custom-file "~/.emacs.d/custom.el")
   (load custom-file 'noerror)
 #+END_SRC
+
+* Run shell command
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "C-!") 'shell-command)
+#+END_SRC
