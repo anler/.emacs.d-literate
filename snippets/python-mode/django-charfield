@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: models.CharField
+# key: mcf
+# group: django
+# --
+models.CharField(max_length=${1:255}$2)$0

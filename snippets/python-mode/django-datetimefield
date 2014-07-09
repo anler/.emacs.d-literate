@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: models.DateTimeField
+# key: mdtf
+# group: django
+# --
+models.DateTimeField(${1:auto_now${2:_add}=True}$3)$0

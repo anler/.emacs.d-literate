@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: models.EmailField
+# key: mef
+# group: django
+# --
+models.EmailField(max_length=${1:255}$2)$0

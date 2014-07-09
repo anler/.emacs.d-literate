@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: models.ForeignKey
+# key: mfk
+# group: django
+# --
+models.ForeignKey(${1:settings.AUTH_USER_MODEL}${2:, ${3:related_name="$4"}})$0
