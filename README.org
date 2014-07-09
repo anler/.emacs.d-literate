@@ -1160,7 +1160,7 @@ to have just one ag buffer openend:
 
 ** Common Lisp
 #+BEGIN_SRC elisp
-  (load (expand-file-name "~/quicklisp/slime-helper.el"))
+  (load (expand-file-name "~/quicklisp/slime-helper.el") 'noerror)
   (setq inferior-lisp-program "sbcl")
 
   (defun setup-lisp-mode ()
