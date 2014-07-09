@@ -622,7 +622,7 @@ Lisp object at point (function or variable) with =M-.= jump back with
 
 ** Change default font
 #+BEGIN_SRC elisp
-  (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-11"))
+  (add-to-list 'default-frame-alist '(font . "Fantasque Sans Mono-13"))
 #+END_SRC
 
 ** Mark empty lines
