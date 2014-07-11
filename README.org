@@ -8,7 +8,6 @@ literate-programming style taught to me by my good friend [[https://github.com/m
 * Table of Contents                                                     :TOC:
  - [[#about][About]]
  - [[#emacs-dependency-management][Emacs dependency management]]
- - [[#set-paths][Set paths]]
  - [[#custom-defined-functions][Custom defined functions]]
      - [[#compose-functions][Compose functions]]
      - [[#create-circular-lists][Create circular lists]]
@@ -132,6 +131,7 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#scroll-with-arrows][Scroll with arrows]]
      - [[#join-lines-a-la-vim][Join lines a la vim]]
      - [[#kill-buffer-and-file][Kill buffer and file]]
+     - [[#rename-buffer-and-file][Rename buffer and file]]
      - [[#git][Git]]
      - [[#org][Org]]
      - [[#idomenu][idomenu]]
@@ -139,7 +139,10 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#create-scratch-buffer][Create scratch buffer]]
      - [[#duplicate-line][Duplicate line]]
      - [[#go-to-beginningend-of-buffer][Go to beginning/end of buffer]]
+ - [[#enable-some-dangerous-commands][Enable some "dangerous" commands]]
+     - [[#upcase-region][Upcase region]]
  - [[#emacs-customize-custom-file][Emacs' customize custom file]]
+ - [[#run-shell-command][Run shell command]]
 
 * Emacs dependency management
 I use [[https://github.com/cask/cask][Cask]] for dependency management and [[https://github.com/rdallasgray/pallet][Pallet]] as a package manager
@@ -152,11 +155,6 @@ file).
 
   (cask-initialize)
   (require 'pallet)
-#+END_SRC
-
-* Set paths
-#+BEGIN_SRC elisp
-  (add-to-list 'exec-path "~/.local/bin")
 #+END_SRC
 
 * Custom defined functions
@@ -213,6 +211,19 @@ The exact same functionality VIM has for ~C-e~ and ~C-y~ in normal mode:
     (interactive)
     (scroll-down-command 1)
     (previous-line))
+#+END_SRC
+
+And the same but without leaving the current window:
+#+BEGIN_SRC elisp
+  (defun scroll-up-one-line-other-window ()
+    "Scroll other window one line up"
+    (interactive)
+    (scroll-other-window 1))
+
+  (defun scroll-down-one-line-other-window ()
+    "Scroll other window one line down"
+    (interactive)
+    (scroll-other-window -1))
 #+END_SRC
 
 ** Join lines
@@ -1465,6 +1476,9 @@ While searching
 #+BEGIN_SRC elisp
   (global-set-key [down] 'scroll-up-one-line-command)
   (global-set-key [up] 'scroll-down-one-line-command)
+
+  (global-set-key (kbd "s-S-<up>") 'scroll-down-one-line-other-window)
+  (global-set-key (kbd "s-S-<down>") 'scroll-up-one-line-other-window)
 #+END_SRC
 
 ** Join lines a la vim
@@ -1476,6 +1490,12 @@ While searching
 #+BEGIN_SRC elisp
   (mykie:set-keys nil
     "C-x k" :default kill-buffer :C-u kill-buffer-and-file)
+#+END_SRC
+
+** Rename buffer and file
+#+BEGIN_SRC elisp
+  (mykie:set-keys nil
+    "C-c r" :default rename-buffer :C-u rename-buffer-and-file)
 #+END_SRC
 
 ** Git
