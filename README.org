@@ -596,6 +596,11 @@ Lisp object at point (function or variable) with =M-.= jump back with
   (setq-default ispell-program-name "aspell")
 #+END_SRC
 
+** Allow answer `y` for `yes`
+#+BEGIN_SRC elisp
+  (defalias 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
 * Appearance
 ** Inhibit startup screen
 #+BEGIN_SRC elisp
