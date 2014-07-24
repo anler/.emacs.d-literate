@@ -462,9 +462,9 @@ for buffer and file names.
 #+END_SRC
 [[file:img/ido.gif]]
 
-** Use a vertical interface
+** Use a vertical interface... not at the moment
 #+BEGIN_SRC elisp
-  (ido-vertical-mode)
+  ;; (ido-vertical-mode)
 #+END_SRC
 [[file:img/ido-vertical-mode.gif]]
 
@@ -1202,6 +1202,12 @@ to have just one ag buffer openend:
 #+END_SRC
 
 ** Python
+Macros
+#+BEGIN_SRC elisp
+  (fset 'python-try-except-line
+     [?\C-e ?\C-j ?t ?r ?y ?: ?\C-x ?\C-t ?\C-p tab ?\C-e ?\C-j backspace ?e ?x ?c ?e ?p ?t ?  ?E ?x ?c ?e ?p ?t ?i ?o ?n ?: ?\C-j])
+#+END_SRC
+
 #+BEGIN_SRC elisp
   (defun setup-python-mode ()
     "Custom command to setup python-mode"
@@ -1212,11 +1218,11 @@ to have just one ag buffer openend:
             whitespace-line-column max-column
             whitespace-style (append whitespace-style '(face lines-tail))
             fill-column max-column
-            flycheck-flake8-maximum-line-length max-column
-            imenu-create-index-function #'ggtags-build-imenu-index))
+            flycheck-flake8-maximum-line-length max-column))
     (highlight-lines-matching-regexp "i?pdb.set_trace()")
     (flycheck-mode)
-    (ggtags-mode))
+    (ggtags-mode)
+    (local-set-key (kbd "C-c t") 'python-try-except-line))
 
   (add-hook 'python-mode-hook 'setup-python-mode)
 #+END_SRC
@@ -1224,6 +1230,10 @@ to have just one ag buffer openend:
 Treat ~.jinja~ as html.
 #+BEGIN_SRC elisp
   (add-to-list 'auto-mode-alist '("\\.jinja\\'" . html-mode))
+#+END_SRC
+
+*** Helper functions
+#+BEGIN_SRC elisp
 #+END_SRC
 ** Pretty symbols
 #+BEGIN_SRC elisp
