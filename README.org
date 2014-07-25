@@ -575,6 +575,7 @@ With the following you can edit remote root files with:
 #+BEGIN_SRC elisp
   (pretty-symbols-mode)
 #+END_SRC
+
 ** Emacs Lisp Sources
 #+BEGIN_SRC elisp
   (define-key 'help-command (kbd "C-l") 'find-library)
@@ -591,7 +592,8 @@ Once this is done you’ll be able to jump to the source of the Emacs
 Lisp object at point (function or variable) with =M-.= jump back with
 =M-,=. You can also see the description of the object at point using 
 =C-c C-d= or =C-c C-d d=.
-** Hunspell causing emacs to hang
+
+** Hunspell hanging my emacs
 #+BEGIN_SRC elisp
   (setq-default ispell-program-name "aspell")
 #+END_SRC
@@ -1555,6 +1557,16 @@ While searching
     )
 #+END_SRC
 
+** Run shell command
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "C-!") 'shell-command)
+#+END_SRC
+
+** Access recent files
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "C-M-r") 'recentf-open-files)
+#+END_SRC
+
 * Enable some "dangerous" commands
 ** Upcase region
 #+BEGIN_SRC elisp
@@ -1568,9 +1580,4 @@ control).
 #+BEGIN_SRC elisp
   (setq custom-file "~/.emacs.d/custom.el")
   (load custom-file 'noerror)
-#+END_SRC
-
-* Run shell command
-#+BEGIN_SRC elisp
-  (global-set-key (kbd "C-!") 'shell-command)
 #+END_SRC
