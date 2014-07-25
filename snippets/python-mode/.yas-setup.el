@@ -33,3 +33,11 @@
         (buffer-substring (match-beginning 1)
                           (match-end 1))
       (or default "function"))))
+
+(defun python-super-args (&optional default)
+  "Get the arguments of wrapping function or DEFAULT if no function is found"
+  (save-excursion
+    (if (search-backward-regexp "def .+(self, \\(.+\\))" nil t)
+        (buffer-substring (match-beginning 1)
+                          (match-end 1))
+      (or default ""))))

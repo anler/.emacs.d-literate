@@ -3,4 +3,4 @@
 # key: super
 # group: object oriented
 # --
-super(${1:`(python-super-class)`}, self).${2:`(python-super-function)`}(${3:args})
+super(${1:${2:`(python-super-class)`}, self}).${3:`(python-super-function)`}(${4:`(python-super-args)`})
