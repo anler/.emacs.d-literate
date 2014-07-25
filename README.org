@@ -1,6 +1,6 @@
 #+STARTUP: showall
 * About
-[[file:img/emacs.png]]
+[[https://raw.githubusercontent.com/ikame/.emacs.d/master/img/emacs.png]]
 
 This mi personal Emacs configuration files written in a
 literate-programming style taught to me by my good friend [[https://github.com/mgdelacroix/][mgdelacroix]].
