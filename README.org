@@ -1156,6 +1156,25 @@ so with:
 Require it:
 #+BEGIN_SRC elisp
   (require 'ag)
+
+  (defun ag-delete-matching-lines ()
+    (interactive)
+    (read-only-mode -1)
+    (call-interactively 'delete-matching-lines)
+    (read-only-mode 1))
+
+  (defun ag-delete-non-matching-lines ()
+    (interactive)
+    (read-only-mode -1)
+    (call-interactively 'delete-non-matching-lines)
+    (read-only-mode 1))
+
+  (defun ag-mode-extras ()
+    (interactive)
+    (local-set-key (kbd "d") 'ag-delete-matching-lines)
+    (local-set-key (kbd "f") 'ag-delete-non-matching-lines))
+
+  (add-hook 'ag-mode-hook 'ag-mode-extras)
 #+END_SRC
 
 By default everytime you execute ag it creates a new buffer and I prefer
