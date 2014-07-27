@@ -172,8 +172,8 @@ Taken from [[http://nullprogram.com/blog/2010/11/15/][nullprogram]].
 
 ** Create circular lists
 #+BEGIN_SRC elisp
-  (defun make-circular-list (list)
-    "Create a circular version of list."
+  (defun cycle (list)
+    "Takes a list LIST and converts it into a circular list"
     (setf (cdr (last list)) list)
     list)
 #+END_SRC
@@ -654,24 +654,26 @@ functionality VIM has to mark the empty lines with =~=).
 #+BEGIN_SRC elisp
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
   (defvar current-theme nil "Name of the theme being used.")
-  (defvar themes-list (make-circular-list '(noctilux default-black default-white)) "Cycle through these themes")
-  
+  (defvar themes-list nil "Cycle through these themes")
+
+  (setq themes-list (cycle '(noctilux default)))
+
   (defun use-next-theme ()
     "Use the next theme in themes-list."
     (interactive)
     (if current-theme
         (my/disable-theme current-theme))
     (my/enable-theme (pop themes-list)))
-  
+
   (defun my/disable-theme (theme)
     (unless (eq theme 'default)
       (disable-theme theme)))
-  
+
   (defun my/enable-theme (theme)
     (unless (eq theme 'default)
       (setq current-theme theme)
       (load-theme current-theme t)))
-  
+
   (use-next-theme)
 #+END_SRC
 ** Default face
