@@ -33,6 +33,7 @@
 (depends-on "git-commit-mode")
 (depends-on "git-messenger")
 (depends-on "git-rebase-mode")
+(depends-on "git-timemachine")
 (depends-on "gitconfig-mode")
 (depends-on "gitignore-mode")
 (depends-on "groovy-mode")
