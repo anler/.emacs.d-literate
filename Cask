@@ -39,6 +39,7 @@
 (depends-on "groovy-mode")
 (depends-on "haskell-mode")
 (depends-on "helm")
+(depends-on "hungry-delete")
 (depends-on "ido-at-point")
 (depends-on "ido-ubiquitous")
 (depends-on "ido-vertical-mode")

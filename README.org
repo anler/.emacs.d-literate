@@ -412,6 +412,13 @@ Emacs likes to do this whenever it can.
   (recentf-mode)
 #+END_SRC
 
+** Hungry deletion
+Deletes all consecutive white spaces
+#+BEGIN_SRC elisp
+  (require 'hungry-delete)
+  (global-hungry-delete-mode)
+#+END_SRC
+
 ** Increase memory threshold for garbage collection
 As [[https://github.com/magnars/][Magnar Sveen]] said:
 
