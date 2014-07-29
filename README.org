@@ -1232,6 +1232,11 @@ to have just one ag buffer openend:
 #+END_SRC
 
 ** Python
+Global variables
+#+BEGIN_SRC elisp
+  (setq python-shell-interpreter "ipython"
+        python-shell-interpreter-args "")
+#+END_SRC
 Macros
 #+BEGIN_SRC elisp
   (fset 'python-try-except-line
