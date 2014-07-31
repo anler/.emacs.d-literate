@@ -357,7 +357,7 @@ Command for creating additional scratch buffers.
 * General
 ** Wrap long lines
 #+BEGIN_SRC elisp
-  (visual-line-mode)
+  (global-visual-line-mode)
 #+END_SRC
 
 ** Display column number in the modeline
@@ -613,6 +613,13 @@ Lisp object at point (function or variable) with =M-.= jump back with
 ** Allow answer `y` for `yes`
 #+BEGIN_SRC elisp
   (defalias 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+** Centered window mode
+#+BEGIN_SRC elisp
+  (load-file "~/repos/public/centered-window-mode/centered-window-mode.el")
+  (require 'centered-window-mode)
+  (centered-window-mode)
 #+END_SRC
 
 * Appearance
@@ -1284,7 +1291,8 @@ Treat ~.jinja~ as html.
   (defun setup-haskell-mode ()
     (interactive)
     (haskell-doc-mode)
-    (haskell-indentation-mode))
+    (haskell-indentation-mode)
+    (inf-haskell-mode))
 
   (add-hook 'haskell-mode-hook 'setup-haskell-mode)
 #+END_SRC
@@ -1619,56 +1627,4 @@ control).
 #+BEGIN_SRC elisp
   (setq custom-file "~/.emacs.d/custom.el")
   (load custom-file 'noerror)
-#+END_SRC
-
-#+BEGIN_SRC elisp
-  (defvar fringe-background
-    (face-attribute 'fringe :background))
-
-  (defun cwm/setup ()
-    (add-hook 'window-configuration-change-hook
-              'cwm/window-configuration-change)
-    (cwm/window-configuration-change))
-
-  (defun cwm/teardown ()
-    (remove-hook 'window-configuration-change-hook
-                 'cwm/window-configuration-change)
-    (cwm/window-configuration-change))
-
-  (defadvice split-window-right (before cwm/reset-on-split activate)
-    "Disable cbm-mode presentation (if active) before splitting window"
-    (when fringe-mode
-      (cwm/reset)))
-
-  (defun cwm/window-configuration-change ()
-    (if (or (> (length (window-list)) 1)
-            (null centered-window-mode))
-        (cwm/reset)
-      (cwm/center)))
-
-  (defun cwm/center ()
-    (set-fringe-mode
-     (/ (- (frame-pixel-width)
-           (* 100 (frame-char-width)))
-        2))
-    (let ((fringe-background (face-attribute 'default :background)))
-      (cwm/set-faces)))
-
-  (defun cwm/reset ()
-    (set-fringe-mode nil)
-    (cwm/set-faces))
-
-  (defun cwm/set-faces ()
-    (custom-set-faces
-     `(fringe ((t (:background ,fringe-background))))))
-
-  ;;;###autoload
-  (define-minor-mode centered-window-mode
-    "Minor mode to cbm on the current buffer."
-    :init-value nil
-    :lighter " cbm"
-    :global t
-    (if centered-window-mode
-        (cwm/setup)
-      (cwm/teardown)))
 #+END_SRC
