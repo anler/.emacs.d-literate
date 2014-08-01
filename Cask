@@ -6,6 +6,7 @@
 (depends-on "birds-of-paradise-plus-theme")
 (depends-on "browse-kill-ring")
 (depends-on "cask")
+(depends-on "centered-window-mode")
 (depends-on "cider")
 (depends-on "clues-theme")
 (depends-on "coffee-mode")

@@ -617,8 +617,6 @@ Lisp object at point (function or variable) with =M-.= jump back with
 
 ** Centered window mode
 #+BEGIN_SRC elisp
-  (load-file "~/repos/public/centered-window-mode/centered-window-mode.el")
-  (require 'centered-window-mode)
   (centered-window-mode)
 #+END_SRC
 
