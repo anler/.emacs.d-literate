@@ -1532,6 +1532,11 @@ While searching
   (put 'dired-find-alternate-file 'disabled nil)
   (mykie:set-keys dired-mode-map
     "^" :default (find-alternate-file "..") :C-u dired-up-directory)
+
+  (add-hook 'dired-mode-hook (lambda ()
+                               (when (and (fboundp 'projectile-project-p)
+                                          (projectile-project-p))
+                                 (ggtags-mode))))
 #+END_SRC
 
 ** Scroll with arrows
