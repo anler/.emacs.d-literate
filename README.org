@@ -24,6 +24,7 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#select-other-window-backward][Select other window backward]]
      - [[#show-which-function][Show which function]]
  - [[#general][General]]
+     - [[#wrap-long-lines][Wrap long lines]]
      - [[#display-column-number-in-the-modeline][Display column number in the modeline]]
      - [[#display-buffer-size-in-the-modeline][Display buffer size in the modeline]]
      - [[#echo-keystrokes-earlier][Echo keystrokes earlier]]
@@ -32,6 +33,7 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#update-buffer-contents-if-they-are-externally-changed][Update buffer contents if they are externally changed]]
      - [[#never-convert-spaces-to-tabs][Never convert spaces to tabs]]
      - [[#enable-recent-files-mode-file--open-recent][Enable recent files mode (File > Open Recent)]]
+     - [[#hungry-deletion][Hungry deletion]]
      - [[#increase-memory-threshold-for-garbage-collection][Increase memory threshold for garbage collection]]
      - [[#name-buffers-with-same-filenames-other-than-buffern][Name buffers with same filenames other than buffer<N>]]
      - [[#confirmation-when-closing-emacs][Confirmation when closing Emacs]]
@@ -39,22 +41,22 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#enable-ido-mode][Enable ido-mode]]
      - [[#use-fuzzy-matching-by-default][Use fuzzy-matching by default]]
      - [[#use-it-in-all-possible-places][Use it in all possible places]]
-     - [[#use-a-vertical-interface][Use a vertical interface]]
+     - [[#use-a-vertical-interface-not-at-the-moment][Use a vertical interface... not at the moment]]
      - [[#ido-interface-when-using-completion-at-point][Ido interface when using ~completion-at-point~.]]
      - [[#better-help-with-discoverel][Better help with discover.el]]
      - [[#disable-transient-mark-mode][Disable transient-mark-mode]]
      - [[#keep-abbrev-expansion-predictable][Keep abbrev expansion predictable]]
      - [[#spice-info-mode][Spice info mode]]
      - [[#open-really-large-files-with-vlf][Open really large files with vlf]]
-     - [[#easily-copy-from-one-dired-split-to-another][Easily copy from one dired split to another]]
-     - [[#create-a-dired-file-with-][Create a dired file with =|=]]
      - [[#use-mykie-for-extending-keybindings][Use mykie for extending keybindings]]
      - [[#diminish-the-mode-line][Diminish the mode line]]
      - [[#set-default-browser][Set default browser]]
      - [[#remote-sudo-access-with-tramp][Remote sudo access with TRAMP]]
      - [[#pretty-symbols][Pretty symbols]]
      - [[#emacs-lisp-sources][Emacs Lisp Sources]]
-     - [[#hunspell-causing-emacs-to-hang][Hunspell causing emacs to hang]]
+     - [[#hunspell-hanging-my-emacs][Hunspell hanging my emacs]]
+     - [[#allow-answer-y-for-yes][Allow answer `y` for `yes`]]
+     - [[#centered-window-mode][Centered window mode]]
  - [[#appearance][Appearance]]
      - [[#inhibit-startup-screen][Inhibit startup screen]]
      - [[#hide-scroll-bars][Hide scroll bars]]
@@ -63,7 +65,7 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#disable-cursor-blink][Disable cursor blink]]
      - [[#buffer-file-name-as-frame-title][Buffer file name as frame title]]
      - [[#change-default-font][Change default font]]
-     - [[#mark-empty-lines][Mark empty lines]]
+     - [[#mark-empty-lines-not-at-the-moment][Mark empty lines... not at the moment]]
      - [[#cycle-through-color-themes][Cycle through color themes]]
      - [[#default-face][Default face]]
  - [[#shells][Shells]]
@@ -87,6 +89,12 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#ditaa-executable-path][Ditaa executable path]]
      - [[#encrypting][Encrypting]]
      - [[#personal-blog][Personal blog]]
+ - [[#dired][Dired]]
+     - [[#easily-copy-from-one-dired-split-to-another][Easily copy from one dired split to another]]
+     - [[#create-a-dired-file-with-][Create a dired file with =|=]]
+     - [[#dired-imenu][Dired imenu]]
+     - [[#dired-extras][Dired extras]]
+     - [[#find-duplicated-files][Find duplicated files]]
  - [[#programming][Programming]]
      - [[#jump-to-definition-using-tags][Jump to definition using tags]]
      - [[#key-bindings][Key bindings]]
@@ -127,7 +135,6 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#multiple-cursors][Multiple cursors]]
      - [[#jump-to-characters][Jump to characters]]
      - [[#query-replace-using-regexps][Query replace using regexps]]
-     - [[#dired][Dired]]
      - [[#scroll-with-arrows][Scroll with arrows]]
      - [[#join-lines-a-la-vim][Join lines a la vim]]
      - [[#kill-buffer-and-file][Kill buffer and file]]
@@ -139,10 +146,11 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#create-scratch-buffer][Create scratch buffer]]
      - [[#duplicate-line][Duplicate line]]
      - [[#go-to-beginningend-of-buffer][Go to beginning/end of buffer]]
+     - [[#run-shell-command][Run shell command]]
+     - [[#access-recent-files][Access recent files]]
  - [[#enable-some-dangerous-commands][Enable some "dangerous" commands]]
      - [[#upcase-region][Upcase region]]
  - [[#emacs-customize-custom-file][Emacs' customize custom file]]
- - [[#run-shell-command][Run shell command]]
 
 * Emacs dependency management
 I use [[https://github.com/cask/cask][Cask]] for dependency management and [[https://github.com/rdallasgray/pallet][Pallet]] as a package manager
@@ -513,26 +521,6 @@ region:
 ** Open really large files with vlf
 #+BEGIN_SRC elisp
   (require 'vlf-integrate)
-#+END_SRC
-
-** Easily copy from one dired split to another
-#+BEGIN_SRC elisp
-(setq dired-dwim-target t)
-#+END_SRC
-
-** Create a dired file with =|=
-#+BEGIN_SRC elisp
-  (require 'dired)
-  
-  (defun dired-create-file (filename)
-    "Create FILENAME from Dired in if not exists.
-  If FILENAME already exists do nothing."
-    (interactive "FCreate file: ")
-    (shell-command (format "touch %s" filename))
-    (when (file-exists-p filename)
-      (dired-add-file filename)
-      (dired-move-to-filename)))
-  (define-key dired-mode-map "|" 'dired-create-file)
 #+END_SRC
 
 ** Use mykie for extending keybindings
@@ -954,6 +942,90 @@ yziKVRL8P2PtotxNYkfyP3edSpr+ZiD8IVtUI0sqgvYmKcrBBuwsZ2RfD/RB
              :recursive t
              :publishing-function org-publish-attachment))))
 #+END_SRC
+* Dired
+
+General commands
+| C-M-n | next subdir                                        |
+| C-M-p | previous subdir                                    |
+| M-}   | next marked file                                   |
+| M-{   | previous marked file                               |
+| (     | toggle details                                     |
+| i     | display subdir listing in current dired buffer     |
+| C-u i | same as i but you're able to specify `ls` switches |
+| C-u k | delete a subdir listing                            |
+| \$    | hide/show subdirlisting                            |
+
+Commands that act on files
+| C-u C-u         | Use all files present, but no directories.  |
+| C-u C-u C-u     | Use all files and dirs except `.' and `..'. |
+| C-u C-u C-u C-u | Use all files and dirs, `.' and `..'.       |
+
+** Easily copy from one dired split to another
+#+BEGIN_SRC elisp
+  (require 'dired-x)
+  (setq dired-dwim-target t)
+#+END_SRC
+
+** Create a dired file with =|=
+#+BEGIN_SRC elisp
+  (require 'dired)
+  
+  (defun dired-create-file (filename)
+    "Create FILENAME from Dired in if not exists.
+  If FILENAME already exists do nothing."
+    (interactive "FCreate file: ")
+    (shell-command (format "touch %s" filename))
+    (when (file-exists-p filename)
+      (dired-add-file filename)
+      (dired-move-to-filename)))
+  (define-key dired-mode-map "|" 'dired-create-file)
+#+END_SRC
+
+** Activate ggtags on projects
+#+BEGIN_SRC elisp
+  (add-hook 'dired-mode-hook (lambda ()
+                               (when (and (fboundp 'projectile-project-p)
+                                          (projectile-project-p))
+                                 (ggtags-mode))))
+#+END_SRC
+
+** Dired imenu
+#+BEGIN_SRC elisp
+  (require 'dired-imenu)
+#+END_SRC
+
+** Dired extras
+#+BEGIN_SRC elisp
+  (require 'dired+)
+  (define-key ctl-x-map   "d" 'diredp-dired-files)
+  (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
+#+END_SRC
+
+*** Reuse dired buffer
+#+BEGIN_SRC elisp
+  (toggle-diredp-find-file-reuse-dir 1)
+#+END_SRC
+
+*** Wrap around commands
+#+BEGIN_SRC elisp
+  (setq diredp-wrap-around-flag t)
+#+END_SRC
+
+*** Hide details by default
+#+BEGIN_SRC elisp
+  (setq diredp-hide-details-initially-flag t)
+#+END_SRC
+
+*** Display images
+#+BEGIN_SRC elisp
+  (setq diredp-display-images t)
+#+END_SRC
+
+** Find duplicated files
+#+BEGIN_SRC elisp
+  (require 'dired-dups)
+#+END_SRC
+
 * Programming
 ** Jump to definition using tags
 Code navigation using GNU Global and Exuberant Ctags.
@@ -1161,6 +1233,19 @@ integrates with ggtags.
 
 #+BEGIN_SRC elisp
   (require 'magit)
+
+  (require 'git-link)
+  (setq git-link-remote-alist
+    '(("git@github.com" git-link-github)
+      ("github.com" git-link-github)
+      ("bitbucket.org" git-link-bitbucket)
+      ("gitorious.org" git-link-gitorious)))
+
+  (setq git-link-commit-remote-alist
+    '(("git@github.com" git-link-github)
+      ("github.com" git-link-github)
+      ("bitbucket.org" git-link-bitbucket)
+      ("gitorious.org" git-link-gitorious)))
 #+END_SRC
 
 ** Searching in files with Ag
@@ -1288,9 +1373,8 @@ Treat ~.jinja~ as html.
 #+BEGIN_SRC elisp
   (defun setup-haskell-mode ()
     (interactive)
-    (haskell-doc-mode)
-    (haskell-indentation-mode)
-    (inf-haskell-mode))
+    (turn-on-haskell-doc-mode)
+    (turn-on-haskell-indentation))
 
   (add-hook 'haskell-mode-hook 'setup-haskell-mode)
 #+END_SRC
@@ -1299,7 +1383,7 @@ Treat ~.jinja~ as html.
 Set the command used to run scheme.
 #+BEGIN_SRC elisp
   (setq scheme-program-name "guile"
-        geiser-scheme-implementation scheme-program-name)
+        geiser-default-implementation scheme-program-name)
   (autoload 'scheme-smart-comple "scheme-complete" nil t)
   (autoload 'scheme-smart-indent-function "scheme-complete" nil t)
 
@@ -1307,6 +1391,7 @@ Set the command used to run scheme.
       "Configure scheme mode"
       (interactive)
       (paredit-mode)
+      (geiser-mode)
       (define-key scheme-mode-map "\e\t" 'scheme-smart-complete)
       (make-local-variable 'eldoc-documentation-function)
       (setq lisp-indent-function 'scheme-smart-indent-function
@@ -1343,6 +1428,7 @@ The execute =M-x geiser= to launch a scheme implementation.
 | C-M-3      | Split window vertically selecting a buffer.   |
 | C-M-0      | Delete split.                                 |
 | C-M-o      | Switch other window.                          |
+| C-M-S-o    | Switch other window backwards.                |
 | s-<up>     | Enlarge window.                               |
 | s-<down>   | Shrink window.                                |
 | s-M-<up>   | Enlarge window horizontally.                  |
@@ -1366,6 +1452,7 @@ The execute =M-x geiser= to launch a scheme implementation.
   (global-set-key (kbd "C-M-3") 'split-window-other-buffer-right)
   (global-set-key (kbd "C-M-0") 'delete-window)
   (global-set-key (kbd "C-M-o") 'other-window)
+  (global-set-key (kbd "C-M-S-o") 'other-window-backward)
   (global-set-key (kbd "C-x 9") 'quit-other-window)
   (global-set-key (kbd "s-<up>") 'enlarge-window)
   (global-set-key (kbd "s-<down>") 'shrink-window)
@@ -1506,6 +1593,8 @@ While searching
   (global-set-key (kbd "C-M->") 'mc/skip-to-next-like-this)
   (global-set-key (kbd "C-M-<") 'mc/skip-to-previous-like-this)
   (global-set-key (kbd "C-c C-0") 'mc/mark-all-like-this)
+  (global-unset-key (kbd "M-<down-mouse-1>"))
+  (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click)
 #+END_SRC
 
 ** Jump to characters
@@ -1523,20 +1612,6 @@ While searching
 ** Query replace using regexps
 #+BEGIN_SRC elisp
   (global-set-key (kbd "M-%") 'query-replace-regexp)
-#+END_SRC
-
-** Dired
-#+BEGIN_SRC elisp
-  (require 'dired-imenu)
-  (require 'dired-x)
-  (put 'dired-find-alternate-file 'disabled nil)
-  (mykie:set-keys dired-mode-map
-    "^" :default (find-alternate-file "..") :C-u dired-up-directory)
-
-  (add-hook 'dired-mode-hook (lambda ()
-                               (when (and (fboundp 'projectile-project-p)
-                                          (projectile-project-p))
-                                 (ggtags-mode))))
 #+END_SRC
 
 ** Scroll with arrows
@@ -1566,9 +1641,15 @@ While searching
 #+END_SRC
 
 ** Git
-
 #+BEGIN_SRC elisp
-  (global-set-key (kbd "C-c m m") 'git-messenger:popup-message)
+  (global-set-key (kbd "C-c g m") 'git-messenger:popup-message)
+  (global-set-key (kbd "C-c g g") 'git-gutter-mode)
+  (global-set-key (kbd "s-N") 'git-gutter:next-hunk)
+  (global-set-key (kbd "s-P") 'git-gutter:previous-hunk)
+  (global-set-key (kbd "C-c g s") 'git-gutter:stage-hunk)
+  (global-set-key (kbd "C-c g r") 'git-gutter:revert-hunk)
+
+  (global-set-key (kbd "C-c m l") 'git-link)
   (global-set-key (kbd "C-c m s") 'magit-status)
   (global-set-key (kbd "C-c m b") 'magit-blame-mode)
   (global-set-key (kbd "C-c m d") 'magit-diff)
