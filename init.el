@@ -1,6 +1,7 @@
 (require 'cask "~/.cask/cask.el")
 (add-to-list 'load-path (expand-file-name "~/elisp/org-mode/lisp"))
 (add-to-list 'load-path (expand-file-name "~/elisp/org-mode/contrib/lisp"))
+(load "~/.emacs.d/custom-paths.el" 'noerror)
 
 (cask-initialize)
 (require 'pallet)
@@ -27,3 +28,4 @@
         (goto-char (point-max)))))))
 
 (load-init "~/.emacs.d/README.org")
+(put 'downcase-region 'disabled nil)

@@ -160,6 +160,7 @@ file).
   (require 'cask "~/.cask/cask.el")
   (add-to-list 'load-path (expand-file-name "~/elisp/org-mode/lisp"))
   (add-to-list 'load-path (expand-file-name "~/elisp/org-mode/contrib/lisp"))
+  (load "~/.emacs.d/custom-paths.el" 'noerror)
 
   (cask-initialize)
   (require 'pallet)
@@ -605,6 +606,8 @@ Lisp object at point (function or variable) with =M-.= jump back with
 
 ** Centered window mode
 #+BEGIN_SRC elisp
+  (setq cwm/top-padding-factor .12
+        cwm/reset-on-splitting-horizontally nil)
   (centered-window-mode)
 #+END_SRC
 
