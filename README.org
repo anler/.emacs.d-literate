@@ -1374,7 +1374,8 @@ Treat ~.jinja~ as html.
   (defun setup-haskell-mode ()
     (interactive)
     (turn-on-haskell-doc-mode)
-    (turn-on-haskell-indentation))
+    (turn-on-haskell-indentation)
+    (interactive-haskell-mode))
 
   (add-hook 'haskell-mode-hook 'setup-haskell-mode)
 #+END_SRC
