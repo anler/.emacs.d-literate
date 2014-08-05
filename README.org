@@ -495,11 +495,21 @@ for buffer and file names.
 #+END_SRC
 [[file:img/ido-at-point.gif]]
 
-** Better help with discover.el
+** Better help with discover.el and guide-key
 See [[http://www.masteringemacs.org/articles/2013/12/21/discoverel-discover-emacs-context-menus/][discover.el]].
 #+BEGIN_SRC elisp
   (require 'discover)
   (global-discover-mode)
+#+END_SRC
+
+See [[https://github.com/aki2o/guide-key-tip][guide-key-tip]].
+#+BEGIN_SRC elisp
+(require 'guide-key)
+(setq guide-key/guide-key-sequence '("C-x" "C-c" "C-x 4"))
+(guide-key-mode 1)  ; Enable guide-key-mode
+
+  (require 'guide-key-tip)
+  (setq guide-key-tip/enable t)
 #+END_SRC
 
 ** Disable transient-mark-mode
