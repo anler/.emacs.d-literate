@@ -43,7 +43,7 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#use-it-in-all-possible-places][Use it in all possible places]]
      - [[#use-a-vertical-interface-not-at-the-moment][Use a vertical interface... not at the moment]]
      - [[#ido-interface-when-using-completion-at-point][Ido interface when using ~completion-at-point~.]]
-     - [[#better-help-with-discoverel][Better help with discover.el]]
+     - [[#better-help-with-discoverel-and-guide-key][Better help with discover.el and guide-key]]
      - [[#disable-transient-mark-mode][Disable transient-mark-mode]]
      - [[#keep-abbrev-expansion-predictable][Keep abbrev expansion predictable]]
      - [[#spice-info-mode][Spice info mode]]
@@ -92,6 +92,7 @@ literate-programming style taught to me by my good friend [[https://github.com/m
  - [[#dired][Dired]]
      - [[#easily-copy-from-one-dired-split-to-another][Easily copy from one dired split to another]]
      - [[#create-a-dired-file-with-][Create a dired file with =|=]]
+     - [[#activate-ggtags-on-projects][Activate ggtags on projects]]
      - [[#dired-imenu][Dired imenu]]
      - [[#dired-extras][Dired extras]]
      - [[#find-duplicated-files][Find duplicated files]]
@@ -504,9 +505,9 @@ See [[http://www.masteringemacs.org/articles/2013/12/21/discoverel-discover-emac
 
 See [[https://github.com/aki2o/guide-key-tip][guide-key-tip]].
 #+BEGIN_SRC elisp
-(require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x" "C-c" "C-x 4"))
-(guide-key-mode 1)  ; Enable guide-key-mode
+  (require 'guide-key)
+  (setq guide-key/guide-key-sequence '("C-x" "C-c" "C-x 4" "C-x v"))
+  (guide-key-mode 1)  ; Enable guide-key-mode
 
   (require 'guide-key-tip)
   (setq guide-key-tip/enable t)
