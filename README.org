@@ -1717,6 +1717,8 @@ While searching
 ** Upcase region
 #+BEGIN_SRC elisp
   (put 'upcase-region 'disabled nil)
+  (put 'downcase-region 'disabled nil)
+  (put 'narrow-to-region 'disabled nil)
 #+END_SRC
 
 * Emacs' customize custom file

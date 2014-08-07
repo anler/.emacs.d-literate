@@ -28,4 +28,3 @@
         (goto-char (point-max)))))))
 
 (load-init "~/.emacs.d/README.org")
-(put 'downcase-region 'disabled nil)
