@@ -1,0 +1,4 @@
+#name: autoload-comment
+#key: aload
+# --
+;;;###autoload

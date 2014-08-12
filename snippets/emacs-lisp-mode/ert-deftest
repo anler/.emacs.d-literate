@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: ert-deftest
+# key: ert
+# --
+(ert-deftest ${1:fun} ()
+  "${2:Shoud do something when somehting else.}"
+  $0)
