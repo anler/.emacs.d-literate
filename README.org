@@ -78,6 +78,7 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#terminal][Terminal]]
      - [[#executing-shell-commands][Executing shell commands]]
  - [[#org-mode][Org mode]]
+     - [[#text][Text]]
      - [[#colorize-code-blocks][Colorize code blocks]]
      - [[#display-inline-images][Display inline images]]
      - [[#export-latex-fragments][Export LaTeX fragments]]
@@ -88,7 +89,6 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#export-code-blocks-with-colors][Export code blocks with colors]]
      - [[#ditaa-executable-path][Ditaa executable path]]
      - [[#encrypting][Encrypting]]
-     - [[#personal-blog][Personal blog]]
  - [[#dired][Dired]]
      - [[#easily-copy-from-one-dired-split-to-another][Easily copy from one dired split to another]]
      - [[#create-a-dired-file-with-][Create a dired file with =|=]]
@@ -97,6 +97,7 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#dired-extras][Dired extras]]
      - [[#find-duplicated-files][Find duplicated files]]
  - [[#programming][Programming]]
+     - [[#refactoring][Refactoring]]
      - [[#jump-to-definition-using-tags][Jump to definition using tags]]
      - [[#key-bindings][Key bindings]]
      - [[#installation-instructions][Installation instructions]]
@@ -149,6 +150,7 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#go-to-beginningend-of-buffer][Go to beginning/end of buffer]]
      - [[#run-shell-command][Run shell command]]
      - [[#access-recent-files][Access recent files]]
+ - [[#personal-blog][Personal blog]]
  - [[#enable-some-dangerous-commands][Enable some "dangerous" commands]]
      - [[#upcase-region][Upcase region]]
  - [[#emacs-customize-custom-file][Emacs' customize custom file]]
@@ -205,6 +207,18 @@ Taken from [[http://nullprogram.com/blog/2010/11/15/][nullprogram]].
                     (end-of-line)
                     (point))))
       (comment-or-uncomment-region start end)))
+
+  (defun comment-or-uncomment-lisp-form ()
+    "Comment or uncomment current lisp form"
+    (interactive)
+    (save-excursion
+      (beginning-of-line)
+      (if (search-forward-regexp ";+ " (save-excursion
+                                         (end-of-line)
+                                         (point))
+                                 :noerror)
+          (call-interactively 'emr-lisp-uncomment-block)
+        (call-interactively 'emr-lisp-comment-form))))
 #+END_SRC
 
 ** Scroll the buffer
@@ -619,7 +633,7 @@ Lisp object at point (function or variable) with =M-.= jump back with
 #+BEGIN_SRC elisp
   (setq cwm/top-padding-factor .12
         cwm/reset-on-splitting-horizontally nil)
-  (centered-window-mode)
+  ;; (centered-window-mode)
 #+END_SRC
 
 * Appearance
@@ -815,6 +829,13 @@ Disable some conflicting modes when running inside a Terminal buffer.
 | C-u M-\vert | shell-command-on-region | Same as above but puts command output in the current burrer. |
 
 * Org mode
+** Text
+#+BEGIN_SRC elisp
+  (add-hook 'org-mode-hook (lambda ()
+                             (set-fill-column 99)
+                             (auto-fill-mode)))
+#+END_SRC
+
 ** Colorize code blocks
 #+BEGIN_SRC elisp
   (setq org-src-fontify-natively t)
@@ -928,34 +949,6 @@ yziKVRL8P2PtotxNYkfyP3edSpr+ZiD8IVtUI0sqgvYmKcrBBuwsZ2RfD/RB
 =efPi
 -----END PGP MESSAGE-----
 
-** Personal blog
-#+BEGIN_SRC elisp
-  (let* ((base-directory "~/repos-public/ikame.github.io")
-         (publishing-directory (s-concat base-directory "/compiled")))
-    (setq org-html-doctype "html5"
-          org-publish-project-alist
-          `(("anler.me" :components ("anler.me:blog" "anler.me:static"))
-            ("anler.me:blog"
-             :base-directory ,base-directory
-             :base-extension "org"
-             :publishing-directory ,publishing-directory
-             :recursive t
-             :auto-preamble t
-             :auto-postamble nil
-             :auto-sitemap nil
-             :table-of-contents t
-             :publishing-function org-html-publish-to-html
-             :html-postamble "<p>Built with <a href=\"http://orgmode.org/\">org mode</a></p>"
-             :section-numbers nil
-             :author-info nil
-             :creator-info nil)
-            ("anler.me:static"
-             :base-directory ,base-directory
-             :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-             :publishing-directory ,publishing-directory
-             :recursive t
-             :publishing-function org-publish-attachment))))
-#+END_SRC
 * Dired
 
 General commands
@@ -1011,8 +1004,8 @@ Commands that act on files
 ** Dired extras
 #+BEGIN_SRC elisp
   (require 'dired+)
-  (define-key ctl-x-map   "d" 'diredp-dired-files)
-  (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
+  ;; (define-key ctl-x-map   "d" 'diredp-dired-files)
+  ;; (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
 #+END_SRC
 
 *** Reuse dired buffer
@@ -1041,6 +1034,13 @@ Commands that act on files
 #+END_SRC
 
 * Programming
+** Refactoring
+#+BEGIN_SRC elisp
+  (add-hook 'prog-mode-hook (lambda ()
+                              (emr-initialize)
+                              (local-set-key (kbd "M-RET") 'emr-show-refactor-menu)))
+#+END_SRC
+
 ** Jump to definition using tags
 Code navigation using GNU Global and Exuberant Ctags.
 See [[https://github.com/leoliu/ggtags][leoliu/ggtags]] for a complete reference and installation guide.
@@ -1189,11 +1189,9 @@ For removing the wrong spaces just call the command
 =whitespace-cleanup=. Here I just set it auto for all programming
 modes:
 #+BEGIN_SRC elisp
-  (defun setup-programming-modes ()
-    (interactive)
-    (setq whitespace-style '(lines-tail tabs tab-mark trailing empty))
-    (add-hook 'before-save-hook 'whitespace-cleanup nil t))
-  (add-hook 'prog-mode-hook 'setup-programming-modes)
+  (add-hook 'prog-mode-hook '(lambda ()
+                               (setq whitespace-style '(lines-tail tabs tab-mark trailing empty))
+                               (add-hook 'before-save-hook 'whitespace-cleanup nil t)))
 #+END_SRC
 
 ** Snippets
@@ -1335,9 +1333,10 @@ to have just one ag buffer openend:
     "Configure emacs-lisp mode"
     (interactive)
     (paredit-mode)
-    (turn-on-eldoc-mode))
+    (turn-on-eldoc-mode)
+    (local-set-key (kbd "C-;") #'comment-or-uncomment-lisp-form))
 
-  (add-hook 'emacs-lisp-mode-hook 'setup-emacs-lisp-mode)
+  (add-hook 'emacs-lisp-mode-hook #'setup-emacs-lisp-mode)
 #+END_SRC
 
 ** Python
@@ -1509,9 +1508,33 @@ The execute =M-x geiser= to launch a scheme implementation.
 | C-x C-e         | Show the result in the minibuffer.             |
 | C-u C-x C-e     | Write the result after the sexp in the buffer. |
 | C-u C-u C-x C-e | Replace sexp with the actual result.           |
+| C-M-x           | Eval defun.                                    |
+| M-s-x           | Eval current sexp.                             |
+| M-s-b           | Eval buffer.                                   |
+| M-s-r           | Eval region.                                   |
 
 #+BEGIN_SRC elisp
   (global-set-key (kbd "C-x C-e") 'ext/eval-last-sexp)
+
+  (global-set-key (kbd "M-s-e") (lambda ()
+                                  (interactive)
+                                  (let ((ok (sp-get-enclosing-sexp)))
+                                    (when ok
+                                      (save-excursion
+                                        (let ((beg (sp-get ok :beg))
+                                              (end (sp-get ok :end)))
+                                          (eval-region beg end t)
+                                          (flash-region beg end)))))))
+
+  (global-set-key (kbd "M-s-b") (lambda ()
+                                  (interactive)
+                                  (eval-buffer)
+                                  (flash-region (point-min) (point-max))))
+
+  (global-set-key (kbd "M-s-r") (lambda (beg end)p
+                                  (interactive "r")
+                                  (eval-region beg end)
+                                  (flash-region beg end)))
 #+END_SRC
 
 ** Expand region
@@ -1640,7 +1663,7 @@ While searching
 
 ** Join lines a la vim
 #+BEGIN_SRC elisp
-  (global-set-key (kbd "M-j") 'join-line-below)
+  (global-set-key (kbd "C-S-j") 'join-line-below)
 #+END_SRC
 
 ** Kill buffer and file
@@ -1711,6 +1734,46 @@ While searching
 ** Access recent files
 #+BEGIN_SRC elisp
   (global-set-key (kbd "C-M-r") 'recentf-open-files)
+#+END_SRC
+
+* Personal blog
+#+BEGIN_SRC elisp
+  (require 'org-page)
+  (setq op/repository-directory "~/repos/public/ikame.github.io/"
+        op/personal-github-link "https://github.com/ikame"
+        op/site-domain "http://ikame.github.io/"
+        op/site-main-title "anler.me"
+        op/site-sub-title ":: '(thoughts from an outsider)"
+        op/personal-disqus-shortname "anler"
+        op/personal-google-analytics-id "UA-234"
+        op/category-config-alist '(("blog"
+                                    :show-meta t
+                                    :show-comment t
+                                    :uri-generator (op/generate-uri
+                                                    :uri-template "/blog/%t/")
+                                    :sort-by :date
+                                    :category-index t)
+                                   ("index"
+                                    :show-meta t
+                                    :show-comment nil
+                                    :uri-generator op/generate-uri
+                                    :uri-template "/"
+                                    :sort-by :date
+                                    :category-index nil)
+                                   ("wiki"
+                                    :show-meta t
+                                    :show-comment nil
+                                    :uri-generator op/generate-uri
+                                    :uri-template "/wiki/%t/"
+                                    :sort-by :mod-date
+                                    :category-index t)
+                                   ("about"
+                                    :show-meta nil
+                                    :show-comment nil
+                                    :uri-generator op/generate-uri
+                                    :uri-template "/about/"
+                                    :sort-by :date
+                                    :category-index nil)))
 #+END_SRC
 
 * Enable some "dangerous" commands
