@@ -671,11 +671,6 @@ Lisp object at point (function or variable) with =M-.= jump back with
     (setq frame-title-format '(buffer-file-name "%f" ("%b"))))
 #+END_SRC
 
-** Change default font
-#+BEGIN_SRC elisp
-  (add-to-list 'default-frame-alist '(font . "Fantasque Sans Mono-13"))
-#+END_SRC
-
 ** Mark empty lines... not at the moment
 Indicate empty lines in the left fringe (exactly the same
 functionality VIM has to mark the empty lines with =~=).
@@ -689,7 +684,7 @@ functionality VIM has to mark the empty lines with =~=).
   (defvar current-theme nil "Name of the theme being used.")
   (defvar themes-list nil "Cycle through these themes")
 
-  (setq themes-list (cycle '(noctilux default)))
+  (setq themes-list (cycle '(noctilux solarized-dark solarized-light leuven default)))
 
   (defun use-next-theme ()
     "Use the next theme in themes-list."
@@ -705,13 +700,10 @@ functionality VIM has to mark the empty lines with =~=).
   (defun my/enable-theme (theme)
     (unless (eq theme 'default)
       (setq current-theme theme)
-      (load-theme current-theme t)))
+      (load-theme current-theme t))
+    (set-default-font "Fantasque Sans Mono-13" :keep-size))
 
   (use-next-theme)
-#+END_SRC
-** Default face
-#+BEGIN_SRC elisp
-  (set-face-attribute 'default nil :height 112)
 #+END_SRC
 
 * Shells
@@ -1734,6 +1726,11 @@ While searching
 ** Access recent files
 #+BEGIN_SRC elisp
   (global-set-key (kbd "C-M-r") 'recentf-open-files)
+#+END_SRC
+
+** Toggle fullscreen
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "<f11>") 'fullscreen-mode-fullscreen-toggle)
 #+END_SRC
 
 * Personal blog
