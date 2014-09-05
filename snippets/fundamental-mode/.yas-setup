@@ -1,0 +1,3 @@
+(defun current-mode-name ()
+  "Get the name of the current active mode"
+  (substring (symbol-name major-mode) 0 -5))

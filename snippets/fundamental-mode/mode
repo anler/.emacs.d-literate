@@ -2,4 +2,4 @@
 # name: mode
 # key: mode
 # --
-`(yas-with-comment "-*- mode: ${1:mode} -*-")`
+# -*- mode: ${1:`(current-mode-name)`} -*-$0
