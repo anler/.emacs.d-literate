@@ -1,4 +1,4 @@
-#+STARTUP: showall
+#+STARTUP: content
 * About
 [[https://raw.githubusercontent.com/ikame/.emacs.d/master/img/emacs.png]]
 
@@ -636,6 +636,23 @@ Lisp object at point (function or variable) with =M-.= jump back with
   ;; (centered-window-mode)
 #+END_SRC
 
+** Autocomplete
+#+BEGIN_SRC elisp
+  (add-hook 'after-init-hook 'global-company-mode)
+#+END_SRC
+
+** Better window movement
+
+| C-x w   | smart-window-move         |
+| C-x W   | smart-window-buffer-split |
+| C-x M-w | smart-window-file-split   |
+| C-x R   | smart-window-rotate       |
+| C-x 2   | sw-below                  |
+| C-x 3   | sw-right                  |
+
+#+BEGIN_SRC elisp
+  (require 'smart-window)
+#+END_SRC
 * Appearance
 ** Inhibit startup screen
 #+BEGIN_SRC elisp
@@ -684,7 +701,7 @@ functionality VIM has to mark the empty lines with =~=).
   (defvar current-theme nil "Name of the theme being used.")
   (defvar themes-list nil "Cycle through these themes")
 
-  (setq themes-list (cycle '(noctilux solarized-dark solarized-light leuven default)))
+  (setq themes-list (cycle '(noctilux subatomic leuven)))
 
   (defun use-next-theme ()
     "Use the next theme in themes-list."
@@ -1070,15 +1087,20 @@ Ubuntu:
   apt-get install exuberant-ctags
 #+END_SRC
 
+Fedora:
+#+BEGIN_SRC sh
+  yum install -y ctags-etags
+#+END_SRC
+
 2. Install GnuGlobal
 Download here: https://www.gnu.org/software/global/download.html
 Un-tar.
 cd into it.
 And install:
 #+BEGIN_SRC sh
-  ./configure --prefix=/usr/local --with-exuberant-ctags=`which ctags`
+  ./configure --with-exuberant-ctags=$(which ctags)
   make
-  make installp
+  make install
 #+END_SRC
 
 3. Pygments plugin for GnuGlobal
@@ -1093,16 +1115,22 @@ Ubuntu
   apt-get install python-pip
 #+END_SRC
 
+Fedora
+#+BEGIN_SRC sh
+  yum install -y python-pip
+#+END_SRC
+
 Install Pygments if necessary:
 #+BEGIN_SRC sh
-  pip install pygments
+  pip install --user pygments
 #+END_SRC
 
 Download Pygments plugin here: https://github.com/yoshizow/global-pygments-plugin
 cd into it and install:
 #+BEGIN_SRC sh
+  yum install -y libtool
   sh reconf.sh
-  ./configure --prefix=/usr/local --with-exuberant-ctags=`which ctags`
+  ./configure --with-exuberant-ctags=`which ctags`
   make
   make install
 #+END_SRC

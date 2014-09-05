@@ -1,6 +1,8 @@
 (require 'cask "~/.cask/cask.el")
-(add-to-list 'load-path (expand-file-name "~/elisp/org-mode/lisp"))
-(add-to-list 'load-path (expand-file-name "~/elisp/org-mode/contrib/lisp"))
+
+;; Path to manually installed tramp version (2.2.10) since couldn't use sudo with
+;; the default one (2.2.6) in Fedora 20
+(add-to-list 'load-path (expand-file-name "/usr/local/share/emacs/site-lisp"))
 
 (cask-initialize)
 (require 'pallet)
@@ -27,4 +29,4 @@
         (goto-char (point-max)))))))
 
 (load-init "~/.emacs.d/README.org")
-(load "~/.emacs.d/custom-paths.el" 'noerror)
+(load "~/.emacs.d/custom-packages-load-path.el" 'noerror)
