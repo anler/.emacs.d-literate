@@ -57,6 +57,8 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#hunspell-hanging-my-emacs][Hunspell hanging my emacs]]
      - [[#allow-answer-y-for-yes][Allow answer `y` for `yes`]]
      - [[#centered-window-mode][Centered window mode]]
+     - [[#autocompletion][Autocompletion]]
+     - [[#better-window-movement][Better window movement]]
  - [[#appearance][Appearance]]
      - [[#inhibit-startup-screen][Inhibit startup screen]]
      - [[#hide-scroll-bars][Hide scroll bars]]
@@ -64,10 +66,8 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#hide-menu-bar][Hide menu bar]]
      - [[#disable-cursor-blink][Disable cursor blink]]
      - [[#buffer-file-name-as-frame-title][Buffer file name as frame title]]
-     - [[#change-default-font][Change default font]]
      - [[#mark-empty-lines-not-at-the-moment][Mark empty lines... not at the moment]]
      - [[#cycle-through-color-themes][Cycle through color themes]]
-     - [[#default-face][Default face]]
  - [[#shells][Shells]]
      - [[#eshell-elisp-shell][Eshell (Elisp Shell)]]
      - [[#config-inside-emacs][Config inside Emacs]]
@@ -103,10 +103,6 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#installation-instructions][Installation instructions]]
      - [[#treat-camel-case-word-as-subwords][Treat camel case word as subwords]]
      - [[#auto-closing-and-highlighting-parens][Auto-closing and highlighting parens]]
-     - [[#highlight-corresponding-paren][Highlight corresponding paren.]]
-     - [[#auto-close-paren][Auto-close paren]]
-     - [[#special-case-for-curly-braces][Special case for curly braces]]
-     - [[#dont-highlight-text-between-parens][Don't highlight text between parens.]]
      - [[#expand-region][Expand region]]
      - [[#wrap-region][Wrap region]]
      - [[#display-trailing-whitespace][Display trailing whitespace]]
@@ -120,6 +116,7 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#common-lisp][Common Lisp]]
      - [[#emacs-lisp][Emacs Lisp]]
      - [[#python][Python]]
+     - [[#sql][SQL]]
      - [[#pretty-symbols][Pretty symbols]]
      - [[#haskell][Haskell]]
      - [[#scheme][Scheme]]
@@ -129,6 +126,7 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#transpose-chars-or-region][Transpose chars or region]]
      - [[#change-theme][Change theme]]
      - [[#evaluating-sexps][Evaluating Sexps]]
+     - [[#kill-sexp-backwards][Kill Sexp backwards]]
      - [[#expand-region][Expand region]]
      - [[#commentuncomment-lineregion][Comment/Uncomment line/region]]
      - [[#search][Search]]
@@ -150,6 +148,8 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#go-to-beginningend-of-buffer][Go to beginning/end of buffer]]
      - [[#run-shell-command][Run shell command]]
      - [[#access-recent-files][Access recent files]]
+     - [[#toggle-fullscreen][Toggle fullscreen]]
+     - [[#run-last-eshell-command][Run last eshell command]]
  - [[#personal-blog][Personal blog]]
  - [[#enable-some-dangerous-commands][Enable some "dangerous" commands]]
      - [[#upcase-region][Upcase region]]
@@ -474,8 +474,12 @@ I do this very often, this is my insurance.
 ** Start an Emacs server on startup
 #+BEGIN_SRC elisp
   (require 'server)
+
+  (setq server-use-tcp t
+        server-socket-dir "~/.emacs.d/server")
+
   (unless (server-running-p)
-      (server-mode))
+      (server-start))
 #+END_SRC
 
 ** Enable ido-mode
@@ -567,8 +571,6 @@ region:
       '(diminish 'projectile-mode))
     (eval-after-load "whitespace"
       '(diminish 'global-whitespace-mode))
-    (eval-after-load "smartparens"
-      '(diminish 'smartparens-mode))
     (eval-after-load "paredit"
       '(diminish 'paredit-mode))
     (eval-after-load "eldoc"
@@ -636,9 +638,10 @@ Lisp object at point (function or variable) with =M-.= jump back with
   ;; (centered-window-mode)
 #+END_SRC
 
-** Autocomplete
+** Autocompletion
 #+BEGIN_SRC elisp
   (add-hook 'after-init-hook 'global-company-mode)
+  (global-set-key (kbd "M-/") 'hippie-expand)
 #+END_SRC
 
 ** Better window movement
@@ -718,7 +721,8 @@ functionality VIM has to mark the empty lines with =~=).
     (unless (eq theme 'default)
       (setq current-theme theme)
       (load-theme current-theme t))
-    (set-default-font "Fantasque Sans Mono-13" :keep-size))
+    (set-default-font "Fantasque Sans Mono-15" :keep-size)
+    (setq default-frame-alist '((font . "Fantasque Sans Mono-15"))))
 
   (use-next-theme)
 #+END_SRC
@@ -797,8 +801,7 @@ Making passwords invisible:
 #+BEGIN_SRC elisp
   (add-hook 'shell-mode-hook (lambda ()
                                (yas-minor-mode -1)
-                               (whitespace-mode -1)
-                               (smartparens-mode -1)))
+                               (whitespace-mode -1)))
 #+END_SRC
 
 Bash Completion:
@@ -1146,44 +1149,11 @@ Use the sample configuration file:
 #+END_SRC
 
 ** Auto-closing and highlighting parens
-** Highlight corresponding paren.
 #+BEGIN_SRC elisp
-  (show-paren-mode)
+  (show-paren-mode t)
+  (electric-pair-mode)
+  (setq show-paren-style 'mixed)
 #+END_SRC
-
-** Auto-close paren
-#+BEGIN_SRC elisp
-  (require 'smartparens-config)
-  (smartparens-global-mode)
-#+END_SRC
-
-** Special case for curly braces
-When inserting curly braces and hiting enter put the cursor in a new
-line between the braces:
-#+BEGIN_SRC text
-  {
-   |
-  }
-#+END_SRC
-
-#+BEGIN_SRC elisp
-  (defun create-newline-and-enter-sexp (&rest _ignored)
-    "Open a new brace or bracket expression, with relevant newlines and indent. "
-    (newline)
-    (indent-according-to-mode)
-    (forward-line -1)
-    (indent-according-to-mode))
-
-  (sp-pair "{" nil :post-handlers '((create-newline-and-enter-sexp "RET")))
-#+END_SRC
-
-** Don't highlight text between parens.
-#+BEGIN_SRC elisp
-  (setq sp-highlight-pair-overlay nil
-        sp-highlight-wrap-overlay nil
-        sp-highlight-wrap-tag-overlay nil)
-#+END_SRC
-
 ** Expand region
 [[https://github.com/magnars/expand-region.el][expand-region]] - [[http://emacsrocks.com/e09.html][-demo-]]
 
@@ -1365,29 +1335,57 @@ Global variables
   (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args "")
 #+END_SRC
-Macros
-#+BEGIN_SRC elisp
-  (fset 'python-try-except-line
-     [?\C-e ?\C-j ?t ?r ?y ?: ?\C-x ?\C-t ?\C-p tab ?\C-e ?\C-j backspace ?e ?x ?c ?e ?p ?t ?  ?E ?x ?c ?e ?p ?t ?i ?o ?n ?: ?\C-j])
-#+END_SRC
 
+Python mode
 #+BEGIN_SRC elisp
-  (defun setup-python-mode ()
-    "Custom command to setup python-mode"
+    (defun setup-python-mode ()
+      "Custom command to setup python-mode"
+      (interactive)
+      (let ((max-column 99))
+        (setq whitespace-line-column max-column
+              whitespace-style (append whitespace-style '(face lines-tail))
+              fill-column max-column
+              flycheck-flake8-maximum-line-length max-column))
+      (add-hook 'post-self-insert-hook #'python-electric-pair-string-delimiter 'append t)
+      (highlight-lines-matching-regexp "i?pdb.set_trace()")
+      (when (and (fboundp 'projectile-project-p)
+                 (projectile-project-p))
+        (flycheck-mode))
+      (ggtags-mode)
+      (anaconda-mode)
+      (define-key python-mode-map "\"" 'electric-pair)
+      (define-key python-mode-map "\'" 'electric-pair)
+      (define-key python-mode-map "(" 'electric-pair)
+      (define-key python-mode-map "[" 'electric-pair)
+      (define-key python-mode-map "{" 'electric-pair))
+
+    (defun python-electric-pair-string-delimiter ()
+      (when (and electric-pair-mode
+                 (memq last-command-event '(?\" ?\'))
+                 (let ((count 0))
+                   (while (eq (char-before (- (point) count)) last-command-event)
+                     (setq count (1+ count)))
+                   (= count 3)))
+        (save-excursion (insert (make-string 3 last-command-event)))))
+
+    (add-hook 'python-mode-hook 'setup-python-mode)
+
+  (defun electric-pair ()
+    "Insert character pair without surrounding spaces"
     (interactive)
-    (let ((max-column 99))
-      (setq python-shell-interpreter "ipython"
-            python-shell-interpreter-args ""
-            whitespace-line-column max-column
-            whitespace-style (append whitespace-style '(face lines-tail))
-            fill-column max-column
-            flycheck-flake8-maximum-line-length max-column))
-    (highlight-lines-matching-regexp "i?pdb.set_trace()")
-    (flycheck-mode)
-    (ggtags-mode)
-    (local-set-key (kbd "C-c t") 'python-try-except-line))
+    (let (parens-require-spaces)
+      (insert-pair)))
 
-  (add-hook 'python-mode-hook 'setup-python-mode)
+  (defun python-get-buffer-filename-as-module (buffername)
+    "Insert the path to the python module represented by BUFFERNAME"
+    (interactive "b")
+    (unless (string= (f-ext buffername) "py")
+      (error "%s is not a python module" buffername))
+    (let* ((path (f-short (buffer-file-name (get-buffer buffername))))
+           (project-root (f-short (projectile-root-bottom-up path '("manage.py"))))
+           (module-unix-path (s-chop-prefix project-root path))
+           (module-python-path (s-replace "/" "." (f-no-ext module-unix-path))))
+      (insert module-python-path)))
 #+END_SRC
 
 Treat ~.jinja~ as html.
@@ -1395,6 +1393,16 @@ Treat ~.jinja~ as html.
   (add-to-list 'auto-mode-alist '("\\.jinja\\'" . html-mode))
 #+END_SRC
 
+** SQL
+#+BEGIN_SRC elisp
+  (setq save-abbrevs nil)
+  (setq-default abbrev-mode t)
+
+  (define-abbrev-table 'sql-mode-abbrev-table
+    (mapcar #'(lambda (v) (list v (upcase v) nil 1))
+            '("absolute" "action" "add" "after" "all" "allocate" "alter" "and" "any" "are" "array" "as" "asc" "asensitive" "assertion" "asymmetric" "at" "atomic" "authorization" "avg" "before" "begin" "between" "bigint" "binary" "bit" "bitlength" "blob" "boolean" "both" "breadth" "by" "call" "called" "cascade" "cascaded" "case" "cast" "catalog" "char" "char_length" "character" "character_length" "check" "clob" "close" "coalesce" "collate" "collation" "column" "commit" "condition" "connect" "connection" "constraint" "constraints" "constructor" "contains" "continue" "convert" "corresponding" "count" "create" "cross" "cube" "current" "current_date" "current_default_transform_group" "current_path" "current_role" "current_time" "current_timestamp" "current_transform_group_for_type" "current_user" "cursor" "cycle" "data" "date" "day" "deallocate" "dec" "decimal" "declare" "default" "deferrable" "deferred" "delete" "depth" "deref" "desc" "describe" "descriptor" "deterministic" "diagnostics" "disconnect" "distinct" "do" "domain" "double" "drop" "dynamic" "each" "element" "else" "elseif" "end" "equals" "escape" "except" "exception" "exec" "execute" "exists" "exit" "external" "extract" "false" "fetch" "filter" "first" "float" "for" "foreign" "found" "free" "from" "full" "function" "general" "get" "global" "go" "goto" "grant" "group" "grouping" "handler" "having" "hold" "hour" "identity" "if" "immediate" "in" "indicator" "initially" "inner" "inout" "input" "insensitive" "insert" "int" "integer" "intersect" "interval" "into" "is" "isolation" "iterate" "join" "key" "language" "large" "last" "lateral" "leading" "leave" "left" "level" "like" "local" "localtime" "localtimestamp" "locator" "loop" "lower" "map" "match" "map" "member" "merge" "method" "min" "minute" "modifies" "module" "month" "multiset" "names" "national" "natural" "nchar" "nclob" "new" "next" "no" "none" "not" "null" "nullif" "numeric" "object" "octet_length" "of" "old" "on" "only" "open" "option" "or" "order" "ordinality" "out" "outer" "output" "over" "overlaps" "pad" "parameter" "partial" "partition" "path" "position" "precision" "prepare" "preserve" "primary" "prior" "privileges" "procedure" "public" "range" "read" "reads" "real" "recursive" "ref" "references" "referencing" "relative" "release" "repeat" "resignal" "restrict" "result" "return" "returns" "revoke" "right" "role" "rollback" "rollup" "routine" "row" "rows" "savepoint" "schema" "scope" "scroll" "search" "second" "section" "select" "sensitive" "session" "session_user" "set" "sets" "signal" "similar" "size" "smallint" "some" "space" "specific" "specifictype" "sql" "sqlcode" "sqlerror" "sqlexception" "sqlstate" "sqlwarning" "start" "state" "static" "submultiset" "substring" "sum" "symmetric" "system" "system_user" "table" "tablesample" "temporary" "then" "time" "timestamp" "timezone_hour" "timezone_minute" "to" "trailing" "transaction" "translate" "translation" "treat" "trigger" "trim" "true" "under" "undo" "union" "unique" "unknown" "unnest" "until" "update" "upper" "usage" "user" "using" "value" "values" "varchar" "varying" "view" "when" "whenever" "where" "while" "window" "with" "within" "without" "work" "write" "year" "zone")
+            ))
+#+END_SRC
 *** Helper functions
 #+BEGIN_SRC elisp
 #+END_SRC
@@ -1555,6 +1563,15 @@ The execute =M-x geiser= to launch a scheme implementation.
                                   (interactive "r")
                                   (eval-region beg end)
                                   (flash-region beg end)))
+#+END_SRC
+
+** Kill Sexp backwards
+| M-s-k | Kill sexp backwards. |
+
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "M-s-k") (lambda ()
+                                  (interactive)
+                                  (kill-sexp -1)))
 #+END_SRC
 
 ** Expand region
@@ -1761,6 +1778,13 @@ While searching
   (global-set-key (kbd "<f11>") 'fullscreen-mode-fullscreen-toggle)
 #+END_SRC
 
+** Run last eshell command
+#+BEGIN_SRC elisp
+  (fset 'run-last-eshell-command
+     (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([24 52 98 101 115 104 101 108 108 return 134217840 return 134217786 40 115 119 105 116 99 104 45 116 111 45 98 117 102 102 101 114 45 111 116 104 101 114 45 119 105 110 100 111 119 32 40 111 116 104 101 114 45 98 117 102 102 101 114 32 40 99 117 114 114 101 110 116 45 98 117 102 102 101 114 41 32 49 41 41 return] 0 "%d")) arg)))
+
+  (global-set-key [f12] 'run-last-eshell-command)
+#+END_SRC
 * Personal blog
 #+BEGIN_SRC elisp
   (require 'org-page)
