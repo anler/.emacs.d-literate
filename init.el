@@ -6,6 +6,7 @@
 
 (cask-initialize)
 (require 'pallet)
+(require 'cl)
 
 (defun load-init (path)
   "Load"
@@ -29,4 +30,4 @@
         (goto-char (point-max)))))))
 
 (load-init "~/.emacs.d/README.org")
-;(load "~/.emacs.d/custom-packages-load-path.el" 'noerror)
+(load "~/.emacs.d/custom-load-path.el" 'noerror)

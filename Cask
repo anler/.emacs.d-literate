@@ -5,6 +5,7 @@
 (depends-on "ace-jump-mode")
 (depends-on "ag")
 (depends-on "anaconda-mode")
+(depends-on "async")
 (depends-on "birds-of-paradise-plus-theme")
 (depends-on "browse-kill-ring")
 (depends-on "cask")

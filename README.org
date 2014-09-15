@@ -379,6 +379,10 @@ Command for creating additional scratch buffers.
 #+END_SRC
 
 * General
+** Debug on error
+#+BEGIN_SRC elisp
+  (setq debug-on-error t)
+#+END_SRC
 ** Wrap long lines
 #+BEGIN_SRC elisp
   (global-visual-line-mode)
