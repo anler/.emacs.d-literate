@@ -1,170 +1,50 @@
 #+STARTUP: content
+* Table of Contents                                                     :TOC:
+ - [[#about][About]]
+ - [[#emacs][Emacs]]
+     - [[#emacs-dependency-management][Emacs dependency management]]
+     - [[#custom-defined-functions][Custom defined functions]]
+     - [[#general][General]]
+     - [[#appearance][Appearance]]
+     - [[#shells][Shells]]
+     - [[#org-mode][Org mode]]
+     - [[#dired][Dired]]
+     - [[#programming][Programming]]
+     - [[#key-bindings][Key bindings]]
+     - [[#personal-blog][Personal blog]]
+     - [[#enable-some-dangerous-commands][Enable some "dangerous" commands]]
+     - [[#emacs-customize-custom-file][Emacs' customize custom file]]
+
 * About
 [[https://raw.githubusercontent.com/ikame/.emacs.d/master/img/emacs.png]]
 
 This mi personal Emacs configuration files written in a
 literate-programming style taught to me by my good friend [[https://github.com/mgdelacroix/][mgdelacroix]].
 
-* Table of Contents                                                     :TOC:
- - [[#about][About]]
- - [[#emacs-dependency-management][Emacs dependency management]]
- - [[#custom-defined-functions][Custom defined functions]]
-     - [[#compose-functions][Compose functions]]
-     - [[#create-circular-lists][Create circular lists]]
-     - [[#comment-lines][Comment lines]]
-     - [[#scroll-the-buffer][Scroll the buffer]]
-     - [[#join-lines][Join lines]]
-     - [[#kill-buffer-and-delete-its-file][Kill buffer and delete its file]]
-     - [[#rename-buffer-and-its-file][Rename buffer and its file]]
-     - [[#extend-eval-last-sexp-extended][Extend eval-last-sexp extended]]
-     - [[#partial-functions][Partial functions]]
-     - [[#create-scratch-buffers][Create scratch buffers]]
-     - [[#duplicate-line][Duplicate line]]
-     - [[#quit-other-window][Quit other window]]
-     - [[#select-other-window-backward][Select other window backward]]
-     - [[#show-which-function][Show which function]]
-     - [[#electric-pairs][Electric pairs]]
-     - [[#projects][Projects]]
- - [[#general][General]]
-     - [[#debug-on-error][Debug on error]]
-     - [[#wrap-long-lines][Wrap long lines]]
-     - [[#display-column-number-in-the-modeline][Display column number in the modeline]]
-     - [[#display-buffer-size-in-the-modeline][Display buffer size in the modeline]]
-     - [[#echo-keystrokes-earlier][Echo keystrokes earlier]]
-     - [[#put-backups-in-another-place][Put backups in another place]]
-     - [[#replace-selected-text-when-start-typing][Replace selected text when start typing]]
-     - [[#update-buffer-contents-if-they-are-externally-changed][Update buffer contents if they are externally changed]]
-     - [[#never-convert-spaces-to-tabs][Never convert spaces to tabs]]
-     - [[#enable-recent-files-mode-file--open-recent][Enable recent files mode (File > Open Recent)]]
-     - [[#hungry-deletion][Hungry deletion]]
-     - [[#increase-memory-threshold-for-garbage-collection][Increase memory threshold for garbage collection]]
-     - [[#name-buffers-with-same-filenames-other-than-buffern][Name buffers with same filenames other than buffer<N>]]
-     - [[#confirmation-when-closing-emacs][Confirmation when closing Emacs]]
-     - [[#start-an-emacs-server-on-startup][Start an Emacs server on startup]]
-     - [[#enable-ido-mode][Enable ido-mode]]
-     - [[#use-fuzzy-matching-by-default][Use fuzzy-matching by default]]
-     - [[#use-it-in-all-possible-places][Use it in all possible places]]
-     - [[#use-a-vertical-interface-not-at-the-moment][Use a vertical interface... not at the moment]]
-     - [[#ido-interface-when-using-completion-at-point][Ido interface when using ~completion-at-point~.]]
-     - [[#better-help-with-discoverel-and-guide-key][Better help with discover.el and guide-key]]
-     - [[#disable-transient-mark-mode][Disable transient-mark-mode]]
-     - [[#keep-abbrev-expansion-predictable][Keep abbrev expansion predictable]]
-     - [[#spice-info-mode][Spice info mode]]
-     - [[#open-really-large-files-with-vlf][Open really large files with vlf]]
-     - [[#use-mykie-for-extending-keybindings][Use mykie for extending keybindings]]
-     - [[#diminish-the-mode-line][Diminish the mode line]]
-     - [[#set-default-browser][Set default browser]]
-     - [[#remote-sudo-access-with-tramp][Remote sudo access with TRAMP]]
-     - [[#pretty-symbols][Pretty symbols]]
-     - [[#emacs-lisp-sources][Emacs Lisp Sources]]
-     - [[#hunspell-hanging-my-emacs][Hunspell hanging my emacs]]
-     - [[#allow-answer-y-for-yes][Allow answer `y` for `yes`]]
-     - [[#centered-window-mode][Centered window mode]]
-     - [[#autocompletion][Autocompletion]]
-     - [[#better-window-movement][Better window movement]]
- - [[#appearance][Appearance]]
-     - [[#inhibit-startup-screen][Inhibit startup screen]]
-     - [[#scrollbars][Scrollbars]]
-     - [[#toolbar][Toolbar]]
-     - [[#menubar][Menubar]]
-     - [[#disable-cursor-blink][Disable cursor blink]]
-     - [[#buffer-file-name-as-frame-title][Buffer file name as frame title]]
-     - [[#cycle-through-color-themes][Cycle through color themes]]
- - [[#shells][Shells]]
-     - [[#eshell-elisp-shell][Eshell (Elisp Shell)]]
-     - [[#shell][Shell]]
-     - [[#terminal][Terminal]]
-     - [[#executing-shell-commands][Executing shell commands]]
- - [[#org-mode][Org mode]]
-     - [[#text][Text]]
-     - [[#colorize-code-blocks][Colorize code blocks]]
-     - [[#display-inline-images][Display inline images]]
-     - [[#export-latex-fragments][Export LaTeX fragments]]
-     - [[#more-headlines-to-export][More headlines to export]]
-     - [[#set-org-files-directory][Set org files directory]]
-     - [[#set-notes-file][Set notes file]]
-     - [[#activate-babel-languages][Activate babel languages]]
-     - [[#export-code-blocks-with-colors][Export code blocks with colors]]
-     - [[#ditaa-executable-path][Ditaa executable path]]
-     - [[#encrypting][Encrypting]]
- - [[#dired][Dired]]
-     - [[#easily-copy-from-one-dired-split-to-another][Easily copy from one dired split to another]]
-     - [[#create-a-dired-file-with-][Create a dired file with =|=]]
-     - [[#activate-ggtags-on-projects][Activate ggtags on projects]]
-     - [[#dired-imenu][Dired imenu]]
-     - [[#dired-extras][Dired extras]]
-     - [[#find-duplicated-files][Find duplicated files]]
- - [[#programming][Programming]]
-     - [[#refactoring][Refactoring]]
-     - [[#jump-to-definition-using-tags][Jump to definition using tags]]
-     - [[#treat-camel-case-word-as-subwords][Treat camel case word as subwords]]
-     - [[#auto-closing-and-highlighting-parens][Auto-closing and highlighting parens]]
-     - [[#expand-region][Expand region]]
-     - [[#wrap-region][Wrap region]]
-     - [[#display-trailing-whitespace][Display trailing whitespace]]
-     - [[#snippets][Snippets]]
-     - [[#projects][Projects]]
-     - [[#git][Git]]
-     - [[#searching-in-files-with-ag][Searching in files with Ag]]
-     - [[#diffs-with-ediff][Diffs with ediff]]
-     - [[#common-lisp][Common Lisp]]
-     - [[#emacs-lisp][Emacs Lisp]]
-     - [[#python][Python]]
-     - [[#pretty-symbols][Pretty symbols]]
-     - [[#haskell][Haskell]]
-     - [[#scheme][Scheme]]
-     - [[#html][HTML]]
-     - [[#sql][SQL]]
- - [[#key-bindings][Key bindings]]
-     - [[#windows][Windows]]
-     - [[#transpose-chars-or-region][Transpose chars or region]]
-     - [[#change-theme][Change theme]]
-     - [[#evaluating-sexps][Evaluating Sexps]]
-     - [[#kill-sexp-backwards][Kill Sexp backwards]]
-     - [[#expand-region][Expand region]]
-     - [[#commentuncomment-lineregion][Comment/Uncomment line/region]]
-     - [[#search][Search]]
-     - [[#search-in-other][Search in other]]
-     - [[#better-m-x-using-smex][Better ~M-x~ using smex]]
-     - [[#multiple-cursors][Multiple cursors]]
-     - [[#jump-to-characters][Jump to characters]]
-     - [[#query-replace-using-regexps][Query replace using regexps]]
-     - [[#scroll-with-arrows][Scroll with arrows]]
-     - [[#join-lines-a-la-vim][Join lines a la vim]]
-     - [[#kill-buffer-and-file][Kill buffer and file]]
-     - [[#rename-buffer-and-file][Rename buffer and file]]
-     - [[#git][Git]]
-     - [[#org][Org]]
-     - [[#idomenu][idomenu]]
-     - [[#which-function][Which function]]
-     - [[#create-scratch-buffer][Create scratch buffer]]
-     - [[#duplicate-line][Duplicate line]]
-     - [[#go-to-beginningend-of-buffer][Go to beginning/end of buffer]]
-     - [[#run-shell-command][Run shell command]]
-     - [[#access-recent-files][Access recent files]]
-     - [[#toggle-fullscreen][Toggle fullscreen]]
-     - [[#run-last-eshell-command][Run last eshell command]]
- - [[#personal-blog][Personal blog]]
- - [[#enable-some-dangerous-commands][Enable some "dangerous" commands]]
-     - [[#upcase-region][Upcase region]]
- - [[#emacs-customize-custom-file][Emacs' customize custom file]]
-
-* Emacs dependency management
+* Emacs
+:PROPERTIES:
+:tangle: ~/.emacs.d/init.el
+:END:
+** Emacs dependency management
 I use [[https://github.com/cask/cask][Cask]] for dependency management and [[https://github.com/rdallasgray/pallet][Pallet]] as a package manager
 (everytime I install a package it adds it as a dependency to my Cask
 file).
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (require 'cask "~/.cask/cask.el")
-  (add-to-list 'load-path (expand-file-name "~/elisp/org-mode/lisp"))
-  (add-to-list 'load-path (expand-file-name "~/elisp/org-mode/contrib/lisp"))
-  (load "~/.emacs.d/custom-paths.el" 'noerror)
+
+  ;; Path to manually installed tramp version (2.2.10) since couldn't use sudo with
+  ;; the default one (2.2.6) in Fedora 20
+  (add-to-list 'load-path (expand-file-name "/usr/local/share/emacs/site-lisp"))
 
   (cask-initialize)
   (require 'pallet)
+  (require 'cl)
+
+  (load "~/.emacs.d/custom-paths.el" 'noerror)
 #+END_SRC
 
-* Custom defined functions
-** Compose functions
+** Custom defined functions
+*** Compose functions
 Taken from [[http://nullprogram.com/blog/2010/11/15/][nullprogram]].
 #+BEGIN_SRC elisp
   (defun compose (&rest funs)
@@ -176,7 +56,7 @@ Taken from [[http://nullprogram.com/blog/2010/11/15/][nullprogram]].
                 :initial-value (apply (car (last lex-funs)) args)))))
 #+END_SRC
 
-** Create circular lists
+*** Create circular lists
 #+BEGIN_SRC elisp
   (defun cycle (list)
     "Takes a list LIST and converts it into a circular list"
@@ -184,7 +64,7 @@ Taken from [[http://nullprogram.com/blog/2010/11/15/][nullprogram]].
     list)
 #+END_SRC
 
-** Comment lines
+*** Comment lines
 #+BEGIN_SRC elisp
   (defun comment-or-uncomment ()
     "Comment or uncomment current line or region if there's a region active."
@@ -215,7 +95,7 @@ Taken from [[http://nullprogram.com/blog/2010/11/15/][nullprogram]].
         (call-interactively 'emr-lisp-comment-form))))
 #+END_SRC
 
-** Scroll the buffer
+*** Scroll the buffer
 The exact same functionality VIM has for ~C-e~ and ~C-y~ in normal mode:
 #+BEGIN_SRC elisp
   (defun scroll-up-one-line-command ()
@@ -244,7 +124,7 @@ And the same but without leaving the current window:
     (scroll-other-window -1))
 #+END_SRC
 
-** Join lines
+*** Join lines
 #+BEGIN_SRC elisp
   (defun join-line-below ()
     "Join line bellow current line."
@@ -252,7 +132,7 @@ And the same but without leaving the current window:
     (join-line -1))
 #+END_SRC
 
-** Kill buffer and delete its file
+*** Kill buffer and delete its file
 Modified version of one found in: [[http://tuxicity.se/emacs/elisp
 #+BEGIN_SRC elisp
   (defun kill-buffer-and-file (buffer-name)
@@ -266,7 +146,7 @@ Modified version of one found in: [[http://tuxicity.se/emacs/elisp
         (kill-buffer buffer))))
 #+END_SRC
 
-** Rename buffer and its file
+*** Rename buffer and its file
 Original command by Steve Yegge: [[[http://steve.yegge.googlepages.com/my-dot-emacs-file%0A][link]]].
 #+BEGIN_SRC elisp
   (defun rename-buffer-and-file (new-name)
@@ -284,7 +164,7 @@ Original command by Steve Yegge: [[[http://steve.yegge.googlepages.com/my-dot-em
           (set-buffer-modified-p nil)))))
 #+END_SRC
 
-** Extend eval-last-sexp extended
+*** Extend eval-last-sexp extended
 #+BEGIN_SRC elisp
   (defun ext/eval-last-sexp (arg)
     "Extension over eval-last-sexp that replaces the last sexp with the
@@ -304,14 +184,14 @@ Original command by Steve Yegge: [[[http://steve.yegge.googlepages.com/my-dot-em
       (insert (format "%s" result))))
 #+END_SRC
 
-** Partial functions
+*** Partial functions
 #+BEGIN_SRC elisp
   (defun partial (function &rest args)
     (lambda (&rest more-args)
       (apply function (append args more-args))))
 #+END_SRC
 
-** Create scratch buffers
+*** Create scratch buffers
 Command for creating additional scratch buffers.
 #+BEGIN_SRC elisp
   (defun create-scratch-buffer (mode)
@@ -326,7 +206,7 @@ Command for creating additional scratch buffers.
       (call-interactively mode)))
 #+END_SRC
 
-** Duplicate line
+*** Duplicate line
 #+BEGIN_SRC elisp
   (defun duplicate-line ()
     "Duplicate the line below the cursor and move the cursor 
@@ -342,7 +222,7 @@ Command for creating additional scratch buffers.
     (next-line 1))
 #+END_SRC
 
-** Quit other window
+*** Quit other window
 #+BEGIN_SRC elisp
   (defun quit-other-window ()
     "Send `quit-window' in the window returned by `other-window'"
@@ -351,7 +231,7 @@ Command for creating additional scratch buffers.
     (quit-window))
 #+END_SRC
 
-** Select other window backward
+*** Select other window backward
 #+BEGIN_SRC elisp
   (defun other-window-backward (count)
     "Select another window in anti-cyclic ordering of windows.
@@ -363,7 +243,7 @@ Command for creating additional scratch buffers.
   (global-set-key (kbd "C-x C-o") 'other-window-backward)
 #+END_SRC
 
-** Show which function
+*** Show which function
 #+BEGIN_SRC elisp
   (autoload 'which-function "which-func")
   (defun show-which-function ()
@@ -372,7 +252,7 @@ Command for creating additional scratch buffers.
     (message (which-function)))
 #+END_SRC
 
-** Electric pairs
+*** Electric pairs
 #+BEGIN_SRC elisp
   (defun electric-pair ()
     "Insert character pair without surrounding spaces"
@@ -397,38 +277,38 @@ Command for creating additional scratch buffers.
     (define-key python-mode-map "[" 'electric-pair)
     (define-key python-mode-map "{" 'electric-pair))
 #+END_SRC
-** Projects
+*** Projects
 #+BEGIN_SRC elisp
   (defun in-project-p ()
     (and (fboundp 'projectile-project-p)
          (projectile-project-p)))
 #+END_SRC
-* General
-** Debug on error
+** General
+*** Debug on error
 #+BEGIN_SRC elisp
   (setq debug-on-error nil)
 #+END_SRC
-** Wrap long lines
+*** Wrap long lines
 #+BEGIN_SRC elisp
   (global-visual-line-mode)
 #+END_SRC
 
-** Display column number in the modeline
+*** Display column number in the modeline
 #+BEGIN_SRC elisp
   (setq column-number-mode t)
 #+END_SRC
 
-** Display buffer size in the modeline
+*** Display buffer size in the modeline
 #+BEGIN_SRC elisp
   (setq size-indication-mode t)
 #+END_SRC
 
-** Echo keystrokes earlier
+*** Echo keystrokes earlier
 #+BEGIN_SRC elisp
   (setq echo-keystrokes 0.2)
 #+END_SRC
 
-** Put backups in another place
+*** Put backups in another place
 #+BEGIN_SRC elisp
   (setq backup-directory-alist `(("." . "~/.emacs.d/saves")))
 #+END_SRC
@@ -448,36 +328,36 @@ and add version number to backup name:
   (setq version-control t)
 #+END_SRC
 
-** Replace selected text when start typing
+*** Replace selected text when start typing
 #+BEGIN_SRC elisp
   (delete-selection-mode)
 #+END_SRC
 
-** Update buffer contents if they are externally changed
+*** Update buffer contents if they are externally changed
 #+BEGIN_SRC elisp
   (global-auto-revert-mode)
   (setq auto-revert-verbose nil)
 #+END_SRC
 
-** Never convert spaces to tabs
+*** Never convert spaces to tabs
 Emacs likes to do this whenever it can.
 #+BEGIN_SRC elisp
   (set-default 'indent-tabs-mode nil)
 #+END_SRC
 
-** Enable recent files mode (File > Open Recent)
+*** Enable recent files mode (File > Open Recent)
 #+BEGIN_SRC elisp
   (recentf-mode)
 #+END_SRC
 
-** Hungry deletion
+*** Hungry deletion
 Deletes all consecutive white spaces
 #+BEGIN_SRC elisp
   (require 'hungry-delete)
   (global-hungry-delete-mode)
 #+END_SRC
 
-** Increase memory threshold for garbage collection
+*** Increase memory threshold for garbage collection
 As [[https://github.com/magnars/][Magnar Sveen]] said:
 
 #+BEGIN_QUOTE
@@ -488,19 +368,19 @@ Don't be so stingy on the memory, we have lots now. It's the distant future.
   (setq gc-cons-threshold 20000000)
 #+END_SRC
 
-** Name buffers with same filenames other than buffer<N>
+*** Name buffers with same filenames other than buffer<N>
 #+BEGIN_SRC elisp
   (require 'uniquify)
   (setq uniquify-buffer-name-style 'post-forward)
 #+END_SRC
 
-** Confirmation when closing Emacs
+*** Confirmation when closing Emacs
 I do this very often, this is my insurance.
 #+BEGIN_SRC elisp
   (setq confirm-kill-emacs 'yes-or-no-p)
 #+END_SRC
 
-** Start an Emacs server on startup
+*** Start an Emacs server on startup
 #+BEGIN_SRC elisp
   (require 'server)
 
@@ -511,7 +391,7 @@ I do this very often, this is my insurance.
       (server-start))
 #+END_SRC
 
-** Enable ido-mode
+*** Enable ido-mode
 ~ido-mode~ (Interactively DO things) is a mode that let's you work
 with files and buffer more effectively giving you auto-completion
 for buffer and file names.
@@ -520,30 +400,30 @@ for buffer and file names.
   (ido-mode)
 #+END_SRC
 
-** Use fuzzy-matching by default
+*** Use fuzzy-matching by default
 #+BEGIN_SRC elisp
   (setq ido-enable-flex-matching t)
 #+END_SRC
 
-** Use it in all possible places
+*** Use it in all possible places
 #+BEGIN_SRC elisp
   (ido-everywhere)
 #+END_SRC
 [[file:img/ido.gif]]
 
-** Use a vertical interface... not at the moment
+*** Use a vertical interface... not at the moment
 #+BEGIN_SRC elisp
   ;; (ido-vertical-mode)
 #+END_SRC
 [[file:img/ido-vertical-mode.gif]]
 
-** Ido interface when using ~completion-at-point~.
+*** Ido interface when using ~completion-at-point~.
 #+BEGIN_SRC elisp
   (ido-at-point-mode)
 #+END_SRC
 [[file:img/ido-at-point.gif]]
 
-** Better help with discover.el and guide-key
+*** Better help with discover.el and guide-key
 See [[http://www.masteringemacs.org/articles/2013/12/21/discoverel-discover-emacs-context-menus/][discover.el]].
 #+BEGIN_SRC elisp
   (require 'discover)
@@ -560,36 +440,36 @@ See [[https://github.com/aki2o/guide-key-tip][guide-key-tip]].
   (setq guide-key-tip/enable t)
 #+END_SRC
 
-** Disable transient-mark-mode
+*** Disable transient-mark-mode
 Disable ~transient-mark-mode~ to use ~C-x C-x~ without activating the
 region:
 #+BEGIN_SRC elisp
   (transient-mark-mode -1)
 #+END_SRC
 
-** Keep abbrev expansion predictable
+*** Keep abbrev expansion predictable
 #+BEGIN_SRC elisp
   (setq dabbrev-case-fold-search nil)
 #+END_SRC
 
-** Spice info mode
+*** Spice info mode
 #+BEGIN_SRC elisp
   (eval-after-load "info" '(require 'info+))
 #+END_SRC
 
-** Open really large files with vlf
+*** Open really large files with vlf
 #+BEGIN_SRC elisp
   (require 'vlf-integrate)
 #+END_SRC
 
-** Use mykie for extending keybindings
+*** Use mykie for extending keybindings
 #+BEGIN_SRC elisp
   (require 'mykie)
   (setq mykie:use-major-mode-key-override t)
   (mykie:initialize)
 #+END_SRC
 
-** Diminish the mode line
+*** Diminish the mode line
 #+BEGIN_SRC elisp
   (when (require 'diminish nil 'noerror)
     (eval-after-load "company"
@@ -610,13 +490,13 @@ region:
       '(diminish 'magit-auto-revert-mode " ±")))
 #+END_SRC
 
-** Set default browser
+*** Set default browser
 #+BEGIN_SRC elisp
   (setq browse-url-browser-function 'browse-url-generic
         browse-url-generic-program "conkeror")
 #+END_SRC
 
-** Remote sudo access with TRAMP
+*** Remote sudo access with TRAMP
 With the following you can edit remote root files with:
 =C-x C-f /sudo:root@localhost:<path>=.
 
@@ -628,12 +508,12 @@ With the following you can edit remote root files with:
                '((regexp-quote (system-name)) nil nil))
 #+END_SRC
 
-** Pretty symbols
+*** Pretty symbols
 #+BEGIN_SRC elisp
   (pretty-symbols-mode)
 #+END_SRC
 
-** Emacs Lisp Sources
+*** Emacs Lisp Sources
 #+BEGIN_SRC elisp
   (define-key 'help-command (kbd "C-l") 'find-library)
   (define-key 'help-command (kbd "C-f") 'find-function)
@@ -650,30 +530,30 @@ Lisp object at point (function or variable) with =M-.= jump back with
 =M-,=. You can also see the description of the object at point using 
 =C-c C-d= or =C-c C-d d=.
 
-** Hunspell hanging my emacs
+*** Hunspell hanging my emacs
 #+BEGIN_SRC elisp
   (setq-default ispell-program-name "aspell")
 #+END_SRC
 
-** Allow answer `y` for `yes`
+*** Allow answer `y` for `yes`
 #+BEGIN_SRC elisp
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
-** Centered window mode
+*** Centered window mode
 #+BEGIN_SRC elisp
   (setq cwm/top-padding-factor .12
         cwm/reset-on-splitting-horizontally nil)
   ;; (centered-window-mode)
 #+END_SRC
 
-** Autocompletion
+*** Autocompletion
 #+BEGIN_SRC elisp
   (add-hook 'after-init-hook 'global-company-mode)
   (global-set-key (kbd "M-/") 'hippie-expand)
 #+END_SRC
 
-** Better window movement
+*** Better window movement
 
 | C-x w   | smart-window-move         |
 | C-x W   | smart-window-buffer-split |
@@ -685,48 +565,48 @@ Lisp object at point (function or variable) with =M-.= jump back with
 #+BEGIN_SRC elisp
   (require 'smart-window)
 #+END_SRC
-* Appearance
-** Inhibit startup screen
+** Appearance
+*** Inhibit startup screen
 #+BEGIN_SRC elisp
   (setq inhibit-startup-message t)
 #+END_SRC
 
-** Scrollbars
+*** Scrollbars
 #+BEGIN_SRC elisp
   (if (boundp 'scroll-bar-mode)
       (scroll-bar-mode -1))
 #+END_SRC
 
-** Toolbar
+*** Toolbar
 #+BEGIN_SRC elisp
   (if (boundp 'tool-bar-mode)
       (tool-bar-mode -1))
 #+END_SRC
 
-** Menubar
+*** Menubar
 #+BEGIN_SRC elisp
   (if (boundp 'menu-bar-mode)
       (menu-bar-mode 1))
 #+END_SRC
 
-** Disable cursor blink
+*** Disable cursor blink
 #+BEGIN_SRC elisp
   (blink-cursor-mode -1)
 #+END_SRC
 
-** Buffer file name as frame title
+*** Buffer file name as frame title
 #+BEGIN_SRC elisp
   (when window-system
     (setq frame-title-format '(buffer-file-name "%f" ("%b"))))
 #+END_SRC
 
-** Cycle through color themes
+*** Cycle through color themes
 #+BEGIN_SRC elisp
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
   (defvar current-theme nil "Name of the theme being used.")
   (defvar themes-list nil "Cycle through these themes")
 
-  (setq themes-list (cycle '(django noctilux subatomic leuven)))
+  (setq themes-list (cycle '(noctilux django subatomic leuven)))
 
   (defun use-next-theme ()
     "Use the next theme in themes-list."
@@ -748,8 +628,8 @@ Lisp object at point (function or variable) with =M-.= jump back with
   (use-next-theme)
 #+END_SRC
 
-* Shells
-** Eshell (Elisp Shell)
+** Shells
+*** Eshell (Elisp Shell)
 
 | M-r     |         | Search backwards for a command by regexp.      |
 | M-s     |         | Search forwards for a command by regexp.       |
@@ -772,7 +652,7 @@ History Interaction
 | ^old^new |   | Replace old with new in last command and run it.    |
 | $_       |   | Returns last parameter in last command.             |
 
-*** Config inside Emacs
+**** Config inside Emacs
 #+BEGIN_SRC elisp
   (require 'eshell)
   (require 'em-smart)
@@ -781,8 +661,8 @@ History Interaction
         eshell-smart-space-goes-to-end t)
 #+END_SRC
 
-*** Config outside Emacs
-#+BEGIN_SRC sh
+**** Config outside Emacs
+#+BEGIN_SRC sh :tangle no
   ## -*- mode: eshell-script -*-
   (setenv "PAGER" "cat")
   (setenv "TERM" "xterm-256color")
@@ -790,7 +670,7 @@ History Interaction
   (setq eshell-ask-to-save-history 'always)
 #+END_SRC
 
-** Shell
+*** Shell
 /output group/ consists of a command and its output.
 
 | C-c C-c |                            | Terminate command.                       |
@@ -803,7 +683,7 @@ History Interaction
 | M-p     | comint-previous-input      | Previous command.                        |
 | M-n     | comint-next-input          | Next command.                            |
 
-*** Config inside Emacs
+**** Config inside Emacs
 Set shell:
 #+BEGIN_SRC elisp
   (setq shell-file-name "/bin/zsh")
@@ -836,14 +716,14 @@ Bash Completion:
     'bash-completion-dynamic-complete)
 #+END_SRC
 
-*** Config outside Emacs
-#+BEGIN_SRC conf
+**** Config outside Emacs
+#+BEGIN_SRC conf :tangle no
   prompt walters
   unsetopt zle
   WITHIN_EMACS=true
 #+END_SRC
 
-** Terminal
+*** Terminal
 Terminal emulation inside Emacs.
 
 Disable some conflicting modes when running inside a Terminal buffer.
@@ -855,47 +735,47 @@ Disable some conflicting modes when running inside a Terminal buffer.
   (add-hook 'term-mode-hook 'custom-term-mode)
 #+END_SRC
 
-** Executing shell commands
+*** Executing shell commands
 
 | M-!         | shell-command           | Run shell command in background.                             |
 | M-\vert     | shell-command-on-region | Run shell command on region in background.                   |
 | C-u M-\vert | shell-command-on-region | Same as above but puts command output in the current burrer. |
 
-* Org mode
-** Text
+** Org mode
+*** Text
 #+BEGIN_SRC elisp
   (add-hook 'org-mode-hook (lambda ()
                              (set-fill-column 99)
                              (auto-fill-mode)))
 #+END_SRC
 
-** Colorize code blocks
+*** Colorize code blocks
 #+BEGIN_SRC elisp
   (setq org-src-fontify-natively t)
 #+END_SRC
 
-** Display inline images
+*** Display inline images
 #+BEGIN_SRC elisp
   (setq org-html-inline-images t)
 #+END_SRC
 
-** Export LaTeX fragments
+*** Export LaTeX fragments
 #+BEGIN_SRC elisp
   (setq org-export-with-LaTeX-fragments t)
 #+END_SRC
 
-** More headlines to export
+*** More headlines to export
 #+BEGIN_SRC elisp
   (setq org-export-headline-levels 6)
 #+END_SRC
 
-** Set org files directory
+*** Set org files directory
 #+BEGIN_SRC elisp
   (setq org-directory "~/org"
         org-agenda-files '("~/org"))
 #+END_SRC
 
-** Set notes file
+*** Set notes file
 #+BEGIN_SRC elisp
   (setq org-default-notes-file (concat org-directory "/notes.org")
         org-capture-templates
@@ -911,7 +791,7 @@ Disable some conflicting modes when running inside a Terminal buffer.
            "[ ] %?")))
 #+END_SRC
 
-** Activate babel languages
+*** Activate babel languages
 #+BEGIN_SRC elisp
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -928,7 +808,7 @@ Disable some conflicting modes when running inside a Terminal buffer.
      (sh . t)))
 #+END_SRC
 
-** Export code blocks with colors
+*** Export code blocks with colors
 #+BEGIN_SRC elisp
   (require 'ox-latex)
   (add-to-list 'org-latex-packages-alist '("" "minted"))
@@ -942,23 +822,23 @@ Disable some conflicting modes when running inside a Terminal buffer.
 
 There are different color-themes you can use with minted, for example
 you could put this option into your org file to use "monokai":
-#+BEGIN_SRC org
+#+BEGIN_SRC org :tangle no
   ,#+LaTeX_HEADER: \usemintedstyle{monokai}
 #+END_SRC
 
 To get a list of the supported styles from pygmentize:
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle no
   pygmentize -L styles
 #+END_SRC
 
-** Ditaa executable path
+*** Ditaa executable path
 #+BEGIN_SRC elisp
   (setq org-ditaa-jar-path ""
         org-babel-ditaa-java-cmd "ditaa")
 #+END_SRC
 
-** Encrypting
-*** Options
+*** Encrypting
+**** Options
 #+BEGIN_SRC elisp
   (require 'epa-file)
   (require 'org-crypt )
@@ -966,7 +846,7 @@ To get a list of the supported styles from pygmentize:
   (setq org-tags-exclude-from-inheritance '("crypt"))
 #+END_SRC
 
-*** Private                                                           :crypt:
+**** Private                                                          :crypt:
 -----BEGIN PGP MESSAGE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
@@ -982,7 +862,7 @@ yziKVRL8P2PtotxNYkfyP3edSpr+ZiD8IVtUI0sqgvYmKcrBBuwsZ2RfD/RB
 =efPi
 -----END PGP MESSAGE-----
 
-* Dired
+** Dired
 
 General commands
 | C-M-n | next subdir                                        |
@@ -1000,13 +880,13 @@ Commands that act on files
 | C-u C-u C-u     | Use all files and dirs except `.' and `..'. |
 | C-u C-u C-u C-u | Use all files and dirs, `.' and `..'.       |
 
-** Easily copy from one dired split to another
+*** Easily copy from one dired split to another
 #+BEGIN_SRC elisp
   (require 'dired-x)
   (setq dired-dwim-target t)
 #+END_SRC
 
-** Create a dired file with =|=
+*** Create a dired file with =|=
 #+BEGIN_SRC elisp
   (require 'dired)
   
@@ -1021,7 +901,7 @@ Commands that act on files
   (define-key dired-mode-map "|" 'dired-create-file)
 #+END_SRC
 
-** Activate ggtags on projects
+*** Activate ggtags on projects
 #+BEGIN_SRC elisp
   (add-hook 'dired-mode-hook (lambda ()
                                (when (and (fboundp 'projectile-project-p)
@@ -1029,59 +909,58 @@ Commands that act on files
                                  (ggtags-mode))))
 #+END_SRC
 
-** Dired imenu
+*** Dired imenu
 #+BEGIN_SRC elisp
   (require 'dired-imenu)
 #+END_SRC
 
-** Dired extras
+*** Dired extras
 #+BEGIN_SRC elisp
   (require 'dired+)
   ;; (define-key ctl-x-map   "d" 'diredp-dired-files)
   ;; (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
 #+END_SRC
 
-*** Reuse dired buffer
+**** Reuse dired buffer
 #+BEGIN_SRC elisp
   (toggle-diredp-find-file-reuse-dir 1)
 #+END_SRC
 
-*** Wrap around commands
+**** Wrap around commands
 #+BEGIN_SRC elisp
   (setq diredp-wrap-around-flag t)
 #+END_SRC
 
-*** Hide details by default
+**** Hide details by default
 #+BEGIN_SRC elisp
   (setq diredp-hide-details-initially-flag t)
 #+END_SRC
 
-*** Display images
+**** Display images
 #+BEGIN_SRC elisp
   (setq diredp-display-images t)
 #+END_SRC
 
-** Find duplicated files
+*** Find duplicated files
 #+BEGIN_SRC elisp
   (require 'dired-dups)
 #+END_SRC
 
-* Programming
-** Refactoring
+** Programming
+*** Refactoring
 #+BEGIN_SRC elisp
   (add-hook 'prog-mode-hook (lambda ()
                               (emr-initialize)
                               (local-set-key (kbd "M-RET") 'emr-show-refactor-menu)))
 #+END_SRC
 
-** Jump to definition using tags
+*** Jump to definition using tags
 Code navigation using GNU Global and Exuberant Ctags.
 See [[https://github.com/leoliu/ggtags][leoliu/ggtags]] for a complete reference and installation guide.
 
 I already have ggtags-mode listed as a dependency in my Cask file, the
 only thing left is installing GnuGlobal in the system.
 
-*** Key bindings
 See [[https://github.com/leoliu/ggtags#usage][ggtags usage]] for a complete list of keybindings.
 
 | Keybinding | Command | What                           |
@@ -1099,90 +978,25 @@ See [[https://github.com/leoliu/ggtags#usage][ggtags usage]] for a complete list
 | C-c M-b    |         | Browse as hypertext.           |
 | C-c M-j    |         | Visit project root.            | 
 
-*** Installation instructions
-1. Install exuberant ctags:
-Archlinux:
-#+BEGIN_SRC sh
-  pacman -S ctags
-#+END_SRC
-
-Ubuntu:
-#+BEGIN_SRC sh
-  apt-get install exuberant-ctags
-#+END_SRC
-
-Fedora:
-#+BEGIN_SRC sh
-  yum install -y ctags-etags
-#+END_SRC
-
-2. Install GnuGlobal
-Download here: https://www.gnu.org/software/global/download.html
-Un-tar.
-cd into it.
-And install:
-#+BEGIN_SRC sh
-  ./configure --with-exuberant-ctags=$(which ctags)
-  make
-  make install
-#+END_SRC
-
-3. Pygments plugin for GnuGlobal
-Install Python Pip if necessary.
-Archlinux
-#+BEGIN_SRC sh
-  pacman -S python-pip
-#+END_SRC
-
-Ubuntu
-#+BEGIN_SRC sh
-  apt-get install python-pip
-#+END_SRC
-
-Fedora
-#+BEGIN_SRC sh
-  yum install -y python-pip
-#+END_SRC
-
-Install Pygments if necessary:
-#+BEGIN_SRC sh
-  pip install --user pygments
-#+END_SRC
-
-Download Pygments plugin here: https://github.com/yoshizow/global-pygments-plugin
-cd into it and install:
-#+BEGIN_SRC sh
-  yum install -y libtool
-  sh reconf.sh
-  ./configure --with-exuberant-ctags=`which ctags`
-  make
-  make install
-#+END_SRC
-
-Use the sample configuration file:
-#+BEGIN_SRC sh
-  cp sample.globalrc $HOME/.globalrc
-#+END_SRC
-
-** Treat camel case word as subwords
+*** Treat camel case word as subwords
 #+BEGIN_SRC elisp
   (global-subword-mode)
 #+END_SRC
 
-** Auto-closing and highlighting parens
+*** Auto-closing and highlighting parens
 #+BEGIN_SRC elisp
   (show-paren-mode t)
   (electric-pair-mode)
   (setq show-paren-style 'mixed)
 #+END_SRC
-** Expand region
+*** Expand region
 [[https://github.com/magnars/expand-region.el][expand-region]] - [[http://emacsrocks.com/e09.html][-demo-]]
 
 #+BEGIN_SRC elisp
   (autoload 'er/expand-region "expand-region")
 #+END_SRC
 
-** Wrap region
+*** Wrap region
 [[https://github.com/rejeep/wrap-region.el][wrap-region]] for something like [[https://github.com/tpope/vim-surround][surround]] in vim:
 
 #+BEGIN_SRC elisp
@@ -1190,7 +1004,7 @@ Use the sample configuration file:
   (wrap-region-mode)
 #+END_SRC
 
-** Display trailing whitespace
+*** Display trailing whitespace
 #+BEGIN_SRC elisp
   (global-whitespace-mode)
   (setq whitespace-style '(face trailing tabs))
@@ -1205,7 +1019,7 @@ modes:
                                (add-hook 'before-save-hook 'whitespace-cleanup nil t)))
 #+END_SRC
 
-** Snippets
+*** Snippets
 [[https://github.com/capitaomorte/yasnippet][Yasnippet]] is the best snippets expansion tool for Emacs. It uses the
 same syntax as TextMate and can even import most TextMate snippets.
 
@@ -1241,7 +1055,7 @@ same syntax as TextMate and can even import most TextMate snippets.
         (goto-char position))))
 #+END_SRC
 
-** Projects
+*** Projects
 [[https://github.com/bbatsov/projectile][Projectile]] is my tool of preference when working on a project and even
 integrates with ggtags.
 
@@ -1251,7 +1065,7 @@ integrates with ggtags.
   (projectile-global-mode)
 #+END_SRC
 
-** Git
+*** Git
 [[https://github.com/magit/magit][Magit]] is an excellent tool for managing git repositories from Emacs.
 
 #+BEGIN_SRC elisp
@@ -1271,7 +1085,7 @@ integrates with ggtags.
       ("gitorious.org" git-link-gitorious)))
 #+END_SRC
 
-** Searching in files with Ag
+*** Searching in files with Ag
 [[https://github.com/Wilfred/ag.el][ag.el]] is an Emacs frontend for Ag, aka: the silver searcher.
 
 #+BEGIN_SRC elisp
@@ -1304,18 +1118,18 @@ to have just one ag buffer openend:
         ag-reuse-window t)
 #+END_SRC
 
-** Diffs with ediff
-*** Ignore whitespace
+*** Diffs with ediff
+**** Ignore whitespace
 #+BEGIN_SRC elisp
   (setq ediff-diff-options "-w")
 #+END_SRC
 
-*** Display options as a buffer not a frame
+**** Display options as a buffer not a frame
 #+BEGIN_SRC elisp
   (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 #+END_SRC
 
-** Common Lisp
+*** Common Lisp
 #+BEGIN_SRC elisp
   (load (expand-file-name "~/quicklisp/slime-helper.el") 'noerror)
   (setq inferior-lisp-program "sbcl")
@@ -1329,7 +1143,7 @@ to have just one ag buffer openend:
   (add-hook 'lisp-mode-hook 'setup-lisp-mode)
 #+END_SRC
 
-** Emacs Lisp
+*** Emacs Lisp
 #+BEGIN_SRC elisp
   (autoload 'elisp-slime-nav-mode "elisp-slime-nav")
 
@@ -1343,22 +1157,22 @@ to have just one ag buffer openend:
   (add-hook 'emacs-lisp-mode-hook #'setup-emacs-lisp-mode)
 #+END_SRC
 
-** Python
-*** Globals
+*** Python
+**** Globals
 #+BEGIN_SRC elisp
   (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args ""
         python-max-column 99)
 #+END_SRC
 
-*** Python mode
+**** Python mode
 #+BEGIN_SRC elisp
   (defun python-mode-initialize ()
     (interactive)
     (setq whitespace-line-column python-max-column
           whitespace-style (append whitespace-style '(face lines-tail))
-          fill-column max-column
-          flycheck-flake8-maximum-line-length max-column)
+          fill-column python-max-column
+          flycheck-flake8-maximum-line-length python-max-column)
     (highlight-lines-matching-regexp "i?pdb.set_trace()") 
     (anaconda-mode)
     (set-common-pairs python-mode))
@@ -1382,11 +1196,11 @@ Treat ~.jinja~ as html.
   (add-to-list 'auto-mode-alist '("\\.jinja\\'" . html-mode))
 #+END_SRC
 
-** Pretty symbols
+*** Pretty symbols
 #+BEGIN_SRC elisp
   (add-hook 'prog-mode-hook #'pretty-symbols-mode)
 #+END_SRC
-** Haskell
+*** Haskell
 #+BEGIN_SRC elisp
   (defun setup-haskell-mode ()
     (interactive)
@@ -1397,7 +1211,7 @@ Treat ~.jinja~ as html.
   (add-hook 'haskell-mode-hook 'setup-haskell-mode)
 #+END_SRC
 
-** Scheme
+*** Scheme
 Set the command used to run scheme.
 #+BEGIN_SRC elisp
   (setq scheme-program-name "guile"
@@ -1428,7 +1242,7 @@ The execute =M-x geiser= to launch a scheme implementation.
 | C-c M-r     | Eval region and go     |
 | C-c C-d C-d | Symbol documentation   |
 
-** HTML
+*** HTML
 #+BEGIN_SRC elisp
   (defun setup-html-mode ()
     (interactive)
@@ -1437,7 +1251,7 @@ The execute =M-x geiser= to launch a scheme implementation.
   (add-hook 'html-mode-hook 'setup-html-mode)
 #+END_SRC
 
-** SQL
+*** SQL
 #+BEGIN_SRC elisp
   (defun setup-sql-mode ()
     (interactive)
@@ -1448,8 +1262,8 @@ The execute =M-x geiser= to launch a scheme implementation.
 
   (add-hook 'sql-mode-hook #'setup-sql-mode)
 #+END_SRC
-* Key bindings
-** Windows
+** Key bindings
+*** Windows
 
 | C-x 9      | Close the other window.                       |
 | C-M-1      | Delete other window.                          |
@@ -1493,7 +1307,7 @@ The execute =M-x geiser= to launch a scheme implementation.
   (global-set-key (kbd "s-M-2") 'smart-window-file-split)
 #+END_SRC
 
-** Transpose chars or region
+*** Transpose chars or region
 
 | C-t | Transpose chars or region if active region |
 
@@ -1513,7 +1327,7 @@ The execute =M-x geiser= to launch a scheme implementation.
   (global-set-key (kbd "C-t") 'transpose-chars1)
 #+END_SRC
 
-** Change theme
+*** Change theme
 
 | F8 | Change theme. |
 
@@ -1521,7 +1335,7 @@ The execute =M-x geiser= to launch a scheme implementation.
   (global-set-key [f8] 'use-next-theme)
 #+END_SRC
 
-** Evaluating Sexps
+*** Evaluating Sexps
 
 | C-x C-e         | Show the result in the minibuffer.             |
 | C-u C-x C-e     | Write the result after the sexp in the buffer. |
@@ -1555,7 +1369,7 @@ The execute =M-x geiser= to launch a scheme implementation.
                                   (flash-region beg end)))
 #+END_SRC
 
-** Kill Sexp backwards
+*** Kill Sexp backwards
 | M-s-k | Kill sexp backwards. |
 
 #+BEGIN_SRC elisp
@@ -1564,7 +1378,7 @@ The execute =M-x geiser= to launch a scheme implementation.
                                   (kill-sexp -1)))
 #+END_SRC
 
-** Expand region
+*** Expand region
 
 | C-c e e | Expand region. |
 
@@ -1572,7 +1386,7 @@ The execute =M-x geiser= to launch a scheme implementation.
   (global-set-key (kbd "C-c e e") 'er/expand-region)
 #+END_SRC
 
-** Comment/Uncomment line/region
+*** Comment/Uncomment line/region
 
 | C-; | comment/uncomment line. |
 | C-M-; | comment/uncomment region. |
@@ -1582,7 +1396,7 @@ The execute =M-x geiser= to launch a scheme implementation.
   (global-set-key (kbd "C-M-;") 'comment-or-uncomment-region)
 #+END_SRC
 
-** Search
+*** Search
 
 | C-s | Search forward using regexp.  |
 | C-r | Search backward using regexp. |
@@ -1615,7 +1429,7 @@ While searching
 
 #+END_SRC
 
-** Search in other
+*** Search in other
 
 | C-M-s | Search forward in other window.  |
 | C-M-r | Search backward in other window. |
@@ -1637,14 +1451,14 @@ While searching
   (global-set-key (kbd "C-M-r") 'isearch-backward-regexp-other-window)
 #+END_SRC
 
-** Better ~M-x~ using smex
+*** Better ~M-x~ using smex
 
 #+BEGIN_SRC elisp
   (global-set-key (kbd "M-x") 'smex)
   (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 #+END_SRC
 
-** Multiple cursors
+*** Multiple cursors
 
 | C->         | Put a cursor in next line.           |
 | C-<         | Put a cursor in previous line.       |
@@ -1662,7 +1476,7 @@ While searching
   (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click)
 #+END_SRC
 
-** Jump to characters
+*** Jump to characters
 
 | s-. | Jump to starting word character. |
 | s-, | Jump to word character.          |
@@ -1673,12 +1487,12 @@ While searching
   (global-set-key (kbd "s-,") 'ace-jump-char-mode)
 #+END_SRC
 
-** Query replace using regexps
+*** Query replace using regexps
 #+BEGIN_SRC elisp
   (global-set-key (kbd "M-%") 'query-replace-regexp)
 #+END_SRC
 
-** Scroll with arrows
+*** Scroll with arrows
 #+BEGIN_SRC elisp
   (global-set-key [down] 'scroll-up-one-line-command)
   (global-set-key [up] 'scroll-down-one-line-command)
@@ -1687,24 +1501,24 @@ While searching
   (global-set-key (kbd "s-S-<down>") 'scroll-up-one-line-other-window)
 #+END_SRC
 
-** Join lines a la vim
+*** Join lines a la vim
 #+BEGIN_SRC elisp
   (global-set-key (kbd "C-S-j") 'join-line-below)
 #+END_SRC
 
-** Kill buffer and file
+*** Kill buffer and file
 #+BEGIN_SRC elisp
   (mykie:set-keys nil
     "C-x k" :default kill-buffer :C-u kill-buffer-and-file)
 #+END_SRC
 
-** Rename buffer and file
+*** Rename buffer and file
 #+BEGIN_SRC elisp
   (mykie:set-keys nil
     "C-c r" :default rename-buffer :C-u rename-buffer-and-file)
 #+END_SRC
 
-** Git
+*** Git
 #+BEGIN_SRC elisp
   (global-set-key (kbd "C-c g m") 'git-messenger:popup-message)
   (global-set-key (kbd "C-c g g") 'git-gutter-mode)
@@ -1719,32 +1533,32 @@ While searching
   (global-set-key (kbd "C-c m d") 'magit-diff)
 #+END_SRC
 
-** Org
+*** Org
 #+BEGIN_SRC elisp
   (autoload 'org-toc-insert-toc "org-toc")
   (global-set-key (kbd "C-c o t") 'org-toc-insert-toc)
 #+END_SRC
 
-** idomenu
+*** idomenu
 #+BEGIN_SRC elisp
   (autoload 'idomenu "idomenu")
   (global-set-key (kbd "C-.") 'idomenu)
 #+END_SRC
 
-** Which function
+*** Which function
 #+BEGIN_SRC elisp
   (global-set-key (kbd "C-c C-q") 'show-which-function)
 #+END_SRC
-** Create scratch buffer
+*** Create scratch buffer
 #+BEGIN_SRC elisp
   (global-set-key (kbd "C-c s") 'create-scratch-buffer)
 #+END_SRC
-** Duplicate line
+*** Duplicate line
 #+BEGIN_SRC elisp
   (global-set-key (kbd "C-c P") 'duplicate-line)
 #+END_SRC
 
-** Go to beginning/end of buffer
+*** Go to beginning/end of buffer
 #+BEGIN_SRC elisp
   (mykie:set-keys nil
     "C-a" :default (beginning-of-line) :C-u (beginning-of-buffer)
@@ -1752,29 +1566,29 @@ While searching
     )
 #+END_SRC
 
-** Run shell command
+*** Run shell command
 #+BEGIN_SRC elisp
   (global-set-key (kbd "C-!") 'shell-command)
 #+END_SRC
 
-** Access recent files
+*** Access recent files
 #+BEGIN_SRC elisp
   (global-set-key (kbd "C-M-r") 'recentf-open-files)
 #+END_SRC
 
-** Toggle fullscreen
+*** Toggle fullscreen
 #+BEGIN_SRC elisp
   (global-set-key (kbd "<f11>") 'fullscreen-mode-fullscreen-toggle)
 #+END_SRC
 
-** Run last eshell command
+*** Run last eshell command
 #+BEGIN_SRC elisp
   (fset 'run-last-eshell-command
      (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([24 52 98 101 115 104 101 108 108 return 134217840 return 134217786 40 115 119 105 116 99 104 45 116 111 45 98 117 102 102 101 114 45 111 116 104 101 114 45 119 105 110 100 111 119 32 40 111 116 104 101 114 45 98 117 102 102 101 114 32 40 99 117 114 114 101 110 116 45 98 117 102 102 101 114 41 32 49 41 41 return] 0 "%d")) arg)))
 
   (global-set-key [f12] 'run-last-eshell-command)
 #+END_SRC
-* Personal blog
+** Personal blog
 #+BEGIN_SRC elisp
   (require 'org-page)
   (setq op/repository-directory "~/repos/public/ikame.github.io/"
@@ -1814,15 +1628,15 @@ While searching
                                     :category-index nil)))
 #+END_SRC
 
-* Enable some "dangerous" commands
-** Upcase region
+** Enable some "dangerous" commands
+*** Upcase region
 #+BEGIN_SRC elisp
   (put 'upcase-region 'disabled nil)
   (put 'downcase-region 'disabled nil)
   (put 'narrow-to-region 'disabled nil)
 #+END_SRC
 
-* Emacs' customize custom file
+** Emacs' customize custom file
 File used for storing customization information created through Emacs'
 customization interface (I don't keep this file under version
 control).
