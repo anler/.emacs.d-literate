@@ -23,7 +23,10 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#quit-other-window][Quit other window]]
      - [[#select-other-window-backward][Select other window backward]]
      - [[#show-which-function][Show which function]]
+     - [[#electric-pairs][Electric pairs]]
+     - [[#projects][Projects]]
  - [[#general][General]]
+     - [[#debug-on-error][Debug on error]]
      - [[#wrap-long-lines][Wrap long lines]]
      - [[#display-column-number-in-the-modeline][Display column number in the modeline]]
      - [[#display-buffer-size-in-the-modeline][Display buffer size in the modeline]]
@@ -61,20 +64,15 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#better-window-movement][Better window movement]]
  - [[#appearance][Appearance]]
      - [[#inhibit-startup-screen][Inhibit startup screen]]
-     - [[#hide-scroll-bars][Hide scroll bars]]
-     - [[#hide-tool-bar][Hide tool bar]]
-     - [[#hide-menu-bar][Hide menu bar]]
+     - [[#scrollbars][Scrollbars]]
+     - [[#toolbar][Toolbar]]
+     - [[#menubar][Menubar]]
      - [[#disable-cursor-blink][Disable cursor blink]]
      - [[#buffer-file-name-as-frame-title][Buffer file name as frame title]]
-     - [[#mark-empty-lines-not-at-the-moment][Mark empty lines... not at the moment]]
      - [[#cycle-through-color-themes][Cycle through color themes]]
  - [[#shells][Shells]]
      - [[#eshell-elisp-shell][Eshell (Elisp Shell)]]
-     - [[#config-inside-emacs][Config inside Emacs]]
-     - [[#config-outside-emacs][Config outside Emacs]]
      - [[#shell][Shell]]
-     - [[#config-inside-emacs][Config inside Emacs]]
-     - [[#config-outside-emacs][Config outside Emacs]]
      - [[#terminal][Terminal]]
      - [[#executing-shell-commands][Executing shell commands]]
  - [[#org-mode][Org mode]]
@@ -99,8 +97,6 @@ literate-programming style taught to me by my good friend [[https://github.com/m
  - [[#programming][Programming]]
      - [[#refactoring][Refactoring]]
      - [[#jump-to-definition-using-tags][Jump to definition using tags]]
-     - [[#key-bindings][Key bindings]]
-     - [[#installation-instructions][Installation instructions]]
      - [[#treat-camel-case-word-as-subwords][Treat camel case word as subwords]]
      - [[#auto-closing-and-highlighting-parens][Auto-closing and highlighting parens]]
      - [[#expand-region][Expand region]]
@@ -111,16 +107,14 @@ literate-programming style taught to me by my good friend [[https://github.com/m
      - [[#git][Git]]
      - [[#searching-in-files-with-ag][Searching in files with Ag]]
      - [[#diffs-with-ediff][Diffs with ediff]]
-     - [[#ignore-whitespace][Ignore whitespace]]
-     - [[#display-options-as-a-buffer-not-a-frame][Display options as a buffer not a frame]]
      - [[#common-lisp][Common Lisp]]
      - [[#emacs-lisp][Emacs Lisp]]
      - [[#python][Python]]
-     - [[#sql][SQL]]
      - [[#pretty-symbols][Pretty symbols]]
      - [[#haskell][Haskell]]
      - [[#scheme][Scheme]]
      - [[#html][HTML]]
+     - [[#sql][SQL]]
  - [[#key-bindings][Key bindings]]
      - [[#windows][Windows]]
      - [[#transpose-chars-or-region][Transpose chars or region]]
@@ -378,10 +372,41 @@ Command for creating additional scratch buffers.
     (message (which-function)))
 #+END_SRC
 
+** Electric pairs
+#+BEGIN_SRC elisp
+  (defun electric-pair ()
+    "Insert character pair without surrounding spaces"
+    (interactive)
+    (let (parens-require-spaces)
+      (insert-pair)))
+
+  (defun common-electric-pair-string-delimiter ()
+    (when (and electric-pair-mode
+               (memq last-command-event '(?\" ?\'))
+               (let ((count 0))
+                 (while (eq (char-before (- (point) count)) last-command-event)
+                   (setq count (1+ count)))
+                 (= count 3)))
+      (save-excursion (insert (make-string 3 last-command-event)))))
+
+  (defun set-common-pairs (mode-map)
+    (add-hook 'post-self-insert-hook #'common-electric-pair-string-delimiter 'append t)
+    (define-key python-mode-map "\"" 'electric-pair)
+    (define-key python-mode-map "\'" 'electric-pair)
+    (define-key python-mode-map "(" 'electric-pair)
+    (define-key python-mode-map "[" 'electric-pair)
+    (define-key python-mode-map "{" 'electric-pair))
+#+END_SRC
+** Projects
+#+BEGIN_SRC elisp
+  (defun in-project-p ()
+    (and (fboundp 'projectile-project-p)
+         (projectile-project-p)))
+#+END_SRC
 * General
 ** Debug on error
 #+BEGIN_SRC elisp
-  (setq debug-on-error t)
+  (setq debug-on-error nil)
 #+END_SRC
 ** Wrap long lines
 #+BEGIN_SRC elisp
@@ -666,22 +691,22 @@ Lisp object at point (function or variable) with =M-.= jump back with
   (setq inhibit-startup-message t)
 #+END_SRC
 
-** Hide scroll bars
+** Scrollbars
 #+BEGIN_SRC elisp
   (if (boundp 'scroll-bar-mode)
       (scroll-bar-mode -1))
 #+END_SRC
 
-** Hide tool bar
+** Toolbar
 #+BEGIN_SRC elisp
   (if (boundp 'tool-bar-mode)
       (tool-bar-mode -1))
 #+END_SRC
 
-** Hide menu bar
+** Menubar
 #+BEGIN_SRC elisp
   (if (boundp 'menu-bar-mode)
-      (menu-bar-mode -1))
+      (menu-bar-mode 1))
 #+END_SRC
 
 ** Disable cursor blink
@@ -695,20 +720,13 @@ Lisp object at point (function or variable) with =M-.= jump back with
     (setq frame-title-format '(buffer-file-name "%f" ("%b"))))
 #+END_SRC
 
-** Mark empty lines... not at the moment
-Indicate empty lines in the left fringe (exactly the same
-functionality VIM has to mark the empty lines with =~=).
-#+BEGIN_SRC elisp
-  ; (toggle-indicate-empty-lines)
-#+END_SRC
-
 ** Cycle through color themes
 #+BEGIN_SRC elisp
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
   (defvar current-theme nil "Name of the theme being used.")
   (defvar themes-list nil "Cycle through these themes")
 
-  (setq themes-list (cycle '(noctilux subatomic leuven)))
+  (setq themes-list (cycle '(django noctilux subatomic leuven)))
 
   (defun use-next-theme ()
     "Use the next theme in themes-list."
@@ -725,8 +743,7 @@ functionality VIM has to mark the empty lines with =~=).
     (unless (eq theme 'default)
       (setq current-theme theme)
       (load-theme current-theme t))
-    (set-default-font "Fantasque Sans Mono-15" :keep-size)
-    (setq default-frame-alist '((font . "Fantasque Sans Mono-15"))))
+    (set-default-font "Fantasque Sans Mono-15" :keep-size))
 
   (use-next-theme)
 #+END_SRC
@@ -746,7 +763,7 @@ functionality VIM has to mark the empty lines with =~=).
 | C-c M-i |         | Insert printed process name at point.          |
 | C-c M-v |         | Insert and environment variable at point.      |
 | C-c M-d |         | Toggle between direct/delayed input.           |
-History Interaction  
+History Interaction
 | !!       |   | Repeat last command.                                |
 | !ls      |   | Repeat last command beginning with ls.              |
 | !?ls     |   | Repeat last command containing ls.                  |
@@ -755,7 +772,7 @@ History Interaction
 | ^old^new |   | Replace old with new in last command and run it.    |
 | $_       |   | Returns last parameter in last command.             |
 
-** Config inside Emacs
+*** Config inside Emacs
 #+BEGIN_SRC elisp
   (require 'eshell)
   (require 'em-smart)
@@ -764,7 +781,7 @@ History Interaction
         eshell-smart-space-goes-to-end t)
 #+END_SRC
 
-** Config outside Emacs
+*** Config outside Emacs
 #+BEGIN_SRC sh
   ## -*- mode: eshell-script -*-
   (setenv "PAGER" "cat")
@@ -786,7 +803,7 @@ History Interaction
 | M-p     | comint-previous-input      | Previous command.                        |
 | M-n     | comint-next-input          | Next command.                            |
 
-** Config inside Emacs
+*** Config inside Emacs
 Set shell:
 #+BEGIN_SRC elisp
   (setq shell-file-name "/bin/zsh")
@@ -819,7 +836,7 @@ Bash Completion:
     'bash-completion-dynamic-complete)
 #+END_SRC
 
-** Config outside Emacs
+*** Config outside Emacs
 #+BEGIN_SRC conf
   prompt walters
   unsetopt zle
@@ -1064,7 +1081,7 @@ See [[https://github.com/leoliu/ggtags][leoliu/ggtags]] for a complete reference
 I already have ggtags-mode listed as a dependency in my Cask file, the
 only thing left is installing GnuGlobal in the system.
 
-** Key bindings
+*** Key bindings
 See [[https://github.com/leoliu/ggtags#usage][ggtags usage]] for a complete list of keybindings.
 
 | Keybinding | Command | What                           |
@@ -1082,7 +1099,7 @@ See [[https://github.com/leoliu/ggtags#usage][ggtags usage]] for a complete list
 | C-c M-b    |         | Browse as hypertext.           |
 | C-c M-j    |         | Visit project root.            | 
 
-** Installation instructions
+*** Installation instructions
 1. Install exuberant ctags:
 Archlinux:
 #+BEGIN_SRC sh
@@ -1257,13 +1274,6 @@ integrates with ggtags.
 ** Searching in files with Ag
 [[https://github.com/Wilfred/ag.el][ag.el]] is an Emacs frontend for Ag, aka: the silver searcher.
 
-You need to have ag installed in your system, in archlinux you can do
-so with:
-#+BEGIN_SRC sh
-  pacman -S the_silver_searcher
-#+END_SRC
-
-Require it:
 #+BEGIN_SRC elisp
   (require 'ag)
 
@@ -1295,12 +1305,12 @@ to have just one ag buffer openend:
 #+END_SRC
 
 ** Diffs with ediff
-** Ignore whitespace
+*** Ignore whitespace
 #+BEGIN_SRC elisp
   (setq ediff-diff-options "-w")
 #+END_SRC
 
-** Display options as a buffer not a frame
+*** Display options as a buffer not a frame
 #+BEGIN_SRC elisp
   (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 #+END_SRC
@@ -1334,51 +1344,26 @@ to have just one ag buffer openend:
 #+END_SRC
 
 ** Python
-Global variables
+*** Globals
 #+BEGIN_SRC elisp
   (setq python-shell-interpreter "ipython"
-        python-shell-interpreter-args "")
+        python-shell-interpreter-args ""
+        python-max-column 99)
 #+END_SRC
 
-Python mode
+*** Python mode
 #+BEGIN_SRC elisp
-    (defun setup-python-mode ()
-      "Custom command to setup python-mode"
-      (interactive)
-      (let ((max-column 99))
-        (setq whitespace-line-column max-column
-              whitespace-style (append whitespace-style '(face lines-tail))
-              fill-column max-column
-              flycheck-flake8-maximum-line-length max-column))
-      (add-hook 'post-self-insert-hook #'python-electric-pair-string-delimiter 'append t)
-      (highlight-lines-matching-regexp "i?pdb.set_trace()")
-      (when (and (fboundp 'projectile-project-p)
-                 (projectile-project-p))
-        (flycheck-mode))
-      (ggtags-mode)
-      (anaconda-mode)
-      (define-key python-mode-map "\"" 'electric-pair)
-      (define-key python-mode-map "\'" 'electric-pair)
-      (define-key python-mode-map "(" 'electric-pair)
-      (define-key python-mode-map "[" 'electric-pair)
-      (define-key python-mode-map "{" 'electric-pair))
-
-    (defun python-electric-pair-string-delimiter ()
-      (when (and electric-pair-mode
-                 (memq last-command-event '(?\" ?\'))
-                 (let ((count 0))
-                   (while (eq (char-before (- (point) count)) last-command-event)
-                     (setq count (1+ count)))
-                   (= count 3)))
-        (save-excursion (insert (make-string 3 last-command-event)))))
-
-    (add-hook 'python-mode-hook 'setup-python-mode)
-
-  (defun electric-pair ()
-    "Insert character pair without surrounding spaces"
+  (defun python-mode-initialize ()
     (interactive)
-    (let (parens-require-spaces)
-      (insert-pair)))
+    (setq whitespace-line-column python-max-column
+          whitespace-style (append whitespace-style '(face lines-tail))
+          fill-column max-column
+          flycheck-flake8-maximum-line-length max-column)
+    (highlight-lines-matching-regexp "i?pdb.set_trace()") 
+    (anaconda-mode)
+    (set-common-pairs python-mode))
+
+  (add-hook 'python-mode-hook 'python-mode-initialize)
 
   (defun python-get-buffer-filename-as-module (buffername)
     "Insert the path to the python module represented by BUFFERNAME"
@@ -1397,19 +1382,6 @@ Treat ~.jinja~ as html.
   (add-to-list 'auto-mode-alist '("\\.jinja\\'" . html-mode))
 #+END_SRC
 
-** SQL
-#+BEGIN_SRC elisp
-  (setq save-abbrevs nil)
-  (setq-default abbrev-mode t)
-
-  (define-abbrev-table 'sql-mode-abbrev-table
-    (mapcar #'(lambda (v) (list v (upcase v) nil 1))
-            '("absolute" "action" "add" "after" "all" "allocate" "alter" "and" "any" "are" "array" "as" "asc" "asensitive" "assertion" "asymmetric" "at" "atomic" "authorization" "avg" "before" "begin" "between" "bigint" "binary" "bit" "bitlength" "blob" "boolean" "both" "breadth" "by" "call" "called" "cascade" "cascaded" "case" "cast" "catalog" "char" "char_length" "character" "character_length" "check" "clob" "close" "coalesce" "collate" "collation" "column" "commit" "condition" "connect" "connection" "constraint" "constraints" "constructor" "contains" "continue" "convert" "corresponding" "count" "create" "cross" "cube" "current" "current_date" "current_default_transform_group" "current_path" "current_role" "current_time" "current_timestamp" "current_transform_group_for_type" "current_user" "cursor" "cycle" "data" "date" "day" "deallocate" "dec" "decimal" "declare" "default" "deferrable" "deferred" "delete" "depth" "deref" "desc" "describe" "descriptor" "deterministic" "diagnostics" "disconnect" "distinct" "do" "domain" "double" "drop" "dynamic" "each" "element" "else" "elseif" "end" "equals" "escape" "except" "exception" "exec" "execute" "exists" "exit" "external" "extract" "false" "fetch" "filter" "first" "float" "for" "foreign" "found" "free" "from" "full" "function" "general" "get" "global" "go" "goto" "grant" "group" "grouping" "handler" "having" "hold" "hour" "identity" "if" "immediate" "in" "indicator" "initially" "inner" "inout" "input" "insensitive" "insert" "int" "integer" "intersect" "interval" "into" "is" "isolation" "iterate" "join" "key" "language" "large" "last" "lateral" "leading" "leave" "left" "level" "like" "local" "localtime" "localtimestamp" "locator" "loop" "lower" "map" "match" "map" "member" "merge" "method" "min" "minute" "modifies" "module" "month" "multiset" "names" "national" "natural" "nchar" "nclob" "new" "next" "no" "none" "not" "null" "nullif" "numeric" "object" "octet_length" "of" "old" "on" "only" "open" "option" "or" "order" "ordinality" "out" "outer" "output" "over" "overlaps" "pad" "parameter" "partial" "partition" "path" "position" "precision" "prepare" "preserve" "primary" "prior" "privileges" "procedure" "public" "range" "read" "reads" "real" "recursive" "ref" "references" "referencing" "relative" "release" "repeat" "resignal" "restrict" "result" "return" "returns" "revoke" "right" "role" "rollback" "rollup" "routine" "row" "rows" "savepoint" "schema" "scope" "scroll" "search" "second" "section" "select" "sensitive" "session" "session_user" "set" "sets" "signal" "similar" "size" "smallint" "some" "space" "specific" "specifictype" "sql" "sqlcode" "sqlerror" "sqlexception" "sqlstate" "sqlwarning" "start" "state" "static" "submultiset" "substring" "sum" "symmetric" "system" "system_user" "table" "tablesample" "temporary" "then" "time" "timestamp" "timezone_hour" "timezone_minute" "to" "trailing" "transaction" "translate" "translation" "treat" "trigger" "trim" "true" "under" "undo" "union" "unique" "unknown" "unnest" "until" "update" "upper" "usage" "user" "using" "value" "values" "varchar" "varying" "view" "when" "whenever" "where" "while" "window" "with" "within" "without" "work" "write" "year" "zone")
-            ))
-#+END_SRC
-*** Helper functions
-#+BEGIN_SRC elisp
-#+END_SRC
 ** Pretty symbols
 #+BEGIN_SRC elisp
   (add-hook 'prog-mode-hook #'pretty-symbols-mode)
@@ -1465,6 +1437,17 @@ The execute =M-x geiser= to launch a scheme implementation.
   (add-hook 'html-mode-hook 'setup-html-mode)
 #+END_SRC
 
+** SQL
+#+BEGIN_SRC elisp
+  (defun setup-sql-mode ()
+    (interactive)
+    (setq indent-tabs-mode nil
+          tab-stop-list (number-sequence 4 200 4)
+          tab-width 4
+          indent-line-function 'insert-tab))
+
+  (add-hook 'sql-mode-hook #'setup-sql-mode)
+#+END_SRC
 * Key bindings
 ** Windows
 
@@ -1494,8 +1477,6 @@ The execute =M-x geiser= to launch a scheme implementation.
     (switch-to-buffer buffer))
 
   (global-set-key (kbd "C-M-1") 'delete-other-windows)
-  (global-set-key (kbd "C-M-2") 'split-window-other-buffer-below)
-  (global-set-key (kbd "C-M-3") 'split-window-other-buffer-right)
   (global-set-key (kbd "C-M-0") 'delete-window)
   (global-set-key (kbd "C-M-o") 'other-window)
   (global-set-key (kbd "C-M-S-o") 'other-window-backward)
@@ -1504,7 +1485,12 @@ The execute =M-x geiser= to launch a scheme implementation.
   (global-set-key (kbd "s-<down>") 'shrink-window)
   (global-set-key (kbd "s-M-<up>") 'enlarge-window-horizontally)
   (global-set-key (kbd "s-M-<down>") 'shrink-window-horizontally)
+
   (window-numbering-mode)
+
+  (global-set-key (kbd "s-w") 'smart-window-move)
+  (global-set-key (kbd "C-M-2") 'smart-window-buffer-split)
+  (global-set-key (kbd "s-M-2") 'smart-window-file-split)
 #+END_SRC
 
 ** Transpose chars or region
@@ -1678,9 +1664,8 @@ While searching
 
 ** Jump to characters
 
-| C-c j j | Jump to starting word character. |
-| C-c j l | Jump to line.                    |
-| C-c j j | Jump to word character.          |
+| s-. | Jump to starting word character. |
+| s-, | Jump to word character.          |
 
 #+BEGIN_SRC elisp
   (autoload 'ace-jump-mode "ace-jump-mode")
@@ -1723,8 +1708,8 @@ While searching
 #+BEGIN_SRC elisp
   (global-set-key (kbd "C-c g m") 'git-messenger:popup-message)
   (global-set-key (kbd "C-c g g") 'git-gutter-mode)
-  (global-set-key (kbd "s-N") 'git-gutter:next-hunk)
-  (global-set-key (kbd "s-P") 'git-gutter:previous-hunk)
+  (global-set-key (kbd "C-c g n") 'git-gutter:next-hunk)
+  (global-set-key (kbd "C-c g p") 'git-gutter:previous-hunk)
   (global-set-key (kbd "C-c g s") 'git-gutter:stage-hunk)
   (global-set-key (kbd "C-c g r") 'git-gutter:revert-hunk)
 
