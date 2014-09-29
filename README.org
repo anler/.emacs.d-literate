@@ -254,6 +254,12 @@ Command for creating additional scratch buffers.
 
 *** Electric pairs
 #+BEGIN_SRC elisp
+  (setq skeleton-pair-alist '((?\( _ ?\))
+                              (?[  _ ?])
+                              (?{  _ ?})
+                              (?\" _ ?\")
+                              (?\' _ ?\')))
+
   (defun electric-pair ()
     "Insert character pair without surrounding spaces"
     (interactive)
@@ -269,13 +275,21 @@ Command for creating additional scratch buffers.
                  (= count 3)))
       (save-excursion (insert (make-string 3 last-command-event)))))
 
+  (defun electric-pair-backspace (arg)
+    (interactive "p")
+    (if (eq (char-after)
+            (car (last (assq (char-before) skeleton-pair-alist))))
+        (and (char-after) (delete-char 1)))
+    (delete-backward-char arg))
+
   (defun set-common-pairs (mode-map)
-    (add-hook 'post-self-insert-hook #'common-electric-pair-string-delimiter 'append t)
-    (define-key python-mode-map "\"" 'electric-pair)
-    (define-key python-mode-map "\'" 'electric-pair)
-    (define-key python-mode-map "(" 'electric-pair)
-    (define-key python-mode-map "[" 'electric-pair)
-    (define-key python-mode-map "{" 'electric-pair))
+    (add-hook 'post-self-insert-hook #'common-electric-pair-string-delimiter :append :local)
+    (global-set-key [backspace] #'electric-pair-backspace)
+    (define-key mode-map "\"" 'electric-pair)
+    (define-key mode-map "\'" 'electric-pair)
+    (define-key mode-map "(" 'electric-pair)
+    (define-key mode-map "[" 'electric-pair)
+    (define-key mode-map "{" 'electric-pair))
 #+END_SRC
 *** Projects
 #+BEGIN_SRC elisp
@@ -284,6 +298,10 @@ Command for creating additional scratch buffers.
          (projectile-project-p)))
 #+END_SRC
 ** General
+*** No bell
+#+BEGIN_SRC elisp
+  (setq ring-bell-function 'ignore)
+#+END_SRC
 *** Debug on error
 #+BEGIN_SRC elisp
   (setq debug-on-error nil)
@@ -493,7 +511,7 @@ region:
 *** Set default browser
 #+BEGIN_SRC elisp
   (setq browse-url-browser-function 'browse-url-generic
-        browse-url-generic-program "conkeror")
+        browse-url-generic-program "google-chrome")
 #+END_SRC
 
 *** Remote sudo access with TRAMP
@@ -554,14 +572,6 @@ Lisp object at point (function or variable) with =M-.= jump back with
 #+END_SRC
 
 *** Better window movement
-
-| C-x w   | smart-window-move         |
-| C-x W   | smart-window-buffer-split |
-| C-x M-w | smart-window-file-split   |
-| C-x R   | smart-window-rotate       |
-| C-x 2   | sw-below                  |
-| C-x 3   | sw-right                  |
-
 #+BEGIN_SRC elisp
   (require 'smart-window)
 #+END_SRC
@@ -570,7 +580,10 @@ Lisp object at point (function or variable) with =M-.= jump back with
 #+BEGIN_SRC elisp
   (setq inhibit-startup-message t)
 #+END_SRC
-
+*** List todos on startup
+#+BEGIN_SRC elisp
+  (add-hook 'after-init-hook 'org-todo-list)
+#+END_SRC
 *** Scrollbars
 #+BEGIN_SRC elisp
   (if (boundp 'scroll-bar-mode)
@@ -586,7 +599,7 @@ Lisp object at point (function or variable) with =M-.= jump back with
 *** Menubar
 #+BEGIN_SRC elisp
   (if (boundp 'menu-bar-mode)
-      (menu-bar-mode 1))
+      (menu-bar-mode -1))
 #+END_SRC
 
 *** Disable cursor blink
@@ -606,7 +619,7 @@ Lisp object at point (function or variable) with =M-.= jump back with
   (defvar current-theme nil "Name of the theme being used.")
   (defvar themes-list nil "Cycle through these themes")
 
-  (setq themes-list (cycle '(noctilux django subatomic leuven)))
+  (setq themes-list (cycle '(leuven flatland noctilux subatomic birds-of-paradise-plus)))
 
   (defun use-next-theme ()
     "Use the next theme in themes-list."
@@ -623,7 +636,12 @@ Lisp object at point (function or variable) with =M-.= jump back with
     (unless (eq theme 'default)
       (setq current-theme theme)
       (load-theme current-theme t))
-    (set-default-font "Fantasque Sans Mono-15" :keep-size))
+    (let* ((font "Fantasque Sans Mono")
+           (size 13)
+           (font-and-size (format "%s-%s" font size)))
+      (when (member font (font-family-list))
+        (add-to-list 'initial-frame-alist `(font . ,font-and-size))
+        (add-to-list 'default-frame-alist `(font . ,font-and-size)))))
 
   (use-next-theme)
 #+END_SRC
@@ -917,8 +935,6 @@ Commands that act on files
 *** Dired extras
 #+BEGIN_SRC elisp
   (require 'dired+)
-  ;; (define-key ctl-x-map   "d" 'diredp-dired-files)
-  ;; (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
 #+END_SRC
 
 **** Reuse dired buffer
@@ -947,13 +963,6 @@ Commands that act on files
 #+END_SRC
 
 ** Programming
-*** Refactoring
-#+BEGIN_SRC elisp
-  (add-hook 'prog-mode-hook (lambda ()
-                              (emr-initialize)
-                              (local-set-key (kbd "M-RET") 'emr-show-refactor-menu)))
-#+END_SRC
-
 *** Jump to definition using tags
 Code navigation using GNU Global and Exuberant Ctags.
 See [[https://github.com/leoliu/ggtags][leoliu/ggtags]] for a complete reference and installation guide.
@@ -986,8 +995,8 @@ See [[https://github.com/leoliu/ggtags#usage][ggtags usage]] for a complete list
 *** Auto-closing and highlighting parens
 #+BEGIN_SRC elisp
   (show-paren-mode t)
-  (electric-pair-mode)
   (setq show-paren-style 'mixed)
+  (autopair-global-mode)
 #+END_SRC
 *** Expand region
 [[https://github.com/magnars/expand-region.el][expand-region]] - [[http://emacsrocks.com/e09.html][-demo-]]
@@ -1007,7 +1016,8 @@ See [[https://github.com/leoliu/ggtags#usage][ggtags usage]] for a complete list
 *** Display trailing whitespace
 #+BEGIN_SRC elisp
   (global-whitespace-mode)
-  (setq whitespace-style '(face trailing tabs))
+  (setq whitespace-style '(face trailing tabs)
+        whitespace-line-column nil)
 #+END_SRC
 
 For removing the wrong spaces just call the command
@@ -1162,20 +1172,19 @@ to have just one ag buffer openend:
 #+BEGIN_SRC elisp
   (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args ""
-        python-max-column 99)
+        python-max-column 99
+        python-indent-offset 4)
 #+END_SRC
 
 **** Python mode
 #+BEGIN_SRC elisp
   (defun python-mode-initialize ()
     (interactive)
-    (setq whitespace-line-column python-max-column
-          whitespace-style (append whitespace-style '(face lines-tail))
-          fill-column python-max-column
+    (setq-local whitespace-line-column python-max-column)
+    (setq-local whitespace-style (append whitespace-style '(face lines-tail)))
+    (setq fill-column python-max-column
           flycheck-flake8-maximum-line-length python-max-column)
-    (highlight-lines-matching-regexp "i?pdb.set_trace()") 
-    (anaconda-mode)
-    (set-common-pairs python-mode))
+    (highlight-lines-matching-regexp "i?pdb.set_trace()"))
 
   (add-hook 'python-mode-hook 'python-mode-initialize)
 
@@ -1244,11 +1253,12 @@ The execute =M-x geiser= to launch a scheme implementation.
 
 *** HTML
 #+BEGIN_SRC elisp
-  (defun setup-html-mode ()
+  (defun html-mode-initialize ()
     (interactive)
+    (setq fill-colum nil)
     (local-set-key (kbd "C-<return>") 'html-line))
 
-  (add-hook 'html-mode-hook 'setup-html-mode)
+  (add-hook 'html-mode-hook 'html-mode-initialize)
 #+END_SRC
 
 *** SQL
@@ -1291,6 +1301,8 @@ The execute =M-x geiser= to launch a scheme implementation.
     (switch-to-buffer buffer))
 
   (global-set-key (kbd "C-M-1") 'delete-other-windows)
+  (global-set-key (kbd "C-M-2") 'sw-below)
+  (global-set-key (kbd "C-M-3") 'sw-right)
   (global-set-key (kbd "C-M-0") 'delete-window)
   (global-set-key (kbd "C-M-o") 'other-window)
   (global-set-key (kbd "C-M-S-o") 'other-window-backward)
@@ -1302,9 +1314,10 @@ The execute =M-x geiser= to launch a scheme implementation.
 
   (window-numbering-mode)
 
-  (global-set-key (kbd "s-w") 'smart-window-move)
-  (global-set-key (kbd "C-M-2") 'smart-window-buffer-split)
-  (global-set-key (kbd "s-M-2") 'smart-window-file-split)
+  (global-set-key (kbd "C-c w w") 'smart-window-move)
+  (global-set-key (kbd "C-c w r") 'smart-window-rotate)
+  (global-set-key (kbd "C-c w f") 'smart-window-file-split)
+  (global-set-key (kbd "C-c w b") 'smart-window-buffer-split)
 #+END_SRC
 
 *** Transpose chars or region
