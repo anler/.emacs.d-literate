@@ -1210,14 +1210,40 @@ Treat ~.jinja~ as html.
   (add-hook 'prog-mode-hook #'pretty-symbols-mode)
 #+END_SRC
 *** Haskell
+Key bindings in haskell-mode (with haskell-indent and inf-haskell.el).
+
+Code editing keys:
+
+| C-c C-=     | inserts an = sign and lines up type signatures and other pattern matches nicely. |
+| C-c C-\vert | inserts a guard \vert                                                            |
+| C-c C-o     | inserts a guard \vert otherwise = and lines up existing guards                   |
+| C-c C-w     | inserts a where keyword                                                          |
+| C-c C-.     | aligns code over a region in a "sensible" fashion.                               |
+
+Haskell interpreter keys:
+
+| C-c C-l | load current buffers file into Haskell interpreter                    |
+| C-c C-r | reload current Haskell interpreter session                            |
+| C-c C-t | gets :type for symbol at point, and remembers it                      |
+| C-u C-c | C-t inserts a type annotation, for symbol at point, on the line above |
+| C-c C-i | gets :info for symbol at point                                        |
+| C-c M-. | find definition of (interpreted) symbol at point                      |
+| C-c C-b | or C-c C-z switch to Haskell interpreter (starts one if needed)       |
+| C-c C-d | find haddock documentation about symbol                               |
+| C-c TAB | query the haskell interpreter for the info of the given expression    |
+| C-c C-v | check current buffers file with hlint                                 |
+
 #+BEGIN_SRC elisp
   (defun setup-haskell-mode ()
     (interactive)
     (turn-on-haskell-doc-mode)
     (turn-on-haskell-indentation)
-    (interactive-haskell-mode))
+    (inf-haskell-mode)
+    (interactive-haskell-mode)
+    ;(add-hook 'before-save-hook #'haskell-mode-stylish-buffer nil t)
+    )
 
-  (add-hook 'haskell-mode-hook 'setup-haskell-mode)
+  (add-hook 'haskell-mode-hook #'setup-haskell-mode)
 #+END_SRC
 
 *** Scheme
@@ -1435,7 +1461,7 @@ While searching
 
   (define-key isearch-mode-map (kbd "C-<return>") 'isearch-done-opposite)
 
-  (define-key isearch-mode-map (kbd "M-o") 'isearch-occur)
+  (define-key isearch-mode-map (kbd "M-o") #'helm-swoop-from-isearch)
 
   (defadvice isearch-occur (after isearch-occur-switch-to-occur-buffer activate)
     (switch-to-buffer-other-window "*Occur*"))
@@ -1489,7 +1515,7 @@ While searching
   (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click)
 #+END_SRC
 
-*** Jump to characters
+*** Jump to places
 
 | s-. | Jump to starting word character. |
 | s-, | Jump to word character.          |
