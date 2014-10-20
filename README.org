@@ -619,7 +619,7 @@ Lisp object at point (function or variable) with =M-.= jump back with
   (defvar current-theme nil "Name of the theme being used.")
   (defvar themes-list nil "Cycle through these themes")
 
-  (setq themes-list (cycle '(leuven flatland noctilux subatomic birds-of-paradise-plus)))
+  (setq themes-list (cycle '(minimal minimal-light noctilux manoj-dark adwaita leuven subatomic)))
 
   (defun use-next-theme ()
     "Use the next theme in themes-list."
@@ -637,7 +637,7 @@ Lisp object at point (function or variable) with =M-.= jump back with
       (setq current-theme theme)
       (load-theme current-theme t))
     (let* ((font "Fantasque Sans Mono")
-           (size 13)
+           (size 12)
            (font-and-size (format "%s-%s" font size)))
       (when (member font (font-family-list))
         (add-to-list 'initial-frame-alist `(font . ,font-and-size))
