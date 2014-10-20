@@ -151,7 +151,7 @@ Original command by Steve Yegge: [[[http://steve.yegge.googlepages.com/my-dot-em
 #+BEGIN_SRC elisp
   (defun rename-buffer-and-file (new-name)
     "Renames both current buffer and file it's visiting to NEW-NAME."
-    (interactive "sNew name for buffer and file: ")
+    (interactive (list (read-string "New name for buffer and file: " (buffer-name))))
     (let ((name (buffer-name))
           (filename (buffer-file-name)))
       (if (not filename)
