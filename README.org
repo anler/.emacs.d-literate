@@ -6,14 +6,19 @@
      - [[#custom-defined-functions][Custom defined functions]]
      - [[#general][General]]
      - [[#appearance][Appearance]]
-     - [[#shells][Shells]]
      - [[#org-mode][Org mode]]
+     - [[#helm][Helm]]
      - [[#dired][Dired]]
      - [[#programming][Programming]]
      - [[#key-bindings][Key bindings]]
      - [[#personal-blog][Personal blog]]
      - [[#enable-some-dangerous-commands][Enable some "dangerous" commands]]
      - [[#emacs-customize-custom-file][Emacs' customize custom file]]
+ - [[#shells][Shells]]
+     - [[#eshell-elisp-shell][Eshell (Elisp Shell)]]
+     - [[#shell][Shell]]
+     - [[#terminal][Terminal]]
+     - [[#executing-shell-commands][Executing shell commands]]
 
 * About
 [[https://raw.githubusercontent.com/ikame/.emacs.d/master/img/emacs.png]]
@@ -60,8 +65,9 @@ Taken from [[http://nullprogram.com/blog/2010/11/15/][nullprogram]].
 #+BEGIN_SRC elisp
   (defun cycle (list)
     "Takes a list LIST and converts it into a circular list"
-    (setf (cdr (last list)) list)
-    list)
+    (let ((cycle (copy-list list)))
+      (setf (cdr (last cycle)) cycle)
+      cycle))
 #+END_SRC
 
 *** Comment lines
@@ -511,7 +517,7 @@ region:
 *** Set default browser
 #+BEGIN_SRC elisp
   (setq browse-url-browser-function 'browse-url-generic
-        browse-url-generic-program "google-chrome")
+        browse-url-generic-program "firefox")
 #+END_SRC
 
 *** Remote sudo access with TRAMP
@@ -576,9 +582,11 @@ Lisp object at point (function or variable) with =M-.= jump back with
   (require 'smart-window)
 #+END_SRC
 ** Appearance
-*** Inhibit startup screen
+*** Startup screen
 #+BEGIN_SRC elisp
-  (setq inhibit-startup-message t)
+  (setq inhibit-startup-message t
+        initial-scratch-message nil
+        initial-major-mode 'org-mode)
 #+END_SRC
 *** List todos on startup
 #+BEGIN_SRC elisp
@@ -615,11 +623,11 @@ Lisp object at point (function or variable) with =M-.= jump back with
 
 *** Cycle through color themes
 #+BEGIN_SRC elisp
+  (load "~/.emacs.d/set-theme.el" 'noerror)
+
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
   (defvar current-theme nil "Name of the theme being used.")
   (defvar themes-list nil "Cycle through these themes")
-
-  (setq themes-list (cycle '(minimal minimal-light noctilux manoj-dark adwaita leuven subatomic)))
 
   (defun use-next-theme ()
     "Use the next theme in themes-list."
@@ -637,127 +645,16 @@ Lisp object at point (function or variable) with =M-.= jump back with
       (setq current-theme theme)
       (load-theme current-theme t))
     (let* ((font "Fantasque Sans Mono")
-           (size 12)
+           (size 15)
            (font-and-size (format "%s-%s" font size)))
       (when (member font (font-family-list))
         (add-to-list 'initial-frame-alist `(font . ,font-and-size))
-        (add-to-list 'default-frame-alist `(font . ,font-and-size)))))
+        (add-to-list 'default-frame-alist `(font . ,font-and-size))
+        (set-frame-font font-and-size)))
+    (message "Theme %s enabled" theme))
 
   (use-next-theme)
 #+END_SRC
-
-** Shells
-*** Eshell (Elisp Shell)
-
-| M-r     |         | Search backwards for a command by regexp.      |
-| M-s     |         | Search forwards for a command by regexp.       |
-| M-p     |         | Previous command in history.                   |
-| M-n     |         | Next command in history.                       |
-| C-c C-p |         | Jump to previous command.                      |
-| C-c C-n |         | Jump to next command.                          |
-| C-c M-r |         | Jump to previous instances of current command. |
-| C-c M-s |         | Jump to next instances of current command.     |
-| C-c M-b |         | Insert printed buffer name at point.           |
-| C-c M-i |         | Insert printed process name at point.          |
-| C-c M-v |         | Insert and environment variable at point.      |
-| C-c M-d |         | Toggle between direct/delayed input.           |
-History Interaction
-| !!       |   | Repeat last command.                                |
-| !ls      |   | Repeat last command beginning with ls.              |
-| !?ls     |   | Repeat last command containing ls.                  |
-| !ls:n    |   | Extrat nth arg from last command beginning with ls. |
-| !ls      |   | Show completion results matches ls.                 |
-| ^old^new |   | Replace old with new in last command and run it.    |
-| $_       |   | Returns last parameter in last command.             |
-
-**** Config inside Emacs
-#+BEGIN_SRC elisp
-  (require 'eshell)
-  (require 'em-smart)
-  (setq eshell-where-to-jump 'begin
-        eshell-review-quick-commands nil
-        eshell-smart-space-goes-to-end t)
-#+END_SRC
-
-**** Config outside Emacs
-#+BEGIN_SRC sh :tangle no
-  ## -*- mode: eshell-script -*-
-  (setenv "PAGER" "cat")
-  (setenv "TERM" "xterm-256color")
-
-  (setq eshell-ask-to-save-history 'always)
-#+END_SRC
-
-*** Shell
-/output group/ consists of a command and its output.
-
-| C-c C-c |                            | Terminate command.                       |
-| C-c C-z |                            | Stop a job.                              |
-| C-c C-o | comint-kill-output         | Get rid of the prev command output.      |
-| C-c C-r | comint-show-output         | Show the top of the prev command output. |
-| C-c C-e | comint-show-maximum-output | Same as above but show the end instead.  |
-| C-c C-p |                            | Previous output group.                   |
-| C-c C-n |                            | Next output group.                       |
-| M-p     | comint-previous-input      | Previous command.                        |
-| M-n     | comint-next-input          | Next command.                            |
-
-**** Config inside Emacs
-Set shell:
-#+BEGIN_SRC elisp
-  (setq shell-file-name "/bin/zsh")
-#+END_SRC
-
-Making passwords invisible:
-#+BEGIN_SRC elisp
-  (add-hook 'comint-output-filter-functions
-            'comint-watch-for-password-prompt)
-#+END_SRC
-
-#+BEGIN_SRC elisp
-  (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-#+END_SRC
-
-#+BEGIN_SRC elisp
-  (add-hook 'shell-mode-hook (lambda ()
-                               (yas-minor-mode -1)
-                               (whitespace-mode -1)))
-#+END_SRC
-
-Bash Completion:
-#+BEGIN_SRC elisp
-  (autoload 'bash-completion-dynamic-complete 
-    "bash-completion"
-    "BASH completion hook")
-  (add-hook 'shell-dynamic-complete-functions
-    'bash-completion-dynamic-complete)
-  (add-hook 'shell-command-complete-functions
-    'bash-completion-dynamic-complete)
-#+END_SRC
-
-**** Config outside Emacs
-#+BEGIN_SRC conf :tangle no
-  prompt walters
-  unsetopt zle
-  WITHIN_EMACS=true
-#+END_SRC
-
-*** Terminal
-Terminal emulation inside Emacs.
-
-Disable some conflicting modes when running inside a Terminal buffer.
-#+BEGIN_SRC elisp
-  (defun custom-term-mode ()
-    (interactive)
-    (yas-minor-mode -1))
-  
-  (add-hook 'term-mode-hook 'custom-term-mode)
-#+END_SRC
-
-*** Executing shell commands
-
-| M-!         | shell-command           | Run shell command in background.                             |
-| M-\vert     | shell-command-on-region | Run shell command on region in background.                   |
-| C-u M-\vert | shell-command-on-region | Same as above but puts command output in the current burrer. |
 
 ** Org mode
 *** Text
@@ -851,8 +748,8 @@ To get a list of the supported styles from pygmentize:
 
 *** Ditaa executable path
 #+BEGIN_SRC elisp
-  (setq org-ditaa-jar-path ""
-        org-babel-ditaa-java-cmd "ditaa")
+  (setq org-ditaa-jar-path "~/.local/bin/ditaa.jar"
+        org-babel-ditaa-java-cmd "java")
 #+END_SRC
 
 *** Encrypting
@@ -880,6 +777,50 @@ yziKVRL8P2PtotxNYkfyP3edSpr+ZiD8IVtUI0sqgvYmKcrBBuwsZ2RfD/RB
 =efPi
 -----END PGP MESSAGE-----
 
+** Helm
+| Keybinding | Command                | Meaning                                                          |
+|------------+------------------------+------------------------------------------------------------------|
+| C-c h m    | helm-man-woman         | Quickly jumpp to mana entry using helm prompt or symbol at point |
+| C-c h i    | helm-semantic-or-imenu | Find major definitions such as function definitions              |
+| C-c h /    | helm-find              | Run `find` in current directory                                  |
+| C-c h r    | helm-regexp            | Pre-configured helm to build regexps                             |
+| C-c h x    | helm-register          | Pre-configured view of registers                                 |
+| C-c h C-,  | helm-calcul-expression | Calculate expression                                             |
+
+#+BEGIN_SRC elisp
+  (require 'helm-config)
+  (require 'helm-descbinds)
+  (helm-descbinds-mode)
+
+  (global-set-key (kbd "C-c h") 'helm-command-prefix)
+  (global-unset-key (kbd "C-x c"))
+
+  (global-set-key (kbd "M-x") 'helm-M-x)
+  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+  (global-set-key (kbd "C-x b") 'helm-mini)
+  (global-set-key (kbd "C-x C-f") 'helm-find-files)
+  (global-set-key (kbd "C-c h x") 'helm-register)
+  (global-set-key (kbd "M-:") 'helm-eval-expression-with-eldoc)
+
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
+  (define-key helm-map (kbd "C-z")  'helm-select-action)
+
+  (when (executable-find "curl")
+    (setq helm-google-suggest-use-curl-p t))
+
+  (setq helm-quick-update t
+        helm-split-window-in-side-p t
+        helm-buffers-fuzzy-matching t
+        helm-move-to-line-cycle-in-source t
+        helm-ff-search-library-in-sexp t
+        helm-scroll-amount 8
+        helm-ff-file-name-history-use-recentf t)
+
+  (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+
+  (helm-mode 1)
+#+END_SRC
 ** Dired
 
 General commands
@@ -922,8 +863,7 @@ Commands that act on files
 *** Activate ggtags on projects
 #+BEGIN_SRC elisp
   (add-hook 'dired-mode-hook (lambda ()
-                               (when (and (fboundp 'projectile-project-p)
-                                          (projectile-project-p))
+                               (when (in-project-p)
                                  (ggtags-mode))))
 #+END_SRC
 
@@ -1026,7 +966,8 @@ modes:
 #+BEGIN_SRC elisp
   (add-hook 'prog-mode-hook '(lambda ()
                                (setq whitespace-style '(lines-tail tabs tab-mark trailing empty))
-                               (add-hook 'before-save-hook 'whitespace-cleanup nil t)))
+                               (add-hook 'before-save-hook 'whitespace-cleanup nil t)
+                               (semantic-mode)))
 #+END_SRC
 
 *** Snippets
@@ -1071,8 +1012,11 @@ integrates with ggtags.
 
 #+BEGIN_SRC elisp
   (require 'projectile)
-  (setq projectile-enable-caching t)
+  (require 'helm-projectile)
+  (setq projectile-enable-caching t
+        projectile-completion-system 'helm)
   (projectile-global-mode)
+  (helm-projectile-on)
 #+END_SRC
 
 *** Git
@@ -1162,6 +1106,7 @@ to have just one ag buffer openend:
     (interactive)
     (paredit-mode)
     (turn-on-eldoc-mode)
+    (aggressive-indent-mode)
     (local-set-key (kbd "C-;") #'comment-or-uncomment-lisp-form))
 
   (add-hook 'emacs-lisp-mode-hook #'setup-emacs-lisp-mode)
@@ -1184,6 +1129,9 @@ to have just one ag buffer openend:
     (setq-local whitespace-style (append whitespace-style '(face lines-tail)))
     (setq fill-column python-max-column
           flycheck-flake8-maximum-line-length python-max-column)
+    (flycheck-mode)
+    (ggtags-mode)
+    (anaconda-mode)
     (highlight-lines-matching-regexp "i?pdb.set_trace()"))
 
   (add-hook 'python-mode-hook 'python-mode-initialize)
@@ -1490,13 +1438,6 @@ While searching
   (global-set-key (kbd "C-M-r") 'isearch-backward-regexp-other-window)
 #+END_SRC
 
-*** Better ~M-x~ using smex
-
-#+BEGIN_SRC elisp
-  (global-set-key (kbd "M-x") 'smex)
-  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-#+END_SRC
-
 *** Multiple cursors
 
 | C->         | Put a cursor in next line.           |
@@ -1581,7 +1522,7 @@ While searching
 *** idomenu
 #+BEGIN_SRC elisp
   (autoload 'idomenu "idomenu")
-  (global-set-key (kbd "C-.") 'idomenu)
+  (global-set-key (kbd "C-.") 'helm-semantic-or-imenu)
 #+END_SRC
 
 *** Which function
@@ -1607,7 +1548,7 @@ While searching
 
 *** Run shell command
 #+BEGIN_SRC elisp
-  (global-set-key (kbd "C-!") 'shell-command)
+  (global-set-key (kbd "C-!") 'eshell-here)
 #+END_SRC
 
 *** Access recent files
@@ -1683,3 +1624,154 @@ control).
   (setq custom-file "~/.emacs.d/custom.el")
   (load custom-file 'noerror)
 #+END_SRC
+* Shells
+** Eshell (Elisp Shell)
+General
+| M-r     | Search backwards for a command by regexp.      |
+| M-s     | Search forwards for a command by regexp.       |
+| M-p     | Previous command in history.                   |
+| M-n     | Next command in history.                       |
+| C-c C-p | Jump to previous command.                      |
+| C-c C-n | Jump to next command.                          |
+| C-c M-r | Jump to previous instances of current command. |
+| C-c M-s | Jump to next instances of current command.     |
+| C-c M-b | Insert printed buffer name at point.           |
+| C-c M-i | Insert printed process name at point.          |
+| C-c M-v | Insert and environment variable at point.      |
+| C-c M-d | Toggle between direct/delayed input.           |
+
+History Interaction
+| !!       | Repeat last command.                                |
+| !ls      | Repeat last command beginning with ls.              |
+| !?ls     | Repeat last command containing ls.                  |
+| !ls:n    | Extrat nth arg from last command beginning with ls. |
+| !ls      | Show completion results matches ls.                 |
+| ^old^new | Replace old with new in last command and run it.    |
+| $_       | Returns last parameter in last command.             |
+
+Elisp Functions
+| lispify ARGS            | Parses an argument string into elisp list notation |
+| addpath PATH            | Adds the argument to the $PATH env variable        |
+| unset ENV-VAR           | Unsets an existing env variable                    |
+| find-file FILE          | Finds a file                                       |
+| dired DIR               | Open a dired buffer in a dir                       |
+| calc-eval EXPR          | Runs EXPR through the calculator                   |
+| vc-dir DIR              | Reports status of vcs in dir                       |
+| ediff-files FILE1 FILE2 | Diffs files                                        |
+
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/init.el
+  (require 'eshell)
+  (require 'em-smart)
+  (setq eshell-where-to-jump 'begin
+        eshell-review-quick-commands nil
+        eshell-smart-space-goes-to-end t)
+
+  (defun eshell-here ()
+    "Opens up a new shell in the directoy associated with the
+  current buffer's file. The eshell is renamed to match that
+  directory to make multiple eshell windows easier."
+    (interactive)
+    (let* ((parent (if (buffer-file-name)
+                       (file-name-directory (buffer-file-name))
+                     default-directory))
+           (height (/ (window-total-height) 3))
+           (name (car (last (split-string parent "/" t)))))
+      (split-window-vertically (- height))
+      (other-window 1)
+      (eshell "new")
+      (rename-buffer (concat "*eshell: " name "*"))
+      (insert (concat "ls"))
+      (eshell-send-input)))
+
+  (defun eshell/x ()
+    (insert "exit")
+    (eshell-send-input)
+    (delete-window))
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle no
+  ## -*- mode: eshell-script -*-
+  (setenv "PAGER" "cat")
+  (setenv "TERM" "xterm-256color")
+
+  (setq eshell-ask-to-save-history 'always)
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle ~/.Eshell/alias :mkdirp t
+  ## -*- mode: eshell-script -*-
+  alias ff 'find-file $1'
+  alias d 'dired $1'
+#+END_SRC
+
+** Shell
+/output group/ consists of a command and its output.
+
+| C-c C-c |                            | Terminate command.                       |
+| C-c C-z |                            | Stop a job.                              |
+| C-c C-o | comint-kill-output         | Get rid of the prev command output.      |
+| C-c C-r | comint-show-output         | Show the top of the prev command output. |
+| C-c C-e | comint-show-maximum-output | Same as above but show the end instead.  |
+| C-c C-p |                            | Previous output group.                   |
+| C-c C-n |                            | Next output group.                       |
+| M-p     | comint-previous-input      | Previous command.                        |
+| M-n     | comint-next-input          | Next command.                            |
+
+**** Config inside Emacs
+Set shell:
+#+BEGIN_SRC elisp
+  (setq shell-file-name "/bin/zsh")
+#+END_SRC
+
+Making passwords invisible:
+#+BEGIN_SRC elisp
+  (add-hook 'comint-output-filter-functions
+            'comint-watch-for-password-prompt)
+#+END_SRC
+
+#+BEGIN_SRC elisp
+  (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+#+END_SRC
+
+#+BEGIN_SRC elisp
+  (add-hook 'shell-mode-hook (lambda ()
+                               (yas-minor-mode -1)
+                               (whitespace-mode -1)))
+#+END_SRC
+
+Bash Completion:
+#+BEGIN_SRC elisp
+  (autoload 'bash-completion-dynamic-complete 
+    "bash-completion"
+    "BASH completion hook")
+  (add-hook 'shell-dynamic-complete-functions
+    'bash-completion-dynamic-complete)
+  (add-hook 'shell-command-complete-functions
+    'bash-completion-dynamic-complete)
+#+END_SRC
+
+**** Config outside Emacs
+#+BEGIN_SRC conf :tangle no
+  prompt walters
+  unsetopt zle
+  WITHIN_EMACS=true
+#+END_SRC
+
+** Terminal
+Terminal emulation inside Emacs.
+
+Disable some conflicting modes when running inside a Terminal buffer.
+#+BEGIN_SRC elisp :tangle ~/.emacs.d/init.el
+  (defun custom-term-mode ()
+    (interactive)
+    (yas-minor-mode -1)
+    (visual-line-mode -1))
+
+  (add-hook 'term-mode-hook 'custom-term-mode)
+#+END_SRC
+
+** Executing shell commands
+
+| M-!         | shell-command           | Run shell command in background.                             |
+| M-\vert     | shell-command-on-region | Run shell command on region in background.                   |
+| C-u M-\vert | shell-command-on-region | Same as above but puts command output in the current burrer. |
+
