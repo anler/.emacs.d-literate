@@ -13,6 +13,7 @@
      - [[#key-bindings][Key bindings]]
      - [[#personal-blog][Personal blog]]
      - [[#enable-some-dangerous-commands][Enable some "dangerous" commands]]
+     - [[#applications][Applications]]
      - [[#emacs-customize-custom-file][Emacs' customize custom file]]
  - [[#shells][Shells]]
      - [[#eshell-elisp-shell][Eshell (Elisp Shell)]]
@@ -43,6 +44,7 @@ file).
 
   (cask-initialize)
   (require 'pallet)
+  (pallet-mode t)
   (require 'cl)
 
   (load "~/.emacs.d/custom-paths.el" 'noerror)
@@ -585,12 +587,7 @@ Lisp object at point (function or variable) with =M-.= jump back with
 *** Startup screen
 #+BEGIN_SRC elisp
   (setq inhibit-startup-message t
-        initial-scratch-message nil
-        initial-major-mode 'org-mode)
-#+END_SRC
-*** List todos on startup
-#+BEGIN_SRC elisp
-  (add-hook 'after-init-hook 'org-todo-list)
+        initial-scratch-message nil)
 #+END_SRC
 *** Scrollbars
 #+BEGIN_SRC elisp
@@ -624,10 +621,22 @@ Lisp object at point (function or variable) with =M-.= jump back with
 *** Cycle through color themes
 #+BEGIN_SRC elisp
   (load "~/.emacs.d/set-theme.el" 'noerror)
-
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+
   (defvar current-theme nil "Name of the theme being used.")
-  (defvar themes-list nil "Cycle through these themes")
+  (defvar themes-list (cycle (custom-available-themes)) "List of themes to cycle through.")
+  (defvar default-theme nil "Default theme to use.")
+
+  (defun my/load-theme (theme)
+    "Just like the original `load-theme' but it disables the current theme before 
+  activating the new one."
+    (interactive
+     (list
+      (intern (completing-read "Load custom theme: "
+                               (mapcar 'symbol-name
+                                       (custom-available-themes))))))
+    (my/disable-theme current-theme)
+    (my/enable-theme theme))
 
   (defun use-next-theme ()
     "Use the next theme in themes-list."
@@ -653,7 +662,9 @@ Lisp object at point (function or variable) with =M-.= jump back with
         (set-frame-font font-and-size)))
     (message "Theme %s enabled" theme))
 
-  (use-next-theme)
+  (if (null default-theme)
+      (use-next-theme)
+    (my/enable-theme default-theme))
 #+END_SRC
 
 ** Org mode
@@ -1373,6 +1384,16 @@ The execute =M-x geiser= to launch a scheme implementation.
   (global-set-key (kbd "C-c e e") 'er/expand-region)
 #+END_SRC
 
+*** Select inner
+
+| M-i | Change inner |
+| M-o | Change outer |
+
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "M-i") 'change-inner)
+  (global-set-key (kbd "M-o") 'change-outer)
+#+END_SRC
+
 *** Comment/Uncomment line/region
 
 | C-; | comment/uncomment line. |
@@ -1609,6 +1630,19 @@ While searching
 #+END_SRC
 
 ** Enable some "dangerous" commands
+** Applications
+*** IRC
+#+BEGIN_SRC elisp
+  (require 'erc)
+  (load (expand-file-name "~/.emacs.d/erc.el") 'noerror)
+  (setq erc-auto-query t
+        erc-bbdb-auto-create-on-whois-p t
+        erc-fill-column (- (window-width) 2)
+        erc-pals '("dialelo" "niwibe" "miguel" "alotor")
+        erc-notify-list erc-pals
+        erc-hide-list '("JOIN" "PART" "NICK" "MODE" "QUIT"))
+  (add-to-list 'erc-modules 'notifications)
+#+END_SRC
 *** Upcase region
 #+BEGIN_SRC elisp
   (put 'upcase-region 'disabled nil)
