@@ -1247,7 +1247,8 @@ The execute =M-x geiser= to launch a scheme implementation.
   (defun html-mode-initialize ()
     (interactive)
     (setq fill-colum nil)
-    (local-set-key (kbd "C-<return>") 'html-line))
+    (local-set-key (kbd "C-<return>") 'html-line)
+    (html-autoview-mode -1))
 
   (add-hook 'html-mode-hook 'html-mode-initialize)
 #+END_SRC
