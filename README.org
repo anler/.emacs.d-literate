@@ -204,14 +204,18 @@ Command for creating additional scratch buffers.
 #+BEGIN_SRC elisp
   (defun create-scratch-buffer (mode)
     "Create a brand new scratch buffer."
-    (interactive "CMode: ")
+    (interactive
+     (list
+      (completing-read
+       "Pick a mode for the scratch buffer: "
+       (mapcar #'cdr auto-mode-alist))))
     (cl-labels ((get-scratch-buffer-name (index)
-                                (let ((name (format "*scratch<%s>*" index)))
-                                  (if (null (get-buffer name))
-                                      name
-                                    (get-scratch-buffer-name (1+ index))))))
+                                         (let ((name (format "*scratch<%s>*" index)))
+                                           (if (null (get-buffer name))
+                                               name
+                                             (get-scratch-buffer-name (1+ index))))))
       (switch-to-buffer (get-buffer-create (get-scratch-buffer-name 1)))
-      (call-interactively mode)))
+      (call-interactively (intern mode))))
 #+END_SRC
 
 *** Duplicate line
