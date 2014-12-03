@@ -1107,7 +1107,8 @@ to have just one ag buffer openend:
     "Configure lisp mode"
     (interactive)
     (paredit-mode)
-    (turn-on-eldoc-mode))
+    (turn-on-eldoc-mode)
+    (rainbow-delimiters-mode))
 
   (add-hook 'lisp-mode-hook 'setup-lisp-mode)
 #+END_SRC
@@ -1122,6 +1123,7 @@ to have just one ag buffer openend:
     (paredit-mode)
     (turn-on-eldoc-mode)
     (aggressive-indent-mode)
+    (rainbow-delimiters-mode)
     (local-set-key (kbd "C-;") #'comment-or-uncomment-lisp-form))
 
   (add-hook 'emacs-lisp-mode-hook #'setup-emacs-lisp-mode)
